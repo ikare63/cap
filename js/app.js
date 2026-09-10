@@ -223,7 +223,7 @@ function getWednesdayPlan(date=new Date()){
  };
 }
 
-const plans={lundi:{title:'Séance A — Dos, posture et abdos',duration:'35–45 min',icon:'🅰️',planKey:'lundi-standard-v5',intro:'Priorité au dos, à la posture et aux épaules, avec un peu de pectoraux et un travail abdominal court.',exercises:[['Échauffement','Vélo 5–6 min, mobilité hanches et épaules'],['Reverse fly','3 × 8–10'],['Tirage vertical','4 × 10–12'],['Tirage horizontal','4 × 10–12'],['Pec deck','3 × 12–15'],['Élévations latérales','3 × 12–15'],['Crunch','3 × 12']]},mardi:getTuesdayPlan(),mercredi:getWednesdayPlan(),jeudi:{title:'Natation — 1 600 m',duration:'40–60 min',icon:'🏊‍♂️',intro:'Séance d’endurance en crawl, avec une fin plus douce en brasse.',exercises:[['Échauffement','5 min de nage douce et mise en route progressive'],['Crawl — bloc 1','500 m à rythme confortable'],['Crawl — bloc 2','500 m à rythme confortable'],['Crawl — bloc 3','500 m à rythme confortable'],['Brasse — retour au calme','100 m pour finir tranquillement']]},vendredi:{title:'Repos complet',duration:'Journée',icon:'😴',intro:'Le repos fait partie du programme.',rest:true},samedi:{title:'Entraînement libre',duration:'5–30 min',icon:'✨',intro:'Séance sans matériel selon les muscles et la fatigue.',free:true},dimanche:{title:'Off, marche ou libre',duration:'Au choix',icon:'🌿',intro:'Récupération prioritaire.',free:true}};
+const plans={lundi:{title:'Séance A — Dos, posture et abdos',duration:'35–45 min',icon:'🅰️',planKey:'lundi-standard-v5',intro:'Priorité au dos, à la posture et aux épaules, avec un peu de pectoraux et un travail abdominal court.',exercises:[['Échauffement','Vélo 5–6 min, mobilité hanches et épaules'],['Reverse fly','3 × 8–10'],['Tirage vertical','4 × 10–12'],['Tirage horizontal','4 × 10–12'],['Pec deck','3 × 12–15'],['Élévations latérales','3 × 12–15'],['Crunch','3 × 12']]},mardi:getTuesdayPlan(),mercredi:getWednesdayPlan(),jeudi:{title:'Natation — 1 600 m',duration:'40–60 min',icon:'🏊‍♂️',intro:'Séance d’endurance en crawl, avec une fin plus douce en brasse.',exercises:[['Échauffement piscine à sec','5 min · rotations des épaules, cercles de bras, mobilisation du cou et ouverture douce de la poitrine'],['Crawl — bloc 1','500 m à rythme confortable'],['Crawl — bloc 2','500 m à rythme confortable'],['Crawl — bloc 3','500 m à rythme confortable'],['Brasse — retour au calme','100 m pour finir tranquillement']]},vendredi:{title:'Repos complet',duration:'Journée',icon:'😴',intro:'Le repos fait partie du programme.',rest:true},samedi:{title:'Entraînement libre',duration:'5–30 min',icon:'✨',intro:'Séance sans matériel selon les muscles et la fatigue.',free:true},dimanche:{title:'Off, marche ou libre',duration:'Au choix',icon:'🌿',intro:'Récupération prioritaire.',free:true}};
 
 const WEEK_DAYS=['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
 function getISOWeekInfo(date=new Date()){
@@ -1067,6 +1067,7 @@ function renderWeeklySummary(){
 
 function exerciseAssetByName(name=''){
  const n=name.toLowerCase();
+ if(n.includes('piscine à sec'))return 'assets/exercises/echauffement-piscine.png';
  if(n.includes('échauff'))return 'assets/exercises/echauffement.png';
  if(n.includes('reverse'))return 'assets/exercises/reverse-fly.png';
  if(n.includes('tirage vertical'))return 'assets/exercises/tirage-vertical.png';
@@ -1446,7 +1447,7 @@ function deleteMeasurement(date){
 function renderMeasureKpis(){
  const arr=sortedMeasurements().map(derivedMeasurement),latest=arr.at(-1),prev=arr.at(-2);
  if(!latest){
-  measureKpis.innerHTML='<div class="alert">Ajoute une première mesure pour afficher les statistiques.</div>';
+  measureKpis.innerHTML='';
   measureComposition.innerHTML='';
   return;
  }
