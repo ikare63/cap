@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+    <rect x="2" y="2" width="124" height="124" rx="22" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="12" y="12" width="104" height="80" rx="18" fill="#84cc16" opacity=".10"/>
+    <rect x="16" y="14" width="96" height="96" rx="18" fill="#ffffff"/><rect x="18" y="16" width="92" height="92" rx="16" fill="#f8fafc" stroke="#e2e8f0"/><line x1="32" y1="78" x2="94" y2="78" stroke="#84cc16" stroke-width="5"/><rect x="73" y="38" width="15" height="28" rx="6" fill="#84cc16" opacity=".25" stroke="#84cc16"/><circle cx="52" cy="45" r="6" fill="#84cc16"/><path d="M57 46l14 7M70 53l11-5M57 46l-8 15M50 61l20 10" stroke="#84cc16" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <text x="64" y="111" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#334155">Presse cuisses</text>
+    </svg>
