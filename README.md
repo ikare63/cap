@@ -1,4 +1,4 @@
-# Cap V12 — assets PNG et structure nettoyée
+# Cap V15 — vignettes, jauges et mesures corrigées
 
 Cette version conserve le moteur fonctionnel de Cap et refait l’interface pour se rapprocher du premier mockup :
 
@@ -6,6 +6,7 @@ Cette version conserve le moteur fonctionnel de Cap et refait l’interface pour
 - header compact avec le logo Cap original ;
 - accueil avec neuf photos héro adaptées aux différentes activités ;
 - entraînement réellement centré sur la séance, avec 24 illustrations PNG cohérentes, séries et charges ;
+- échauffement piscine à sec avec son illustration dédiée ;
 - Nutrition en bleu nuit avec anneaux et repas compacts ;
 - Mesures en bleu nuit avec un mannequin sportif PNG et un graphique ;
 - dark mode ;
