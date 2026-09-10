@@ -524,15 +524,15 @@ function setMiniBar(el,value,goal){
 }
 function heroAssetForPlan(p){
  const title=(p?.title||'').toLowerCase();
- if(title.includes('natation'))return 'assets/v9/hero/hero-natation.svg';
- if(title.includes('jogging'))return 'assets/v9/hero/hero-jogging.svg';
- if(title.includes('halt'))return 'assets/v9/hero/hero-haltere.svg';
- if(title.includes('jamb'))return 'assets/v9/hero/hero-jambes.svg';
- if(title.includes('pector'))return 'assets/v9/hero/hero-pecs.svg';
- if(title.includes('dos'))return 'assets/v9/hero/hero-dos.svg';
- if(title.includes('repos'))return 'assets/v9/hero/hero-repos.svg';
- if(title.includes('marche')||title.includes('off')||title.includes('libre'))return 'assets/v9/hero/hero-marche.svg';
- return 'assets/v9/hero/hero-dos.svg';
+ if(title.includes('natation'))return 'assets/hero/natation.png';
+ if(title.includes('jogging'))return 'assets/hero/jogging.png';
+ if(title.includes('halt'))return 'assets/hero/haltere.png';
+ if(title.includes('jamb'))return 'assets/hero/jambes.png';
+ if(title.includes('pector'))return 'assets/hero/pecs.png';
+ if(title.includes('dos'))return 'assets/hero/dos.png';
+ if(title.includes('repos'))return 'assets/hero/repos.png';
+ if(title.includes('marche')||title.includes('off')||title.includes('libre'))return 'assets/hero/marche.png';
+ return 'assets/hero/dos.png';
 }
 function focusLabelForPlan(p){
  const t=(p?.title||'').toLowerCase();
@@ -1067,28 +1067,30 @@ function renderWeeklySummary(){
 
 function exerciseAssetByName(name=''){
  const n=name.toLowerCase();
- if(n.includes('échauff'))return 'assets/v9/exercises/echauffement.svg';
- if(n.includes('reverse'))return 'assets/v9/exercises/reverse-fly.svg';
- if(n.includes('tirage vertical'))return 'assets/v9/exercises/tirage-vertical.svg';
- if(n.includes('tirage horizontal')||n.includes('rowing'))return 'assets/v9/exercises/tirage-horizontal.svg';
- if(n.includes('pec deck'))return 'assets/v9/exercises/pec-deck.svg';
- if(n.includes('élévations latérales'))return 'assets/v9/exercises/elevations-laterales.svg';
- if(n.includes('crunch'))return 'assets/v9/exercises/crunch.svg';
- if(n.includes('multi-press'))return 'assets/v9/exercises/multi-press.svg';
- if(n.includes('développé horizontal'))return 'assets/v9/exercises/developpe-horizontal.svg';
- if(n.includes('développé épaules'))return 'assets/v9/exercises/developpe-epaules.svg';
- if(n.includes('presse à cuisses')||n.includes('presse cuisses'))return 'assets/v9/exercises/presse-cuisses.svg';
- if(n.includes('squat'))return 'assets/v9/exercises/squats.svg';
- if(n.includes('flexion'))return 'assets/v9/exercises/flexion-jambes.svg';
- if(n.includes('quadriceps'))return 'assets/v9/exercises/presse-quadriceps.svg';
- if(n.includes('abduct'))return 'assets/v9/exercises/abducteurs.svg';
- if(n.includes('marche'))return 'assets/v9/exercises/marche-rapide.svg';
- if(n.includes('jogging'))return 'assets/v9/exercises/jogging.svg';
- if(n.includes('crawl'))return 'assets/v9/exercises/crawl.svg';
- if(n.includes('brasse'))return 'assets/v9/exercises/brasse.svg';
- if(n.includes('planche'))return 'assets/v9/exercises/planche-avant-bras.svg';
- if(n.includes('relevés de jambes'))return 'assets/v9/exercises/releves-de-jambes.svg';
- return 'assets/v9/exercises/echauffement.svg';
+ if(n.includes('échauff'))return 'assets/exercises/echauffement.png';
+ if(n.includes('reverse'))return 'assets/exercises/reverse-fly.png';
+ if(n.includes('tirage vertical'))return 'assets/exercises/tirage-vertical.png';
+ if(n.includes('tirage horizontal')||n.includes('rowing'))return 'assets/exercises/tirage-horizontal.png';
+ if(n.includes('pec deck'))return 'assets/exercises/pec-deck.png';
+ if(n.includes('élévations latérales'))return 'assets/exercises/elevations-laterales.png';
+ if(n.includes('crunch'))return 'assets/exercises/crunch.png';
+ if(n.includes('multi-press'))return 'assets/exercises/multi-press.png';
+ if(n.includes('développé horizontal'))return 'assets/exercises/developpe-horizontal.png';
+ if(n.includes('développé épaules'))return 'assets/exercises/developpe-epaules.png';
+ if(n.includes('presse à cuisses')||n.includes('presse cuisses'))return 'assets/exercises/presse-cuisses.png';
+ if(n.includes('squat'))return 'assets/exercises/squats.png';
+ if(n.includes('flexion'))return 'assets/exercises/flexion-jambes.png';
+ if(n.includes('quadriceps'))return 'assets/exercises/presse-quadriceps.png';
+ if(n.includes('abduct'))return 'assets/exercises/abducteurs.png';
+ if(n.includes('marche'))return 'assets/exercises/marche-rapide.png';
+ if(n.includes('jogging'))return 'assets/exercises/jogging.png';
+ if(n.includes('crawl'))return 'assets/exercises/crawl.png';
+ if(n.includes('brasse'))return 'assets/exercises/brasse.png';
+ if(n.includes('planche'))return 'assets/exercises/planche-avant-bras.png';
+ if(n.includes('relevés de jambes'))return 'assets/exercises/releves-de-jambes.png';
+ if(n.includes('croisé bas'))return 'assets/exercises/croise-bas-alterne.png';
+ if(n.includes('pectoraux')||n.includes('écarté')||n.includes('montée'))return 'assets/exercises/pectoraux.png';
+ return 'assets/exercises/mobilite-epaules.png';
 }
 function renderTraining(){
  plans.mardi=getTuesdayPlan();
@@ -1588,11 +1590,11 @@ function updateThemeButton(){
  darkBtn.textContent=isDark?'Mode clair':'Mode sombre';
  if(mobileThemeBtn){mobileThemeBtn.textContent=isDark?'☀️':'🌙';mobileThemeBtn.setAttribute('aria-label',isDark?'Activer le mode clair':'Activer le mode sombre')}
 }
-function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('cap-dark',document.body.classList.contains('dark')?'1':'0');updateThemeButton();if(measureBodyImage)measureBodyImage.src=document.body.classList.contains('dark')?'assets/v9/measures/body-dark.svg':'assets/v9/measures/body-light.svg';}
+function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('cap-dark',document.body.classList.contains('dark')?'1':'0');updateThemeButton();if(measureBodyImage)measureBodyImage.src=document.body.classList.contains('dark')?'assets/measures/body.png':'assets/measures/body.png';}
 darkBtn.onclick=toggleTheme;
 if(mobileThemeBtn)mobileThemeBtn.onclick=toggleTheme;
 setInterval(()=>{updateSessionTimerUI();updateRestTimerUI()},500);
-if(localStorage.getItem('cap-dark')==='1')document.body.classList.add('dark');updateThemeButton();if(measureBodyImage)measureBodyImage.src=document.body.classList.contains('dark')?'assets/v9/measures/body-dark.svg':'assets/v9/measures/body-light.svg';exportBtn.onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`cap-sauvegarde-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)};importBtn.onclick=()=>importFile.click();importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);if(!state.settings||!state.daily)throw 0;save();location.reload()}catch{alert('Sauvegarde Cap invalide.')}};r.readAsText(f)};
+if(localStorage.getItem('cap-dark')==='1')document.body.classList.add('dark');updateThemeButton();if(measureBodyImage)measureBodyImage.src=document.body.classList.contains('dark')?'assets/measures/body.png':'assets/measures/body.png';exportBtn.onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`cap-sauvegarde-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)};importBtn.onclick=()=>importFile.click();importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);if(!state.settings||!state.daily)throw 0;save();location.reload()}catch{alert('Sauvegarde Cap invalide.')}};r.readAsText(f)};
 let versionEggTaps=[];
 function registerVersionEggTap(){
  const now=Date.now();
@@ -1606,5 +1608,3 @@ function registerVersionEggTap(){
 if(versionEgg)versionEgg.addEventListener('click',registerVersionEggTap);
 
 renderToday();
-
-
