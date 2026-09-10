@@ -44,6 +44,33 @@ button,input,select{font:inherit}
 button{cursor:pointer}
 img{display:block;max-width:100%}
 
+/* Socle autonome : aucun style n'est désormais embarqué dans index.html. */
+h2,h3,p{margin-top:0}
+.grid{display:grid;grid-template-columns:1fr;gap:10px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kpi{border:1px solid var(--line);border-radius:14px;padding:11px;background:var(--panel-2)}
+.kpi strong{display:block}.kpi span{display:block;color:var(--muted)}
+.note,.muted{color:var(--muted);line-height:1.42}
+.rec{border-radius:14px;padding:12px;border-left:4px solid var(--cyan);background:var(--panel-2)}
+.rec strong{display:block;margin-bottom:4px}.rec p{margin:0}
+.rec.good{border-left-color:var(--green)}.rec.warn{border-left-color:var(--accent)}.rec.bad{border-left-color:var(--danger)}
+.history,.alerts{display:grid;gap:8px}
+.history-item,.alert{background:var(--panel-2)}
+.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:12px}
+.view-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.mini-progress{height:5px;border-radius:999px;background:var(--line);overflow:hidden}.mini-progress>div{height:100%;border-radius:inherit}
+.bmi-panel,.navy-panel{margin-top:12px}.bmi-value,.navy-value{font-size:1.7rem;font-weight:900}
+.measure-entry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.measure-entry-grid label{font-size:.76rem;color:var(--muted)}
+.measure-entry-grid input,.measure-entry-grid select{display:block;width:100%;margin-top:4px}
+.input-unit{position:relative}.input-unit span{position:absolute;right:10px;top:50%;transform:translateY(-32%);font-size:.7rem;color:var(--muted)}
+.input-unit input{padding-right:36px !important}
+.measure-profile-strip{display:flex;gap:8px;flex-wrap:wrap}.measure-profile-strip>div,.measure-profile-strip>label{flex:1;min-width:110px;padding:8px;border-radius:11px;background:var(--panel-2)}
+.measure-profile-strip span{display:block;font-size:.65rem;color:var(--muted)}
+.measure-entry-actions{display:flex;gap:7px}
+.measure-stats,.measure-symmetry,.measure-history{display:grid;gap:7px}
+.version-egg{border:0;background:transparent;color:var(--muted);padding:12px 0}.version-hint{font-size:.7rem;color:var(--muted)}
+
 /* ---------- Header + 9 onglets ---------- */
 .app-header{
   position:relative !important;
