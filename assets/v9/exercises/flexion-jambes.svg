@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
-    <rect x="2" y="2" width="124" height="124" rx="22" fill="#ffffff" stroke="#e2e8f0"/>
-    <rect x="12" y="12" width="104" height="80" rx="18" fill="#65a30d" opacity=".10"/>
-    <rect x="16" y="14" width="96" height="96" rx="18" fill="#ffffff"/><rect x="18" y="16" width="92" height="92" rx="16" fill="#f8fafc" stroke="#e2e8f0"/><line x1="28" y1="40" x2="98" y2="40" stroke="#65a30d" stroke-width="4" opacity=".5"/><circle cx="52" cy="53" r="6" fill="#65a30d"/><path d="M57 54l15-1 11 12M52 60l-7 18M71 53l-7 24" stroke="#65a30d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="83" y1="63" x2="95" y2="63" stroke="#65a30d" stroke-width="6"/>
-    <text x="64" y="111" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#334155">Flexion jambes</text>
-    </svg>
