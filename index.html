@@ -565,12 +565,27 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
 </style>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="css/style.css?v=13">
+<style id="cap-index-nav-fix-v16">
+/* Correctif embarqué : un seul fichier à remplacer (index.html). */
+#nav .nav-week{background:#f4eeff!important;}
+#nav .nav-week .nav-icon{background:#eee4ff!important;color:#7a52c7!important;border-color:#d7c3f7!important;}
+#nav .nav-week.active{color:#7a52c7!important;background:#f4eeff!important;}
+#nav .nav-sleep{background:#edf5ff!important;}
+#nav .nav-sleep .nav-icon{background:#e2efff!important;color:#3478d4!important;border-color:#c2daf9!important;}
+#nav .nav-sleep.active{color:#3478d4!important;background:#edf5ff!important;}
+#nav .nav-sleep .nav-icon svg{width:25px!important;height:25px!important;}
+#nav .nav-nutrition .nav-icon svg{width:24px!important;height:24px!important;}
+body.dark #nav .nav-week{background:#251a3e!important;}
+body.dark #nav .nav-week .nav-icon{background:#342457!important;color:#bc8aff!important;border-color:#5a3f89!important;}
+body.dark #nav .nav-sleep{background:#102947!important;}
+body.dark #nav .nav-sleep .nav-icon{background:#17385f!important;color:#77b3ff!important;border-color:#2d5f91!important;}
+</style>
 </head>
 <body>
 <header class="app-header">
   <div class="head">
     <div class="brand">
-      <div class="logo cap-logo" aria-label="Logo Cap"><img src="assets/v9/logo-cap.svg" alt="Logo Cap"></div>
+      <div class="logo cap-logo" aria-label="Logo Cap"><img src="assets/logo-cap.svg" alt="Logo Cap"></div>
       <div class="brand-copy"><h1>Cap</h1><div class="subtitle">Sport, nutrition et récupération</div></div>
     </div>
     <button class="mobile-theme-btn" id="mobileThemeBtn" type="button" aria-label="Changer de thème">🌙</button>
@@ -588,7 +603,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
     </div>
 
     <div class="home-hero">
-      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.png?v=15" alt="Illustration de la séance du jour">
+      <img id="todayHeroImage" src="assets/hero/hero-repos.png?v=16" alt="Illustration de la séance du jour">
       <div class="home-hero-shade"></div>
       <div class="home-hero-content">
         <span class="home-kicker">AUJOURD’HUI</span>
@@ -690,7 +705,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
   <div class="measure-dashboard">
     <div class="card measure-hero-card">
       <div class="measure-kpi-top" id="measureKpis"></div>
-      <div class="body-visual-wrap"><img id="measureBodyImage" src="assets/v9/measures/mannequin-cap.png?v=15" alt="Silhouette de suivi corporel"><div id="measureComposition" class="measure-composition body-composition"></div></div>
+      <div class="body-visual-wrap"><img id="measureBodyImage" src="assets/measures/mannequin-cap.png?v=16" alt="Silhouette de suivi corporel"><div id="measureComposition" class="measure-composition body-composition"></div></div>
     </div>
     <div class="card measure-chart-card">
       <div class="measure-chart-head"><div><h3>Évolution</h3><p class="note small">Les 30 dernières mesures.</p></div><select id="measureMetric" onchange="renderMeasureChart()"><option value="weight">Poids</option><option value="waist">Tour de taille</option><option value="bodyFat">Masse grasse estimée</option><option value="bmi">IMC</option><option value="chest">Poitrine</option><option value="armAvg">Bras moyen</option><option value="thighAvg">Cuisse moyenne</option></select></div>
@@ -1165,8 +1180,8 @@ function iconSvg(name){
  const icons={
   today:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z" fill="currentColor"/></svg>',
   week:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  nutrition:'<svg viewBox="0 0 24 24"><path d="M12 5.2c2.3-2.2 6.2-1.7 7.7 1.2 1.2 2.3.6 5.2-1.6 7.3-2.3 2.3-5.3 4-6.1 5.1-.7-1.1-3.8-2.8-6.1-5.1-2.2-2.1-2.8-5-1.6-7.3 1.5-2.9 5.4-3.4 7.7-1.2Z" fill="currentColor"/><path d="M12 3.3v4.4" stroke="rgba(255,255,255,.9)" stroke-width="1.8" stroke-linecap="round"/><path d="M12 7.5c1.6 1 2.3 2.4 2.1 4.3" stroke="rgba(255,255,255,.72)" stroke-width="1.5" stroke-linecap="round"/></svg>',
-  sleep:'<svg viewBox="0 0 24 24"><path d="M16.8 3.8C12.2 3.3 8 6.8 8 11.5c0 4.9 4.1 8.7 9 8.2 1.6-.2 3-.7 4.2-1.6-1 2-2.8 3.6-5 4.2-5 1.4-10.2-1.6-11.7-6.7C3 10.5 6 5.3 11.1 3.9c2-.5 3.9-.4 5.7-.1Z" fill="currentColor"/></svg>',
+  nutrition:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.1 7.1c1.3-1.8 3.1-2.7 5.1-2.2 3 .7 4.5 4 3.5 7.3-1.2 4-4.6 7.7-7.1 7.7-.8 0-1.3-.4-1.6-.7-.3.3-.8.7-1.6.7-2.5 0-5.9-3.7-7.1-7.7-1-3.3.5-6.6 3.5-7.3 2-.5 3.8.4 5.3 2.2Z" fill="currentColor"/><path d="M12 6c0-2.2 1.5-4 3.8-4.6-.1 2.4-1.5 4.1-3.8 4.6Z" fill="currentColor"/><path d="M8.1 8.4c-.8.8-1 2-.6 3.2" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  sleep:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.8 3.8A9.2 9.2 0 1 0 20 19.4a8 8 0 0 1-8.2-12.1 8 8 0 0 1 7-3.5Z" fill="currentColor"/></svg>',
   history:'<svg viewBox="0 0 24 24"><path d="M12 6a6 6 0 1 1-5.2 3H4V7l2.3 2.3A8 8 0 1 0 12 4v2Z" fill="currentColor"/><path d="M12 8v4l2.8 1.6" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/></svg>',
   trends:'<svg viewBox="0 0 24 24"><path d="M5 18V7M11 18V10M17 18V5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   measures:'<svg viewBox="0 0 24 24"><path d="M5 17 17 5l2 2L7 19H5v-2Z" fill="currentColor"/><path d="m14 4 2 2" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/></svg>',
@@ -1327,15 +1342,15 @@ function setMiniBar(el,value,goal){
 }
 function heroAssetForPlan(p){
  const title=(p?.title||'').toLowerCase();
- if(title.includes('natation'))return 'assets/v9/hero/hero-natation.png';
- if(title.includes('jogging'))return 'assets/v9/hero/hero-jogging.png';
- if(title.includes('halt'))return 'assets/v9/hero/hero-haltere.png';
- if(title.includes('jamb'))return 'assets/v9/hero/hero-jambes.png';
- if(title.includes('pector'))return 'assets/v9/hero/hero-pecs.png';
- if(title.includes('dos'))return 'assets/v9/hero/hero-dos.png';
- if(title.includes('repos'))return 'assets/v9/hero/hero-repos.png';
- if(title.includes('marche')||title.includes('off')||title.includes('libre'))return 'assets/v9/hero/hero-marche.png';
- return 'assets/v9/hero/hero-dos.png';
+ if(title.includes('natation'))return 'assets/hero/hero-natation.png';
+ if(title.includes('jogging'))return 'assets/hero/hero-jogging.png';
+ if(title.includes('halt'))return 'assets/hero/hero-haltere.png';
+ if(title.includes('jamb'))return 'assets/hero/hero-jambes.png';
+ if(title.includes('pector'))return 'assets/hero/hero-pecs.png';
+ if(title.includes('dos'))return 'assets/hero/hero-dos.png';
+ if(title.includes('repos'))return 'assets/hero/hero-repos.png';
+ if(title.includes('marche')||title.includes('off')||title.includes('libre'))return 'assets/hero/hero-marche.png';
+ return 'assets/hero/hero-dos.png';
 }
 function focusLabelForPlan(p){
  const t=(p?.title||'').toLowerCase();
@@ -1351,7 +1366,7 @@ function recoveryLabel(v){if(!v)return 'À compléter';if(v>=85)return 'Excellen
 function renderToday(){
  renderYesterdayScore();
  const d=ensureDate(),p=getPlanForDay(dayName()),a=advice();
- if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=13';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/v9/hero/hero-repos.png?v=15';};}
+ if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=13';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/hero/hero-repos.png?v=16';};}
  if(todayHeroFocus)todayHeroFocus.textContent=focusLabelForPlan(p);
  if(todayGreetingDate)todayGreetingDate.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
  const totals=nutritionTotals();
@@ -1870,28 +1885,28 @@ function renderWeeklySummary(){
 
 function exerciseAssetByName(name=''){
  const n=name.toLowerCase();
- if(n.includes('échauff'))return 'assets/v9/exercises/echauffement.png';
- if(n.includes('reverse'))return 'assets/v9/exercises/reverse-fly.png';
- if(n.includes('tirage vertical'))return 'assets/v9/exercises/tirage-vertical.png';
- if(n.includes('tirage horizontal')||n.includes('rowing'))return 'assets/v9/exercises/tirage-horizontal.png';
- if(n.includes('pec deck'))return 'assets/v9/exercises/pec-deck.png';
- if(n.includes('élévations latérales'))return 'assets/v9/exercises/elevations-laterales.png';
- if(n.includes('crunch'))return 'assets/v9/exercises/crunch.png';
- if(n.includes('multi-press'))return 'assets/v9/exercises/multi-press.png';
- if(n.includes('développé horizontal'))return 'assets/v9/exercises/developpe-horizontal.png';
- if(n.includes('développé épaules'))return 'assets/v9/exercises/developpe-epaules.png';
- if(n.includes('presse à cuisses')||n.includes('presse cuisses'))return 'assets/v9/exercises/presse-cuisses.png';
- if(n.includes('squat'))return 'assets/v9/exercises/squats.png';
- if(n.includes('flexion'))return 'assets/v9/exercises/flexion-jambes.png';
- if(n.includes('quadriceps'))return 'assets/v9/exercises/presse-quadriceps.png';
- if(n.includes('abduct'))return 'assets/v9/exercises/abducteurs.png';
- if(n.includes('marche'))return 'assets/v9/exercises/marche-rapide.png';
- if(n.includes('jogging'))return 'assets/v9/exercises/jogging.png';
- if(n.includes('crawl'))return 'assets/v9/exercises/crawl.png';
- if(n.includes('brasse'))return 'assets/v9/exercises/brasse.png';
- if(n.includes('planche'))return 'assets/v9/exercises/planche-avant-bras.png';
- if(n.includes('relevés de jambes'))return 'assets/v9/exercises/releves-de-jambes.png';
- return 'assets/v9/exercises/echauffement.png';
+ if(n.includes('échauff'))return 'assets/exercises/echauffement.png';
+ if(n.includes('reverse'))return 'assets/exercises/reverse-fly.png';
+ if(n.includes('tirage vertical'))return 'assets/exercises/tirage-vertical.png';
+ if(n.includes('tirage horizontal')||n.includes('rowing'))return 'assets/exercises/tirage-horizontal.png';
+ if(n.includes('pec deck'))return 'assets/exercises/pec-deck.png';
+ if(n.includes('élévations latérales'))return 'assets/exercises/elevations-laterales.png';
+ if(n.includes('crunch'))return 'assets/exercises/crunch.png';
+ if(n.includes('multi-press'))return 'assets/exercises/multi-press.png';
+ if(n.includes('développé horizontal'))return 'assets/exercises/developpe-horizontal.png';
+ if(n.includes('développé épaules'))return 'assets/exercises/developpe-epaules.png';
+ if(n.includes('presse à cuisses')||n.includes('presse cuisses'))return 'assets/exercises/presse-cuisses.png';
+ if(n.includes('squat'))return 'assets/exercises/squats.png';
+ if(n.includes('flexion'))return 'assets/exercises/flexion-jambes.png';
+ if(n.includes('quadriceps'))return 'assets/exercises/presse-quadriceps.png';
+ if(n.includes('abduct'))return 'assets/exercises/abducteurs.png';
+ if(n.includes('marche'))return 'assets/exercises/marche-rapide.png';
+ if(n.includes('jogging'))return 'assets/exercises/jogging.png';
+ if(n.includes('crawl'))return 'assets/exercises/crawl.png';
+ if(n.includes('brasse'))return 'assets/exercises/brasse.png';
+ if(n.includes('planche'))return 'assets/exercises/planche-avant-bras.png';
+ if(n.includes('relevés de jambes'))return 'assets/exercises/releves-de-jambes.png';
+ return 'assets/exercises/echauffement.png';
 }
 function renderTraining(){
  plans.mardi=getTuesdayPlan();
@@ -2413,4 +2428,5 @@ renderToday();
 
 </script>
 <!-- assets fixed v15: hero png + exercises png + mannequin png -->
+<!-- Cap index fix v16: chemins assets/ sans v9 + pictogrammes nav -->
 </body></html>
