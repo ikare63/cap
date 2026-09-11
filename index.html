@@ -687,6 +687,65 @@ body.dark #nav .nav-theme .nav-icon{background:#2a2f3d;color:#ffd56a;border-colo
 }
 </style>
 
+
+<style id="cap-yesterday-score-compact-v20">
+.home-yesterday-score-compact{margin-top:14px;padding:16px 18px}
+.home-yesterday-score-compact .score-cap-head{align-items:center}
+.home-yesterday-score-compact .score-cap-head h2{font-size:1.05rem;margin:5px 0 2px}
+.home-yesterday-score-compact .score-cap-ring{width:76px;height:76px;flex:0 0 76px;border-width:7px}
+.home-yesterday-score-compact .score-cap-ring strong{font-size:1.7rem}
+.home-yesterday-score-compact .score-cap-status{margin-top:7px;font-size:.88rem}
+.home-yesterday-score-compact .score-cap-progress{height:9px;margin-top:10px}
+.home-yesterday-score-compact .score-cap-coverage{font-size:.7rem;margin-top:5px}
+@media(max-width:560px){
+  .home-yesterday-score-compact{padding:14px 15px}
+  .home-yesterday-score-compact .score-cap-ring{width:70px;height:70px;flex-basis:70px}
+  .home-yesterday-score-compact .score-cap-ring strong{font-size:1.55rem}
+}
+</style>
+
+
+<style id="cap-bottom-nav-v20">
+/* Navigation fixe en bas */
+#nav{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  z-index:1200 !important;
+  display:flex !important;
+  flex-wrap:nowrap !important;
+  gap:8px !important;
+  overflow-x:auto !important;
+  overflow-y:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  scrollbar-width:none !important;
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+  background:color-mix(in srgb,var(--panel) 94%,transparent) !important;
+  border-top:1px solid var(--line) !important;
+  box-shadow:0 -10px 28px rgba(15,23,42,.10) !important;
+  backdrop-filter:blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(150%) !important;
+}
+#nav::-webkit-scrollbar{display:none !important}
+#nav .navbtn{
+  flex:0 0 auto !important;
+  min-width:96px !important;
+}
+body.dark #nav{
+  background:color-mix(in srgb,#071831 94%,transparent) !important;
+  box-shadow:0 -10px 28px rgba(0,0,0,.32) !important;
+}
+main{
+  padding-bottom:calc(150px + env(safe-area-inset-bottom)) !important;
+}
+@media(max-width:560px){
+  #nav{gap:7px !important;padding:7px 8px calc(7px + env(safe-area-inset-bottom)) !important}
+  #nav .navbtn{min-width:92px !important;padding:8px 9px !important}
+  main{padding-bottom:calc(142px + env(safe-area-inset-bottom)) !important}
+}
+</style>
+
 </head>
 <body>
 <header class="app-header">
@@ -724,45 +783,6 @@ body.dark #nav .nav-theme .nav-icon{background:#2a2f3d;color:#ffd56a;border-colo
       </div>
     </div>
 
-  <div class="card yesterday-score-card home-yesterday-score">
-      <div class="score-cap-head">
-        <div>
-          <span class="badge">Bilan automatique</span>
-          <h2>Score Cap d’hier</h2>
-          <p class="note" id="yesterdayScoreDate"></p>
-        </div>
-        <div class="score-cap-ring" id="yesterdayScoreRing">
-          <strong id="yesterdayScoreValue">—</strong>
-          <span>/ 100</span>
-        </div>
-      </div>
-  
-      <div class="score-cap-status" id="yesterdayScoreStatus">Pas encore calculé</div>
-      <div class="score-cap-progress"><div id="yesterdayScoreBar"></div></div>
-      <div class="score-cap-coverage" id="yesterdayScoreCoverage"></div>
-  
-      <div class="score-breakdown">
-        <div class="score-part">
-          <span>Sommeil</span><strong id="yesterdaySleepScore">—</strong>
-          <div class="mini-progress"><div id="yesterdaySleepBar"></div></div>
-        </div>
-        <div class="score-part">
-          <span>Nutrition</span><strong id="yesterdayNutritionScore">—</strong>
-          <div class="mini-progress"><div id="yesterdayNutritionBar"></div></div>
-        </div>
-        <div class="score-part">
-          <span>Activité</span><strong id="yesterdayActivityScore">—</strong>
-          <div class="mini-progress"><div id="yesterdayActivityBar"></div></div>
-        </div>
-        <div class="score-part">
-          <span>Bien-être</span><strong id="yesterdayWellnessScore">—</strong>
-          <div class="mini-progress"><div id="yesterdayWellnessBar"></div></div>
-        </div>
-      </div>
-  
-      <div class="rec" id="yesterdayScoreComment"></div>
-    </div>
-
     <div class="home-kpis">
       <div class="home-kpi activity">
         <div class="home-kpi-ring" id="kpiActivityRing"><div class="home-kpi-ring-inner"><strong id="kpiActivity">0</strong><span>%</span></div></div>
@@ -796,6 +816,23 @@ body.dark #nav .nav-theme .nav-icon{background:#2a2f3d;color:#ffd56a;border-colo
           <span id="kpiSleepGoal">Nuit dernière</span>
         </div>
       </div>
+    </div>
+
+    <div class="card yesterday-score-card home-yesterday-score home-yesterday-score-compact">
+      <div class="score-cap-head">
+        <div>
+          <span class="badge">Bilan automatique</span>
+          <h2>Score Cap d’hier</h2>
+          <p class="note" id="yesterdayScoreDate"></p>
+          <div class="score-cap-status" id="yesterdayScoreStatus">Pas encore calculé</div>
+        </div>
+        <div class="score-cap-ring" id="yesterdayScoreRing">
+          <strong id="yesterdayScoreValue">—</strong>
+          <span>/ 100</span>
+        </div>
+      </div>
+      <div class="score-cap-progress"><div id="yesterdayScoreBar"></div></div>
+      <div class="score-cap-coverage" id="yesterdayScoreCoverage"></div>
     </div>
 
     <div class="home-advice-card">
@@ -1454,18 +1491,12 @@ function calculateYesterdayScore(){
 function renderYesterdayScore(){
  const result=calculateYesterdayScore();
  yesterdayScoreDate.textContent=result.date.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
- setScorePart(result.parts.sleep,30,yesterdaySleepScore,yesterdaySleepBar);
- setScorePart(result.parts.nutrition,30,yesterdayNutritionScore,yesterdayNutritionBar);
- setScorePart(result.parts.activity,20,yesterdayActivityScore,yesterdayActivityBar);
- setScorePart(result.parts.wellness,20,yesterdayWellnessScore,yesterdayWellnessBar);
-
  yesterdayScoreRing.className='score-cap-ring';
  if(result.score==null){
   yesterdayScoreValue.textContent='—';
   yesterdayScoreStatus.textContent='Données insuffisantes';
   yesterdayScoreBar.style.width='0%';
   yesterdayScoreCoverage.textContent='Renseigne au moins une catégorie pour obtenir un score.';
-  yesterdayScoreComment.textContent='Le score n’attribue jamais zéro aux informations manquantes.';
   return;
  }
  const status=capScoreLabel(result.score);
@@ -1474,10 +1505,7 @@ function renderYesterdayScore(){
  yesterdayScoreStatus.textContent=status.label;
  yesterdayScoreBar.style.width=result.score+'%';
  yesterdayScoreCoverage.textContent=`Calculé à partir de ${result.coverage} % des données possibles.`;
- const reasonText=result.reasons.length
-   ? result.reasons.slice(0,3).join(', ')
-   : 'aucun signal particulier détecté';
- yesterdayScoreComment.innerHTML=`<strong>Lecture de Cap</strong><p style="margin-bottom:0">${reasonText[0].toUpperCase()+reasonText.slice(1)}. Ce score est un repère de suivi, pas une note médicale.</p>`;
+
 }
 
 function advice(){const d=ensureDate(),s=d.sleep,w=d.wellness;let score=100,r=[],level='good',action='Séance normale';if(w.neuro>=7){score-=45;r.push('fatigue neurologique élevée');action='Repos ou mobilité douce';level='bad'}if(w.pain>=3){score-=40;r.push('douleur forte ou inhabituelle');action='Ne commence pas une séance intense';level='bad'}else if(w.pain===2){score-=22;r.push('douleur moyenne');action='Séance allégée en évitant la zone douloureuse';level='warn'}else if(w.pain===1){score-=10;r.push('douleur légère');action='Séance normale sans progression, en adaptant tout exercice douloureux'}if(s.hours&&s.hours<6.5){score-=18;r.push('nuit courte')}if(s.physical&&s.physical<50){score-=20;r.push('récupération physique faible')}if(w.fatigue>=7){score-=16;r.push('fatigue générale élevée')}if(level!=='bad'&&score<70){level='warn';action='Séance allégée'}else if(level==='good'&&score<85){level='warn';action='Séance normale sans progression'}let text=`${action}. ${r.length?'Cap se base sur : '+r.join(', ')+'.':'Aucun signal important ne justifie d’alléger.'}`;if(getPlanForDay(dayName()).rest)text='Repos complet prévu aujourd’hui. Le repos compte comme une action utile.';return{level,text}}
