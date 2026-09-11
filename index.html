@@ -580,6 +580,77 @@ body.dark #nav .nav-week .nav-icon{background:#342457!important;color:#bc8aff!im
 body.dark #nav .nav-sleep{background:#102947!important;}
 body.dark #nav .nav-sleep .nav-icon{background:#17385f!important;color:#77b3ff!important;border-color:#2d5f91!important;}
 </style>
+<style id="cap-home-kpis-rings-v18">
+/* Dashboard maison : anneaux ronds + nav aux couleurs distinctes */
+.home-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.home-kpi{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow);min-height:118px}
+.home-kpi.sleep{--ring-color:var(--violet);--ring-soft:#f2eaff}
+.home-kpi.calories{--ring-color:var(--orange);--ring-soft:#fff1e8}
+.home-kpi.protein{--ring-color:var(--green);--ring-soft:#eef9e8}
+.home-kpi.recovery{--ring-color:var(--cyan);--ring-soft:#e9fafd}
+.home-kpi-ring{width:84px;height:84px;flex:0 0 84px;border-radius:50%;display:grid;place-items:center;position:relative;background:conic-gradient(var(--ring-color) 0%, var(--line) 0);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ring-color) 18%,transparent)}
+.home-kpi-ring::before{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--panel);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ring-color) 16%,var(--line))}
+.home-kpi-ring-inner{position:relative;z-index:1;text-align:center;display:grid;gap:2px;justify-items:center}
+.home-kpi-ring strong{font-size:1.12rem;line-height:1.05;font-weight:900;color:var(--text)}
+.home-kpi-ring span{font-size:.66rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.home-kpi-copy{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.home-kpi-copy small{font-size:.8rem;font-weight:900;color:var(--text);text-transform:uppercase;letter-spacing:.03em}
+.home-kpi-copy>span:last-child{font-size:.72rem;line-height:1.35;color:var(--muted)}
+.kpi-icon-badge{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;border:1px solid transparent}
+.kpi-icon-badge svg{width:20px;height:20px;display:block}
+.kpi-icon-badge.sleep{background:#f2eaff;color:var(--violet);border-color:#dccbfb}
+.kpi-icon-badge.calories{background:#fff1e8;color:var(--orange);border-color:#ffd0bb}
+.kpi-icon-badge.protein{background:#eef9e8;color:var(--green);border-color:#cbeab8}
+.kpi-icon-badge.recovery{background:#e9fafd;color:var(--cyan);border-color:#bdebf3}
+body.dark .home-kpi{background:linear-gradient(155deg,#071a33,#081d38)}
+body.dark .home-kpi-ring::before{background:#071831}
+body.dark .kpi-icon-badge.sleep{background:#2a1a48;border-color:#5b3c91;color:#cda5ff}
+body.dark .kpi-icon-badge.calories{background:#4e2413;border-color:#8e4a2d;color:#ff9d5f}
+body.dark .kpi-icon-badge.protein{background:#173721;border-color:#356f45;color:#9ce268}
+body.dark .kpi-icon-badge.recovery{background:#103946;border-color:#266d7c;color:#68e1ec}
+
+/* Nav : une couleur par onglet, aucune paire identique côte à côte */
+#nav .navbtn{border:1px solid var(--line);border-radius:22px;padding:10px 12px;min-width:104px;color:var(--text);background:var(--panel)}
+#nav .navbtn>span:last-child{font-weight:850;color:inherit}
+#nav .nav-today{background:#fff6ef;color:#f06a2b;border-color:#ffd5c2}
+#nav .nav-week{background:#f6efff;color:#8757cf;border-color:#ddcdf8}
+#nav .nav-nutrition{background:#f1f9ec;color:#5ea92e;border-color:#d2eabc}
+#nav .nav-sleep{background:#eef6ff;color:#3d7ed8;border-color:#caddfa}
+#nav .nav-history{background:#fff4e4;color:#ba811d;border-color:#f4d9aa}
+#nav .nav-trends{background:#eaf9f4;color:#1f9a71;border-color:#bde8d7}
+#nav .nav-measures{background:#fff0ea;color:#df6d50;border-color:#facbbb}
+#nav .nav-summary{background:#fdf0f7;color:#cd5990;border-color:#f2c4da}
+#nav .nav-settings{background:#eff3f7;color:#5d6c7c;border-color:#d7e0e9}
+#nav .nav-today .nav-icon{background:#fff0e8;color:#f06a2b;border-color:#ffd4c4}
+#nav .nav-week .nav-icon{background:#efe5ff;color:#8757cf;border-color:#d8c5fb}
+#nav .nav-nutrition .nav-icon{background:#edf8e7;color:#5ea92e;border-color:#cfe8ba}
+#nav .nav-sleep .nav-icon{background:#e7f1ff;color:#3d7ed8;border-color:#c7daf9}
+#nav .nav-history .nav-icon{background:#fff0d8;color:#ba811d;border-color:#f0d1a0}
+#nav .nav-trends .nav-icon{background:#def6ed;color:#1f9a71;border-color:#b4e6d2}
+#nav .nav-measures .nav-icon{background:#ffe7df;color:#df6d50;border-color:#f6c2b3}
+#nav .nav-summary .nav-icon{background:#fae1ef;color:#cd5990;border-color:#efbdd6}
+#nav .nav-settings .nav-icon{background:#e8edf2;color:#5d6c7c;border-color:#d1dae3}
+#nav .navbtn.active{box-shadow:inset 0 -3px 0 currentColor;color:inherit}
+body.dark #nav .nav-today{background:#3e2017;border-color:#7d462f;color:#ff9b71}
+body.dark #nav .nav-week{background:#281b42;border-color:#5b3f8f;color:#c89aff}
+body.dark #nav .nav-nutrition{background:#173823;border-color:#376f45;color:#94e061}
+body.dark #nav .nav-sleep{background:#132d4a;border-color:#2e6194;color:#8cc2ff}
+body.dark #nav .nav-history{background:#4a371a;border-color:#7c5a22;color:#ffd37a}
+body.dark #nav .nav-trends{background:#103a33;border-color:#256d5c;color:#61e0b0}
+body.dark #nav .nav-measures{background:#47221b;border-color:#8d4c3e;color:#ff9b82}
+body.dark #nav .nav-summary{background:#412032;border-color:#7f4262;color:#ffaad0}
+body.dark #nav .nav-settings{background:#1f2c3a;border-color:#42556a;color:#c9d7e5}
+
+@media(max-width:760px){.home-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){
+  .home-kpi{padding:12px;gap:10px;min-height:108px}
+  .home-kpi-ring{width:76px;height:76px;flex-basis:76px}
+  .home-kpi-ring strong{font-size:1rem}
+  .home-kpi-copy small{font-size:.76rem}
+  .home-kpi-copy>span:last-child{font-size:.68rem}
+}
+</style>
+
 </head>
 <body>
 <header class="app-header">
@@ -618,10 +689,38 @@ body.dark #nav .nav-sleep .nav-icon{background:#17385f!important;color:#77b3ff!i
     </div>
 
     <div class="home-kpis">
-      <div class="home-kpi sleep"><span class="kpi-icon kpi-icon-sleep"></span><div><small>Sommeil</small><strong id="kpiSleep">—</strong><span id="kpiSleepGoal">/ 8 h</span></div><div class="mini-progress sleep-progress"><div id="kpiSleepBar"></div></div></div>
-      <div class="home-kpi calories"><span class="kpi-icon kpi-icon-calories"></span><div><small>Calories</small><strong id="kpiCalories">—</strong><span id="kpiCaloriesGoal">/ 2 200 kcal</span></div><div class="mini-progress"><div id="kpiCaloriesBar"></div></div></div>
-      <div class="home-kpi protein"><span class="kpi-icon kpi-icon-protein"></span><div><small>Protéines</small><strong id="kpiProtein">—</strong><span id="kpiProteinGoal"></span></div><div class="mini-progress"><div id="kpiProteinBar"></div></div></div>
-      <div class="home-kpi recovery"><span class="kpi-icon kpi-icon-recovery"></span><div><small>Récup.</small><strong id="kpiRecovery">—</strong><span id="kpiRecoveryGoal">Qualité + récupérations</span></div><div class="mini-progress"><div id="kpiRecoveryBar"></div></div></div>
+      <div class="home-kpi sleep">
+        <div class="home-kpi-ring" id="kpiSleepRing"><div class="home-kpi-ring-inner"><strong id="kpiSleep">—</strong><span>h</span></div></div>
+        <div class="home-kpi-copy">
+          <span class="kpi-icon-badge sleep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18.8 3.8A9.2 9.2 0 1 0 20 19.4a8 8 0 0 1-8.2-12.1 8 8 0 0 1 7-3.5Z" fill="currentColor"/></svg></span>
+          <small>Sommeil</small>
+          <span id="kpiSleepGoal">Objectif · 8 h</span>
+        </div>
+      </div>
+      <div class="home-kpi calories">
+        <div class="home-kpi-ring" id="kpiCaloriesRing"><div class="home-kpi-ring-inner"><strong id="kpiCalories">0</strong><span>kcal</span></div></div>
+        <div class="home-kpi-copy">
+          <span class="kpi-icon-badge calories" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12.2 2.8c1.8 2.6 3.1 4.8 3.1 7.3 0 1.6-.6 3-1.7 4.1 2-.4 4.4-2 4.4-5.6 0-2.1-1-4.2-2.8-6 .3 4.5-2.6 4.8-3 0Z" fill="currentColor"/><path d="M10.8 9.2c-2.4 2.4-4.6 4.8-4.6 7.8a5.8 5.8 0 1 0 11.6 0c0-2.6-1.4-4.8-3.8-7-1 2.1-3 2.4-3.2-.8Z" fill="currentColor"/></svg></span>
+          <small>Calories</small>
+          <span id="kpiCaloriesGoal">Objectif · 2 200 kcal</span>
+        </div>
+      </div>
+      <div class="home-kpi protein">
+        <div class="home-kpi-ring" id="kpiProteinRing"><div class="home-kpi-ring-inner"><strong id="kpiProtein">0 g</strong><span>prot.</span></div></div>
+        <div class="home-kpi-copy">
+          <span class="kpi-icon-badge protein" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="10" y="5" width="5" height="5" rx="1.2" fill="currentColor" opacity=".86"/><rect x="4" y="11" width="5" height="5" rx="1.2" fill="currentColor" opacity=".86"/><rect x="10" y="11" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="16" y="8" width="4" height="8" rx="1.2" fill="currentColor" opacity=".72"/></svg></span>
+          <small>Protéines</small>
+          <span id="kpiProteinGoal">Objectif · 0 g</span>
+        </div>
+      </div>
+      <div class="home-kpi recovery">
+        <div class="home-kpi-ring" id="kpiRecoveryRing"><div class="home-kpi-ring-inner"><strong id="kpiRecovery">—</strong><span>%</span></div></div>
+        <div class="home-kpi-copy">
+          <span class="kpi-icon-badge recovery" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7.4 7.7h4.8V3.9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.7 12A6 6 0 1 0 13 6.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.6 16.3h-4.8v3.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.3 12A6 6 0 1 1 11 17.7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <small>Récup.</small>
+          <span id="kpiRecoveryGoal">Qualité + récupérations</span>
+        </div>
+      </div>
     </div>
 
     <div class="home-recovery">
@@ -1183,7 +1282,7 @@ function iconSvg(name){
   nutrition:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.1 7.1c1.3-1.8 3.1-2.7 5.1-2.2 3 .7 4.5 4 3.5 7.3-1.2 4-4.6 7.7-7.1 7.7-.8 0-1.3-.4-1.6-.7-.3.3-.8.7-1.6.7-2.5 0-5.9-3.7-7.1-7.7-1-3.3.5-6.6 3.5-7.3 2-.5 3.8.4 5.3 2.2Z" fill="currentColor"/><path d="M12 6c0-2.2 1.5-4 3.8-4.6-.1 2.4-1.5 4.1-3.8 4.6Z" fill="currentColor"/><path d="M8.1 8.4c-.8.8-1 2-.6 3.2" fill="none" stroke="rgba(255,255,255,.78)" stroke-width="1.6" stroke-linecap="round"/></svg>',
   sleep:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.8 3.8A9.2 9.2 0 1 0 20 19.4a8 8 0 0 1-8.2-12.1 8 8 0 0 1 7-3.5Z" fill="currentColor"/></svg>',
   history:'<svg viewBox="0 0 24 24"><path d="M12 6a6 6 0 1 1-5.2 3H4V7l2.3 2.3A8 8 0 1 0 12 4v2Z" fill="currentColor"/><path d="M12 8v4l2.8 1.6" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/></svg>',
-  trends:'<svg viewBox="0 0 24 24"><path d="M5 18V7M11 18V10M17 18V5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  trends:'<svg viewBox="0 0 24 24"><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 15.5 10.2 11.3 13.4 13.2 18 8.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="15.5" r="1.4" fill="currentColor"/><circle cx="10.2" cy="11.3" r="1.4" fill="currentColor"/><circle cx="13.4" cy="13.2" r="1.4" fill="currentColor"/><circle cx="18" cy="8.5" r="1.4" fill="currentColor"/></svg>',
   measures:'<svg viewBox="0 0 24 24"><path d="M5 17 17 5l2 2L7 19H5v-2Z" fill="currentColor"/><path d="m14 4 2 2" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/></svg>',
   summary:'<svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h6M9 17h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   settings:'<svg viewBox="0 0 24 24"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm8.2 4.6-1.7.6c-.1.4-.3.9-.5 1.3l.8 1.6-1.9 1.9-1.6-.8c-.4.2-.8.4-1.3.5l-.6 1.7h-2.7l-.6-1.7c-.5-.1-.9-.3-1.3-.5l-1.6.8-1.9-1.9.8-1.6c-.2-.4-.4-.9-.5-1.3l-1.7-.6v-2.7l1.7-.6c.1-.4.3-.9.5-1.3l-.8-1.6 1.9-1.9 1.6.8c.4-.2.8-.4 1.3-.5l.6-1.7h2.7l.6 1.7c.5.1.9.3 1.3.5l1.6-.8 1.9 1.9-.8 1.6c.2.4.4.9.5 1.3l1.7.6v2.7Z" fill="currentColor"/></svg>',
@@ -1363,6 +1462,15 @@ function focusLabelForPlan(p){
  return 'Libre';
 }
 function recoveryLabel(v){if(!v)return 'À compléter';if(v>=85)return 'Excellente';if(v>=70)return 'Bonne récupération';if(v>=55)return 'Récupération moyenne';return 'À alléger';}
+function setHomeStatRing(id,value,goal,color){
+ const ring=document.getElementById(id);
+ if(!ring)return;
+ const safeGoal=goal||100;
+ const pct=Math.max(0,Math.min(100,((Number(value)||0)/safeGoal)*100));
+ ring.style.setProperty('--pct',pct);
+ ring.style.setProperty('--ring-color',color);
+ ring.style.background=`conic-gradient(${color} ${pct}%, var(--line) 0)`;
+}
 function renderToday(){
  renderYesterdayScore();
  const d=ensureDate(),p=getPlanForDay(dayName()),a=advice();
@@ -1397,30 +1505,26 @@ function renderToday(){
  if(recoveryRingLabel)recoveryRingLabel.textContent=recoveryLabel(nightAverage);
  if(recoveryRingBig)recoveryRingBig.style.setProperty('--recovery',Math.max(0,Math.min(100,nightAverage||0)));
 
- setMiniBar(kpiSleepBar,sleepHoursValue,8);
- setMiniBar(kpiRecoveryBar,nightAverage,100);
+ const sleepRingColor=sleepHoursValue>0&&sleepHoursValue<6?'var(--bad)':sleepHoursValue>=6&&sleepHoursValue<8?'var(--warn)':'var(--violet)';
+ setHomeStatRing('kpiSleepRing',sleepHoursValue,8,sleepRingColor);
+ setHomeStatRing('kpiRecoveryRing',nightAverage,100,'var(--cyan)');
 
- const sleepProgress=kpiSleepBar.parentElement;
- sleepProgress.classList.remove('attention','critical');
- if(sleepHoursValue>0&&sleepHoursValue<6)sleepProgress.classList.add('critical');
- else if(sleepHoursValue>=6&&sleepHoursValue<8)sleepProgress.classList.add('attention');
-
- kpiSleepGoal.textContent=sleepHoursValue>0&&sleepHoursValue<6?'Attention : moins de 6 h':'/ 8 h';
+ kpiSleepGoal.textContent=sleepHoursValue>0&&sleepHoursValue<6?'Nuit courte · moins de 6 h':'Objectif · 8 h';
  kpiRecoveryGoal.textContent=sleepScores.length
-   ? 'Moyenne qualité, physique et mental'
+   ? 'Qualité · physique · mental'
    : 'Qualité + récupérations';
  kpiCalories.textContent=totals.calories?Math.round(totals.calories):'0';
  kpiProtein.textContent=round1(totals.protein)+' g';
  kpiCarbs.textContent=round1(totals.carbs)+' g';
  kpiFat.textContent=round1(totals.fat)+' g';
 
- kpiCaloriesGoal.textContent=`/ ${calGoal.toLocaleString('fr-FR')} kcal`;
- kpiProteinGoal.textContent=`/ ${proteinGoal} g`;
+ kpiCaloriesGoal.textContent=`Objectif · ${calGoal.toLocaleString('fr-FR')} kcal`;
+ kpiProteinGoal.textContent=`Objectif · ${proteinGoal} g`;
  kpiCarbsGoal.textContent=`/ ${carbsGoal} g`;
  kpiFatGoal.textContent=`/ ${fatGoal} g`;
 
- setMiniBar(kpiCaloriesBar,totals.calories,calGoal);
- setMiniBar(kpiProteinBar,totals.protein,proteinGoal);
+ setHomeStatRing('kpiCaloriesRing',totals.calories,calGoal,'var(--orange)');
+ setHomeStatRing('kpiProteinRing',totals.protein,proteinGoal,'var(--green)');
  setMiniBar(kpiCarbsBar,totals.carbs,carbsGoal);
  setMiniBar(kpiFatBar,totals.fat,fatGoal);
 
