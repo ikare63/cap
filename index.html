@@ -564,7 +564,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
 
 </style>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body>
 <header class="app-header">
@@ -588,7 +588,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
     </div>
 
     <div class="home-hero">
-      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.svg" alt="Illustration de la séance du jour">
+      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.svg?v=13" alt="Illustration de la séance du jour">
       <div class="home-hero-shade"></div>
       <div class="home-hero-content">
         <span class="home-kicker">AUJOURD’HUI</span>
@@ -1158,28 +1158,22 @@ ensureDate();
 function save(){localStorage.setItem('cap-data',JSON.stringify(state))}
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='today')renderToday();if(id==='week')renderWeek();if(id==='nutrition')loadNutrition();if(id==='sleep')loadSleep();if(id==='history')renderHistory(30);if(id==='trends')renderTrends();if(id==='measures')renderMeasures();if(id==='summary')renderWeeklySummary();if(id==='settings')loadSettings();scrollTo(0,0)}
 function todayNavIcon(){
- const activity=getActivityKeyForDay(dayName());
- if(activity==='lundi'||activity==='mercredi')return 'train';
- if(activity==='mardi')return getTuesdayPlan().strength?'train':'run';
- if(activity==='jeudi')return 'swim';
- if(activity==='vendredi')return 'rest';
- return 'today';
+ const plan=getPlanForDay(dayName());
+ return plan && plan.rest ? 'bed' : 'train';
 }
 function iconSvg(name){
  const icons={
   today:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z" fill="currentColor"/></svg>',
   week:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M4 10h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-  nutrition:'<svg viewBox="0 0 24 24"><path d="M12 4c3.6 2.5 5.5 5 5.5 8.1A5.5 5.5 0 1 1 6.5 12.1C6.5 9 8.4 6.5 12 4Z" fill="currentColor"/><path d="M12 7.2c.1 2.8-.9 4.8-3 6" stroke="rgba(255,255,255,.75)" stroke-width="1.6" stroke-linecap="round"/></svg>',
-  sleep:'<svg viewBox="0 0 24 24"><path d="M15.5 3.6a8.5 8.5 0 1 0 5 15.5 7 7 0 1 1-5-15.5Z" fill="currentColor"/></svg>',
+  nutrition:'<svg viewBox="0 0 24 24"><path d="M12 5.2c2.3-2.2 6.2-1.7 7.7 1.2 1.2 2.3.6 5.2-1.6 7.3-2.3 2.3-5.3 4-6.1 5.1-.7-1.1-3.8-2.8-6.1-5.1-2.2-2.1-2.8-5-1.6-7.3 1.5-2.9 5.4-3.4 7.7-1.2Z" fill="currentColor"/><path d="M12 3.3v4.4" stroke="rgba(255,255,255,.9)" stroke-width="1.8" stroke-linecap="round"/><path d="M12 7.5c1.6 1 2.3 2.4 2.1 4.3" stroke="rgba(255,255,255,.72)" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  sleep:'<svg viewBox="0 0 24 24"><path d="M16.8 3.8C12.2 3.3 8 6.8 8 11.5c0 4.9 4.1 8.7 9 8.2 1.6-.2 3-.7 4.2-1.6-1 2-2.8 3.6-5 4.2-5 1.4-10.2-1.6-11.7-6.7C3 10.5 6 5.3 11.1 3.9c2-.5 3.9-.4 5.7-.1Z" fill="currentColor"/></svg>',
   history:'<svg viewBox="0 0 24 24"><path d="M12 6a6 6 0 1 1-5.2 3H4V7l2.3 2.3A8 8 0 1 0 12 4v2Z" fill="currentColor"/><path d="M12 8v4l2.8 1.6" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/></svg>',
   trends:'<svg viewBox="0 0 24 24"><path d="M5 18V7M11 18V10M17 18V5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   measures:'<svg viewBox="0 0 24 24"><path d="M5 17 17 5l2 2L7 19H5v-2Z" fill="currentColor"/><path d="m14 4 2 2" stroke="rgba(255,255,255,.75)" stroke-width="1.8" stroke-linecap="round"/></svg>',
   summary:'<svg viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 9h6M9 13h6M9 17h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   settings:'<svg viewBox="0 0 24 24"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Zm8.2 4.6-1.7.6c-.1.4-.3.9-.5 1.3l.8 1.6-1.9 1.9-1.6-.8c-.4.2-.8.4-1.3.5l-.6 1.7h-2.7l-.6-1.7c-.5-.1-.9-.3-1.3-.5l-1.6.8-1.9-1.9.8-1.6c-.2-.4-.4-.9-.5-1.3l-1.7-.6v-2.7l1.7-.6c.1-.4.3-.9.5-1.3l-.8-1.6 1.9-1.9 1.6.8c.4-.2.8-.4 1.3-.5l.6-1.7h2.7l.6 1.7c.5.1.9.3 1.3.5l1.6-.8 1.9 1.9-.8 1.6c.2.4.4.9.5 1.3l1.7.6v2.7Z" fill="currentColor"/></svg>',
-  train:'<svg viewBox="0 0 24 24"><path d="M3 10h3v4H3zm15 0h3v4h-3zM7 11h10v2H7zM9 8h2v8H9zm4 0h2v8h-2z" fill="currentColor"/></svg>',
-  run:'<svg viewBox="0 0 24 24"><circle cx="14" cy="5" r="2" fill="currentColor"/><path d="m11 10 2-3 2 2 2 .5M10 20l2-5-2-2-3 2M15 12l-1 4 4 4M7 9l4 1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  swim:'<svg viewBox="0 0 24 24"><circle cx="8" cy="7" r="2" fill="currentColor"/><path d="M10 9c2 0 3.5 1.6 4.8 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 17c1.2 0 1.8-.7 2.6-.7S7 17 8.2 17s1.8-.7 2.6-.7 1.4.7 2.6.7 1.8-.7 2.6-.7 1.4.7 2.6.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>',
-  rest:'<svg viewBox="0 0 24 24"><path d="M7 13a5 5 0 0 1 5-5h4a3 3 0 0 1 0 6H7Z" fill="currentColor"/><path d="M5 13h2M17 13h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+  train:'<svg viewBox="0 0 24 24"><circle cx="15" cy="4.8" r="2.1" fill="currentColor"/><path d="M7 8.2h10l2.2 2.3" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.2 8.6 10 14l-3.2 3.4" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 9.2l2.2 4.7 3.4 1" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.8 20.2 11 15h3l1.3 5.2" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  bed:'<svg viewBox="0 0 24 24"><path d="M3 18V8.5h2.5a3.5 3.5 0 0 1 3.3 2.3H20a1 1 0 0 1 1 1V18" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13h18" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><path d="M7 10.7h3.5a1.8 1.8 0 0 1 1.8 1.8V13H7z" fill="currentColor"/></svg>'
  };
  return icons[name]||icons.today;
 }
@@ -1357,7 +1351,7 @@ function recoveryLabel(v){if(!v)return 'À compléter';if(v>=85)return 'Excellen
 function renderToday(){
  renderYesterdayScore();
  const d=ensureDate(),p=getPlanForDay(dayName()),a=advice();
- if(todayHeroImage)todayHeroImage.src=heroAssetForPlan(p);
+ if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=13';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/v9/hero/hero-repos.svg?v=13';};}
  if(todayHeroFocus)todayHeroFocus.textContent=focusLabelForPlan(p);
  if(todayGreetingDate)todayGreetingDate.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
  const totals=nutritionTotals();
