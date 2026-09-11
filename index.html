@@ -1991,12 +1991,19 @@ function goalClass(value,goal){
 function setGauge(id,value,goal,unit){
  const pct=Math.max(0,Math.min(100,(value||0)/goal*100));
  const gauge=document.getElementById(id+'Gauge');
- if(gauge)gauge.style.setProperty('--pct',pct);
+ const ringColors={cal:'var(--accent)',protein:'var(--green)',carb:'var(--cyan)',fat:'var(--violet)'};
+ if(gauge){
+   gauge.style.setProperty('--macro',pct);
+   gauge.style.setProperty('background',`conic-gradient(${ringColors[id]||'var(--green)'} ${pct}%, var(--line) 0)`,'important');
+ }
  const text=document.getElementById(id+'GaugeText');
  if(text)text.textContent=`${round1(value||0)} / ${round1(goal)} ${unit}`;
  const cls=id==='cal'?calorieGoalClass(value,goal):goalClass(value,goal);
  const row=document.getElementById(id+'GaugeRow');
- if(row)row.className='goal-row macro-card '+cls;
+ if(row){
+   row.className='goal-row macro-card '+cls;
+   row.style.setProperty('border-color',`color-mix(in srgb, ${ringColors[id]||'var(--green)'} 34%, var(--line))`,'important');
+ }
 }
 function round1(v){return Math.round((Number(v)||0)*10)/10}
 function nutritionTotals(){
