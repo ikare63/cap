@@ -578,3 +578,23 @@ body.dark #nav .nav-settings{background:#202735 !important}
     padding-top:14px !important;
   }
 }
+
+
+/* ===== Cap nav/icons v13 ===== */
+.nav-week.active{color:var(--violet);background:color-mix(in srgb,var(--violet) 10%,var(--panel))}
+.nav-sleep.active{color:#3478d4;background:color-mix(in srgb,#3478d4 10%,var(--panel))}
+.nav-week .nav-icon{background:#f1eafd;color:#7a52c7;border-color:#d9c7f5}
+.nav-sleep .nav-icon{background:#eaf2ff;color:#3478d4;border-color:#c7dcff}
+body.dark .nav-week .nav-icon{background:#2b1b4c;color:#bc8aff;border-color:#5b3a8e}
+body.dark .nav-sleep .nav-icon{background:#102f58;color:#68a9ff;border-color:#24558d}
+.nav-sleep .nav-icon svg{transform:scale(1.12,1)}
+.nav-nutrition .nav-icon svg,.nav-week .nav-icon svg,.nav-sleep .nav-icon svg,.nav-today .nav-icon svg{width:22px;height:22px;display:block}
+.home-hero img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.home-hero{overflow:hidden}
