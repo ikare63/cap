@@ -584,6 +584,7 @@ body.dark #nav .nav-sleep .nav-icon{background:#17385f!important;color:#77b3ff!i
 /* Dashboard maison : anneaux ronds + nav aux couleurs distinctes */
 .home-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
 .home-kpi{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:12px 10px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--shadow);min-height:164px;text-align:center}
+.home-kpi.activity{--ring-color:var(--cyan);--ring-soft:#e9fafd}
 .home-kpi.sleep{--ring-color:var(--violet);--ring-soft:#f2eaff}
 .home-kpi.calories{--ring-color:var(--orange);--ring-soft:#fff1e8}
 .home-kpi.protein{--ring-color:var(--green);--ring-soft:#eef9e8}
@@ -598,12 +599,14 @@ body.dark #nav .nav-sleep .nav-icon{background:#17385f!important;color:#77b3ff!i
 .home-kpi-copy>span:last-child{font-size:.68rem;line-height:1.25;color:var(--muted);max-width:100%;display:block}
 .kpi-icon-badge{width:32px;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;border:1px solid transparent;flex:0 0 auto;text-align:center}
 .kpi-icon-badge svg{width:20px;height:20px;display:block;margin:auto;flex:0 0 auto}
+.kpi-icon-badge.activity{background:#e9fafd;color:var(--cyan);border-color:#bdebf3}
 .kpi-icon-badge.sleep{background:#f2eaff;color:var(--violet);border-color:#dccbfb}
 .kpi-icon-badge.calories{background:#fff1e8;color:var(--orange);border-color:#ffd0bb}
 .kpi-icon-badge.protein{background:#eef9e8;color:var(--green);border-color:#cbeab8}
 .kpi-icon-badge.recovery{background:#e9fafd;color:var(--cyan);border-color:#bdebf3}
 body.dark .home-kpi{background:linear-gradient(155deg,#071a33,#081d38)}
 body.dark .home-kpi-ring::before{background:#071831}
+body.dark .kpi-icon-badge.activity{background:#103946;border-color:#266d7c;color:#68e1ec}
 body.dark .kpi-icon-badge.sleep{background:#2a1a48;border-color:#5b3c91;color:#cda5ff}
 body.dark .kpi-icon-badge.calories{background:#4e2413;border-color:#8e4a2d;color:#ff9d5f}
 body.dark .kpi-icon-badge.protein{background:#173721;border-color:#356f45;color:#9ce268}
@@ -641,15 +644,46 @@ body.dark #nav .nav-measures{background:#47221b;border-color:#8d4c3e;color:#ff9b
 body.dark #nav .nav-summary{background:#412032;border-color:#7f4262;color:#ffaad0}
 body.dark #nav .nav-settings{background:#1f2c3a;border-color:#42556a;color:#c9d7e5}
 
-@media(max-width:760px){.home-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+#nav .nav-theme{background:#f3f0ff;color:#6f5acb;border-color:#d9cff6}
+#nav .nav-theme .nav-icon{background:#e9e2ff;color:#6f5acb;border-color:#cec1f4}
+body.dark #nav .nav-theme{background:#171c29;border-color:#3c465d;color:#ffd56a}
+body.dark #nav .nav-theme .nav-icon{background:#2a2f3d;color:#ffd56a;border-color:#50596d}
+#nav .nav-theme{margin-left:2px}
+#nav .nav-theme .nav-icon svg{width:24px;height:24px;display:block;margin:auto}
+.mobile-theme-btn{display:none!important}
+
+@media(max-width:760px){.home-kpis{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}}
+.home-yesterday-score{margin:14px 0 16px;padding:14px 16px}
+.home-yesterday-score .score-cap-head{align-items:center}
+.home-yesterday-score .score-cap-head h2{margin:5px 0 2px;font-size:1.15rem}
+.home-yesterday-score .score-cap-ring{width:74px;height:74px;flex:0 0 74px}
+.home-yesterday-score .score-cap-ring strong{font-size:1.65rem}
+.home-yesterday-score .score-cap-status{margin-top:6px;font-size:.9rem}
+.home-yesterday-score .score-breakdown{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:10px}
+.home-yesterday-score .score-part{padding:8px;border-radius:12px}
+.home-yesterday-score .score-part span{font-size:.68rem}
+.home-yesterday-score .score-part strong{font-size:.78rem}
+.home-yesterday-score .rec{margin-top:10px;padding:10px 12px;font-size:.8rem}
+.home-advice-card{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-top:14px;box-shadow:var(--shadow)}
+.home-advice-icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--soft);color:var(--accent)}
+.home-advice-icon svg{width:24px;height:24px}
+.home-advice-card>div:last-child>strong{display:block;margin:2px 0 7px;font-size:1rem}
+.home-advice-card .rec{padding:0;background:transparent;border:0;border-radius:0}
+.home-advice-card .rec strong{display:none}
+.home-advice-card .rec p{margin:0;color:var(--muted);line-height:1.45}
+
 @media(max-width:560px){
-  .home-kpi{padding:10px 8px;gap:8px;min-height:154px}
-  .home-kpi-ring{width:72px;height:72px;flex-basis:72px}
-  .home-kpi-ring strong{font-size:.95rem}
-  .home-kpi-copy small{font-size:.78rem}
-  .home-kpi-copy>span:last-child{font-size:.64rem}
-  .kpi-icon-badge{width:30px;height:30px}
-  .kpi-icon-badge svg{width:18px;height:18px}
+  .home-kpis{gap:6px}
+  .home-kpi{padding:9px 5px;gap:7px;min-height:148px;border-radius:15px}
+  .home-kpi-ring{width:64px;height:64px;flex-basis:64px}
+  .home-kpi-ring::before{inset:7px}
+  .home-kpi-ring strong{font-size:.9rem}
+  .home-kpi-ring span{font-size:.56rem}
+  .home-kpi-copy small{font-size:.68rem}
+  .home-kpi-copy>span:last-child{font-size:.56rem;line-height:1.15}
+  .kpi-icon-badge{width:27px;height:27px;border-radius:9px}
+  .kpi-icon-badge svg{width:16px;height:16px}
+  .home-yesterday-score .score-breakdown{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 </style>
 
@@ -690,13 +724,52 @@ body.dark #nav .nav-settings{background:#1f2c3a;border-color:#42556a;color:#c9d7
       </div>
     </div>
 
+  <div class="card yesterday-score-card home-yesterday-score">
+      <div class="score-cap-head">
+        <div>
+          <span class="badge">Bilan automatique</span>
+          <h2>Score Cap d’hier</h2>
+          <p class="note" id="yesterdayScoreDate"></p>
+        </div>
+        <div class="score-cap-ring" id="yesterdayScoreRing">
+          <strong id="yesterdayScoreValue">—</strong>
+          <span>/ 100</span>
+        </div>
+      </div>
+  
+      <div class="score-cap-status" id="yesterdayScoreStatus">Pas encore calculé</div>
+      <div class="score-cap-progress"><div id="yesterdayScoreBar"></div></div>
+      <div class="score-cap-coverage" id="yesterdayScoreCoverage"></div>
+  
+      <div class="score-breakdown">
+        <div class="score-part">
+          <span>Sommeil</span><strong id="yesterdaySleepScore">—</strong>
+          <div class="mini-progress"><div id="yesterdaySleepBar"></div></div>
+        </div>
+        <div class="score-part">
+          <span>Nutrition</span><strong id="yesterdayNutritionScore">—</strong>
+          <div class="mini-progress"><div id="yesterdayNutritionBar"></div></div>
+        </div>
+        <div class="score-part">
+          <span>Activité</span><strong id="yesterdayActivityScore">—</strong>
+          <div class="mini-progress"><div id="yesterdayActivityBar"></div></div>
+        </div>
+        <div class="score-part">
+          <span>Bien-être</span><strong id="yesterdayWellnessScore">—</strong>
+          <div class="mini-progress"><div id="yesterdayWellnessBar"></div></div>
+        </div>
+      </div>
+  
+      <div class="rec" id="yesterdayScoreComment"></div>
+    </div>
+
     <div class="home-kpis">
-      <div class="home-kpi sleep">
-        <div class="home-kpi-ring" id="kpiSleepRing"><div class="home-kpi-ring-inner"><strong id="kpiSleep">—</strong><span id="kpiSleepUnit">%</span></div></div>
+      <div class="home-kpi activity">
+        <div class="home-kpi-ring" id="kpiActivityRing"><div class="home-kpi-ring-inner"><strong id="kpiActivity">0</strong><span>%</span></div></div>
         <div class="home-kpi-copy">
-          <span class="kpi-icon-badge sleep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18.8 3.8A9.2 9.2 0 1 0 20 19.4a8 8 0 0 1-8.2-12.1 8 8 0 0 1 7-3.5Z" fill="currentColor"/></svg></span>
-          <small id="kpiSleepLabel">Score sommeil</small>
-          <span id="kpiSleepGoal">Objectif · 8 h</span>
+          <span class="kpi-icon-badge activity" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h3v6H3zm15 0h3v6h-3zM7 10h2v4H7zm8 0h2v4h-2zM9 11h6v2H9z" fill="currentColor"/></svg></span>
+          <small>Activité</small>
+          <span id="kpiActivityGoal">0/0 exercice</span>
         </div>
       </div>
       <div class="home-kpi calories">
@@ -708,29 +781,26 @@ body.dark #nav .nav-settings{background:#1f2c3a;border-color:#42556a;color:#c9d7
         </div>
       </div>
       <div class="home-kpi protein">
-        <div class="home-kpi-ring" id="kpiProteinRing"><div class="home-kpi-ring-inner"><strong id="kpiProtein">0 g</strong><span>prot.</span></div></div>
+        <div class="home-kpi-ring" id="kpiProteinRing"><div class="home-kpi-ring-inner"><strong id="kpiProtein">0</strong><span>g</span></div></div>
         <div class="home-kpi-copy">
           <span class="kpi-icon-badge protein" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="10" y="5" width="5" height="5" rx="1.2" fill="currentColor" opacity=".86"/><rect x="4" y="11" width="5" height="5" rx="1.2" fill="currentColor" opacity=".86"/><rect x="10" y="11" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="16" y="8" width="4" height="8" rx="1.2" fill="currentColor" opacity=".72"/></svg></span>
           <small>Protéines</small>
           <span id="kpiProteinGoal">Objectif · 0 g</span>
         </div>
       </div>
-      <div class="home-kpi recovery">
-        <div class="home-kpi-ring" id="kpiRecoveryRing"><div class="home-kpi-ring-inner"><strong id="kpiRecovery">—</strong><span>%</span></div></div>
+      <div class="home-kpi sleep">
+        <div class="home-kpi-ring" id="kpiSleepRing"><div class="home-kpi-ring-inner"><strong id="kpiSleep">—</strong><span>%</span></div></div>
         <div class="home-kpi-copy">
-          <span class="kpi-icon-badge recovery" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.8 13.9 8l4.6.6-3.4 3.1.9 4.5-4-2.3-4 2.3.9-4.5-3.4-3.1 4.6-.6L12 3.8Z" fill="currentColor"/><circle cx="18.2" cy="6.1" r="1.1" fill="rgba(255,255,255,.82)"/><circle cx="6" cy="17.7" r="1" fill="rgba(255,255,255,.72)"/></svg></span>
-          <small>Récup.</small>
-          <span id="kpiRecoveryGoal">Physique · mental</span>
+          <span class="kpi-icon-badge sleep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18.8 3.8A9.2 9.2 0 1 0 20 19.4a8 8 0 0 1-8.2-12.1 8 8 0 0 1 7-3.5Z" fill="currentColor"/></svg></span>
+          <small>Sommeil</small>
+          <span id="kpiSleepGoal">Nuit dernière</span>
         </div>
       </div>
     </div>
 
-    <div class="home-recovery">
-      <div class="recovery-ring" id="recoveryRingBig"><div><strong id="recoveryRingValue">—</strong><span>RÉCUPÉRATION</span></div></div>
-      <div class="recovery-copy">
-        <span class="recovery-label" id="recoveryRingLabel">À compléter</span>
-        <div id="recommendation" class="rec"></div>
-      </div>
+    <div class="home-advice-card">
+      <div class="home-advice-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4.6 12.3c.7.6 1.1 1.2 1.2 2h6.8c.1-.8.5-1.4 1.2-2A7 7 0 0 0 12 3Z" fill="currentColor"/><path d="M9.2 20h5.6M9.8 17.3h4.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+      <div><strong>Conseil Cap</strong><div id="recommendation" class="rec"></div></div>
     </div>
 
     <details class="home-details">
@@ -823,44 +893,6 @@ body.dark #nav .nav-settings{background:#1f2c3a;border-color:#42556a;color:#c9d7
 </section>
 
 <section id="summary" class="view">
-  <div class="card yesterday-score-card">
-      <div class="score-cap-head">
-        <div>
-          <span class="badge">Bilan automatique</span>
-          <h2>Score Cap d’hier</h2>
-          <p class="note" id="yesterdayScoreDate"></p>
-        </div>
-        <div class="score-cap-ring" id="yesterdayScoreRing">
-          <strong id="yesterdayScoreValue">—</strong>
-          <span>/ 100</span>
-        </div>
-      </div>
-  
-      <div class="score-cap-status" id="yesterdayScoreStatus">Pas encore calculé</div>
-      <div class="score-cap-progress"><div id="yesterdayScoreBar"></div></div>
-      <div class="score-cap-coverage" id="yesterdayScoreCoverage"></div>
-  
-      <div class="score-breakdown">
-        <div class="score-part">
-          <span>Sommeil</span><strong id="yesterdaySleepScore">—</strong>
-          <div class="mini-progress"><div id="yesterdaySleepBar"></div></div>
-        </div>
-        <div class="score-part">
-          <span>Nutrition</span><strong id="yesterdayNutritionScore">—</strong>
-          <div class="mini-progress"><div id="yesterdayNutritionBar"></div></div>
-        </div>
-        <div class="score-part">
-          <span>Activité</span><strong id="yesterdayActivityScore">—</strong>
-          <div class="mini-progress"><div id="yesterdayActivityBar"></div></div>
-        </div>
-        <div class="score-part">
-          <span>Bien-être</span><strong id="yesterdayWellnessScore">—</strong>
-          <div class="mini-progress"><div id="yesterdayWellnessBar"></div></div>
-        </div>
-      </div>
-  
-      <div class="rec" id="yesterdayScoreComment"></div>
-    </div>
   <div class="grid">
     <div class="card">
       <h2>Bilan de la semaine</h2>
@@ -937,9 +969,9 @@ const kpiSleepBar=document.getElementById('kpiSleepBar');
 const kpiRecoveryBar=document.getElementById('kpiRecoveryBar');
 const kpiSleepGoal=document.getElementById('kpiSleepGoal');
 const kpiRecoveryGoal=document.getElementById('kpiRecoveryGoal');
+const kpiActivity=document.getElementById('kpiActivity');
+const kpiActivityGoal=document.getElementById('kpiActivityGoal');
 const kpiCalories=document.getElementById('kpiCalories');
-const kpiSleepUnit=document.getElementById('kpiSleepUnit');
-const kpiSleepLabel=document.getElementById('kpiSleepLabel');
 const kpiProtein=document.getElementById('kpiProtein');
 const kpiCarbs=document.getElementById('kpiCarbs');
 const kpiFat=document.getElementById('kpiFat');
@@ -1295,7 +1327,17 @@ function iconSvg(name){
  };
  return icons[name]||icons.today;
 }
-nav.innerHTML=navItems.map((x,i)=>{const iconKey=x[0]==='today'?todayNavIcon():x[2];return `<button class="navbtn nav-${x[0]} ${i?'':'active'}" data-view="${x[0]}"><span class="nav-icon">${iconSvg(iconKey)}</span><span>${x[1]}</span></button>`}).join('');nav.querySelectorAll('button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+nav.innerHTML=navItems.map((x,i)=>{const iconKey=x[0]==='today'?todayNavIcon():x[2];return `<button class="navbtn nav-${x[0]} ${i?'':'active'}" data-view="${x[0]}"><span class="nav-icon">${iconSvg(iconKey)}</span><span>${x[1]}</span></button>`}).join('')+`<button class="navbtn nav-theme" id="navThemeBtn" type="button" aria-label="Activer le mode sombre"><span class="nav-icon" id="navThemeIcon"></span><span id="navThemeLabel">Sombre</span></button>`;nav.querySelectorAll('button[data-view]').forEach(b=>b.onclick=()=>showView(b.dataset.view));
+const navThemeBtn=document.getElementById('navThemeBtn');
+const navThemeIcon=document.getElementById('navThemeIcon');
+const navThemeLabel=document.getElementById('navThemeLabel');
+function themeIconSvg(isDark){
+ return isDark
+  ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+  : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 3.8A9 9 0 1 0 20 19a7.8 7.8 0 0 1-8-11.8 7.8 7.8 0 0 1 6.7-3.4Z" fill="currentColor"/></svg>';
+}
+if(navThemeBtn)navThemeBtn.onclick=toggleTheme;
+
 
 function localDateKey(date){
  const d=new Date(date);
@@ -1467,6 +1509,14 @@ function focusLabelForPlan(p){
 }
 function averageDefined(values){const nums=values.map(Number).filter(v=>Number.isFinite(v)&&v>0);return nums.length?Math.round(nums.reduce((a,b)=>a+b,0)/nums.length):0}
 function sleepCompositeScore(s){const hoursScore=Math.max(0,Math.min(100,((Number(s?.hours)||0)/8)*100));return averageDefined([hoursScore,s?.quality,s?.physical,s?.mental])}
+function todayActivityProgress(day,p){
+ const t=state.training?.[day]||{};
+ if(p?.rest||p?.free){return {pct:t.completed?100:0,done:t.completed?1:0,total:1,label:t.completed?'Validé':'À valider'}}
+ const total=p?.exercises?.length||0;
+ if(!total)return {pct:0,done:0,total:0,label:'Aucune activité'};
+ const done=t.completed?total:Object.keys(t.checks||{}).filter(k=>t.checks[k]&&Number(k)<total).length;
+ return {pct:Math.round(done/total*100),done,total,label:`${done}/${total} exercice${total>1?'s':''}`};
+}
 function recoveryLabel(v){if(!v)return 'À compléter';if(v>=85)return 'Excellente';if(v>=70)return 'Bonne récupération';if(v>=55)return 'Récupération moyenne';return 'À alléger';}
 function setHomeStatRing(id,value,goal,color){
  const ring=document.getElementById(id);
@@ -1498,28 +1548,19 @@ function renderToday(){
  todayAction.onclick=()=>{selectedTraining=dayName();showView('week')};
 
  const sleepHoursValue=Number(d.sleep.hours)||0;
- const sleepQualityAverage=averageDefined([d.sleep.quality,d.sleep.physical,d.sleep.mental]);
- const bodyRecoveryAverage=averageDefined([d.sleep.physical,d.sleep.mental]);
- const sleepScore= sleepCompositeScore(d.sleep);
+ const sleepScore=sleepCompositeScore(d.sleep);
+ const activityProgress=todayActivityProgress(dayName(),p);
+
+ kpiActivity.textContent=activityProgress.pct;
+ kpiActivityGoal.textContent=activityProgress.label;
+ setHomeStatRing('kpiActivityRing',activityProgress.pct,100,'var(--cyan)');
 
  kpiSleep.textContent=sleepScore?sleepScore:'—';
- if(kpiSleepUnit)kpiSleepUnit.textContent='%';
- if(kpiSleepLabel)kpiSleepLabel.textContent='Score sommeil';
- kpiRecovery.textContent=bodyRecoveryAverage?bodyRecoveryAverage:'—';
- if(recoveryRingValue)recoveryRingValue.textContent=sleepQualityAverage||'—';
- if(recoveryRingLabel)recoveryRingLabel.textContent=recoveryLabel(sleepQualityAverage);
- if(recoveryRingBig)recoveryRingBig.style.setProperty('--recovery',Math.max(0,Math.min(100,sleepQualityAverage||0)));
-
  const sleepRingColor=sleepScore>=85?'var(--violet)':sleepScore>=70?'#8f6cff':sleepScore>=55?'var(--warn)':'var(--bad)';
  setHomeStatRing('kpiSleepRing',sleepScore,100,sleepRingColor);
- setHomeStatRing('kpiRecoveryRing',bodyRecoveryAverage,100,'var(--cyan)');
-
  kpiSleepGoal.textContent=sleepHoursValue
-   ? `${sleepHoursValue} h · récup ${bodyRecoveryAverage||0} %`
-   : 'Objectif · 8 h + récup.';
- kpiRecoveryGoal.textContent=bodyRecoveryAverage
-   ? 'Physique · mental'
-   : 'Ajoute la récup.';
+   ? `${sleepHoursValue} h · qualité ${Number(d.sleep.quality)||0} %`
+   : 'Nuit dernière';
  kpiCalories.textContent=totals.calories?Math.round(totals.calories):'0';
  kpiProtein.textContent=round1(totals.protein)+' g';
  kpiCarbs.textContent=round1(totals.carbs)+' g';
@@ -2523,6 +2564,11 @@ function updateThemeButton(){
  const isDark=document.body.classList.contains('dark');
  darkBtn.textContent=isDark?'Mode clair':'Mode sombre';
  if(mobileThemeBtn){mobileThemeBtn.textContent=isDark?'☀️':'🌙';mobileThemeBtn.setAttribute('aria-label',isDark?'Activer le mode clair':'Activer le mode sombre')}
+ if(navThemeBtn){
+  navThemeBtn.setAttribute('aria-label',isDark?'Activer le mode clair':'Activer le mode sombre');
+  if(navThemeIcon)navThemeIcon.innerHTML=themeIconSvg(isDark);
+  if(navThemeLabel)navThemeLabel.textContent=isDark?'Clair':'Sombre';
+ }
 }
 function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('cap-dark',document.body.classList.contains('dark')?'1':'0');updateThemeButton();}
 darkBtn.onclick=toggleTheme;
