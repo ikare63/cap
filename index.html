@@ -588,7 +588,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
     </div>
 
     <div class="home-hero">
-      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.svg?v=13" alt="Illustration de la séance du jour">
+      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.png?v=14" alt="Illustration de la séance du jour">
       <div class="home-hero-shade"></div>
       <div class="home-hero-content">
         <span class="home-kicker">AUJOURD’HUI</span>
@@ -1327,15 +1327,15 @@ function setMiniBar(el,value,goal){
 }
 function heroAssetForPlan(p){
  const title=(p?.title||'').toLowerCase();
- if(title.includes('natation'))return 'assets/v9/hero/hero-natation.svg';
- if(title.includes('jogging'))return 'assets/v9/hero/hero-jogging.svg';
- if(title.includes('halt'))return 'assets/v9/hero/hero-haltere.svg';
- if(title.includes('jamb'))return 'assets/v9/hero/hero-jambes.svg';
- if(title.includes('pector'))return 'assets/v9/hero/hero-pecs.svg';
- if(title.includes('dos'))return 'assets/v9/hero/hero-dos.svg';
- if(title.includes('repos'))return 'assets/v9/hero/hero-repos.svg';
- if(title.includes('marche')||title.includes('off')||title.includes('libre'))return 'assets/v9/hero/hero-marche.svg';
- return 'assets/v9/hero/hero-dos.svg';
+ if(title.includes('natation'))return 'assets/v9/hero/hero-natation.png';
+ if(title.includes('jogging'))return 'assets/v9/hero/hero-jogging.png';
+ if(title.includes('halt'))return 'assets/v9/hero/hero-haltere.png';
+ if(title.includes('jamb'))return 'assets/v9/hero/hero-jambes.png';
+ if(title.includes('pector'))return 'assets/v9/hero/hero-pecs.png';
+ if(title.includes('dos'))return 'assets/v9/hero/hero-dos.png';
+ if(title.includes('repos'))return 'assets/v9/hero/hero-repos.png';
+ if(title.includes('marche')||title.includes('off')||title.includes('libre'))return 'assets/v9/hero/hero-marche.png';
+ return 'assets/v9/hero/hero-dos.png';
 }
 function focusLabelForPlan(p){
  const t=(p?.title||'').toLowerCase();
@@ -1351,7 +1351,7 @@ function recoveryLabel(v){if(!v)return 'À compléter';if(v>=85)return 'Excellen
 function renderToday(){
  renderYesterdayScore();
  const d=ensureDate(),p=getPlanForDay(dayName()),a=advice();
- if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=13';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/v9/hero/hero-repos.svg?v=13';};}
+ if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=14';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/v9/hero/hero-repos.png?v=14';};}
  if(todayHeroFocus)todayHeroFocus.textContent=focusLabelForPlan(p);
  if(todayGreetingDate)todayGreetingDate.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
  const totals=nutritionTotals();
