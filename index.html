@@ -712,7 +712,7 @@ body.dark #nav .nav-theme .nav-icon{background:#2a2f3d;color:#ffd56a;border-colo
   left:0 !important;
   right:0 !important;
   bottom:0 !important;
-  z-index:1200 !important;
+  z-index:9999 !important;
   display:flex !important;
   flex-wrap:nowrap !important;
   gap:8px !important;
@@ -737,12 +737,12 @@ body.dark #nav{
   box-shadow:0 -10px 28px rgba(0,0,0,.32) !important;
 }
 main{
-  padding-bottom:calc(150px + env(safe-area-inset-bottom)) !important;
+  padding-bottom:calc(130px + env(safe-area-inset-bottom)) !important;
 }
 @media(max-width:560px){
   #nav{gap:7px !important;padding:7px 8px calc(7px + env(safe-area-inset-bottom)) !important}
   #nav .navbtn{min-width:92px !important;padding:8px 9px !important}
-  main{padding-bottom:calc(142px + env(safe-area-inset-bottom)) !important}
+  main{padding-bottom:calc(125px + env(safe-area-inset-bottom)) !important}
 }
 </style>
 
@@ -756,8 +756,8 @@ main{
     </div>
     <button class="mobile-theme-btn" id="mobileThemeBtn" type="button" aria-label="Changer de thème">🌙</button>
   </div>
-  <nav id="nav"></nav>
 </header>
+<nav id="nav" aria-label="Navigation principale"></nav>
 <main>
 
 
