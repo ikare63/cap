@@ -690,7 +690,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
   <div class="measure-dashboard">
     <div class="card measure-hero-card">
       <div class="measure-kpi-top" id="measureKpis"></div>
-      <div class="body-visual-wrap"><img id="measureBodyImage" src="assets/v9/measures/mannequin-cap.png?v=1" alt="Mannequin de suivi corporel"><div id="measureComposition" class="measure-composition body-composition"></div></div>
+      <div class="body-visual-wrap"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/v9/measures/body-dark.svg"><img id="measureBodyImage" src="assets/v9/measures/body-light.svg" alt="Silhouette de suivi corporel"></picture><div id="measureComposition" class="measure-composition body-composition"></div></div>
     </div>
     <div class="card measure-chart-card">
       <div class="measure-chart-head"><div><h3>Évolution</h3><p class="note small">Les 30 dernières mesures.</p></div><select id="measureMetric" onchange="renderMeasureChart()"><option value="weight">Poids</option><option value="waist">Tour de taille</option><option value="bodyFat">Masse grasse estimée</option><option value="bmi">IMC</option><option value="chest">Poitrine</option><option value="armAvg">Bras moyen</option><option value="thighAvg">Cuisse moyenne</option></select></div>
@@ -2379,11 +2379,11 @@ function updateThemeButton(){
  darkBtn.textContent=isDark?'Mode clair':'Mode sombre';
  if(mobileThemeBtn){mobileThemeBtn.textContent=isDark?'☀️':'🌙';mobileThemeBtn.setAttribute('aria-label',isDark?'Activer le mode clair':'Activer le mode sombre')}
 }
-function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('cap-dark',document.body.classList.contains('dark')?'1':'0');updateThemeButton();if(measureBodyImage)measureBodyImage.src='assets/v9/measures/mannequin-cap.png?v=1';}
+function toggleTheme(){document.body.classList.toggle('dark');localStorage.setItem('cap-dark',document.body.classList.contains('dark')?'1':'0');updateThemeButton();if(measureBodyImage)measureBodyImage.src=document.body.classList.contains('dark')?'assets/v9/measures/body-dark.svg':'assets/v9/measures/body-light.svg';}
 darkBtn.onclick=toggleTheme;
 if(mobileThemeBtn)mobileThemeBtn.onclick=toggleTheme;
 setInterval(()=>{updateSessionTimerUI();updateRestTimerUI()},500);
-if(localStorage.getItem('cap-dark')==='1')document.body.classList.add('dark');updateThemeButton();if(measureBodyImage)measureBodyImage.src='assets/v9/measures/mannequin-cap.png?v=1';exportBtn.onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`cap-sauvegarde-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)};importBtn.onclick=()=>importFile.click();importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);if(!state.settings||!state.daily)throw 0;save();location.reload()}catch{alert('Sauvegarde Cap invalide.')}};r.readAsText(f)};
+if(localStorage.getItem('cap-dark')==='1')document.body.classList.add('dark');updateThemeButton();if(measureBodyImage)measureBodyImage.src=document.body.classList.contains('dark')?'assets/v9/measures/body-dark.svg':'assets/v9/measures/body-light.svg';exportBtn.onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`cap-sauvegarde-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)};importBtn.onclick=()=>importFile.click();importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);if(!state.settings||!state.daily)throw 0;save();location.reload()}catch{alert('Sauvegarde Cap invalide.')}};r.readAsText(f)};
 let versionEggTaps=[];
 function registerVersionEggTap(){
  const now=Date.now();
