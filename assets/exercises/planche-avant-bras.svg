@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+    <rect x="2" y="2" width="124" height="124" rx="22" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="12" y="12" width="104" height="80" rx="18" fill="#8b5cf6" opacity=".10"/>
+    <rect x="16" y="14" width="96" height="96" rx="18" fill="#ffffff"/><rect x="18" y="16" width="92" height="92" rx="16" fill="#f8fafc" stroke="#e2e8f0"/><line x1="24" y1="75" x2="100" y2="75" stroke="#8b5cf6" stroke-width="4" opacity=".5"/><circle cx="76" cy="51" r="6" fill="#8b5cf6"/><path d="M70 55L48 61 34 70M70 55l18 6M48 61l-4 12M88 61l6 12" stroke="#8b5cf6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <text x="64" y="111" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" fill="#334155">Planche</text>
+    </svg>
