@@ -588,7 +588,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
     </div>
 
     <div class="home-hero">
-      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.png?v=14" alt="Illustration de la séance du jour">
+      <img id="todayHeroImage" src="assets/v9/hero/hero-repos.png?v=15" alt="Illustration de la séance du jour">
       <div class="home-hero-shade"></div>
       <div class="home-hero-content">
         <span class="home-kicker">AUJOURD’HUI</span>
@@ -690,7 +690,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
   <div class="measure-dashboard">
     <div class="card measure-hero-card">
       <div class="measure-kpi-top" id="measureKpis"></div>
-      <div class="body-visual-wrap"><img id="measureBodyImage" src="assets/v9/measures/mannequin-cap.png?v=3" alt="Silhouette de suivi corporel"><div id="measureComposition" class="measure-composition body-composition"></div></div>
+      <div class="body-visual-wrap"><img id="measureBodyImage" src="assets/v9/measures/mannequin-cap.png?v=15" alt="Silhouette de suivi corporel"><div id="measureComposition" class="measure-composition body-composition"></div></div>
     </div>
     <div class="card measure-chart-card">
       <div class="measure-chart-head"><div><h3>Évolution</h3><p class="note small">Les 30 dernières mesures.</p></div><select id="measureMetric" onchange="renderMeasureChart()"><option value="weight">Poids</option><option value="waist">Tour de taille</option><option value="bodyFat">Masse grasse estimée</option><option value="bmi">IMC</option><option value="chest">Poitrine</option><option value="armAvg">Bras moyen</option><option value="thighAvg">Cuisse moyenne</option></select></div>
@@ -1351,7 +1351,7 @@ function recoveryLabel(v){if(!v)return 'À compléter';if(v>=85)return 'Excellen
 function renderToday(){
  renderYesterdayScore();
  const d=ensureDate(),p=getPlanForDay(dayName()),a=advice();
- if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=14';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/v9/hero/hero-repos.png?v=14';};}
+ if(todayHeroImage){todayHeroImage.src=heroAssetForPlan(p)+'?v=13';todayHeroImage.onerror=()=>{todayHeroImage.src='assets/v9/hero/hero-repos.png?v=15';};}
  if(todayHeroFocus)todayHeroFocus.textContent=focusLabelForPlan(p);
  if(todayGreetingDate)todayGreetingDate.textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
  const totals=nutritionTotals();
@@ -1870,28 +1870,28 @@ function renderWeeklySummary(){
 
 function exerciseAssetByName(name=''){
  const n=name.toLowerCase();
- if(n.includes('échauff'))return 'assets/v9/exercises/echauffement.svg';
- if(n.includes('reverse'))return 'assets/v9/exercises/reverse-fly.svg';
- if(n.includes('tirage vertical'))return 'assets/v9/exercises/tirage-vertical.svg';
- if(n.includes('tirage horizontal')||n.includes('rowing'))return 'assets/v9/exercises/tirage-horizontal.svg';
- if(n.includes('pec deck'))return 'assets/v9/exercises/pec-deck.svg';
- if(n.includes('élévations latérales'))return 'assets/v9/exercises/elevations-laterales.svg';
- if(n.includes('crunch'))return 'assets/v9/exercises/crunch.svg';
- if(n.includes('multi-press'))return 'assets/v9/exercises/multi-press.svg';
- if(n.includes('développé horizontal'))return 'assets/v9/exercises/developpe-horizontal.svg';
- if(n.includes('développé épaules'))return 'assets/v9/exercises/developpe-epaules.svg';
- if(n.includes('presse à cuisses')||n.includes('presse cuisses'))return 'assets/v9/exercises/presse-cuisses.svg';
- if(n.includes('squat'))return 'assets/v9/exercises/squats.svg';
- if(n.includes('flexion'))return 'assets/v9/exercises/flexion-jambes.svg';
- if(n.includes('quadriceps'))return 'assets/v9/exercises/presse-quadriceps.svg';
- if(n.includes('abduct'))return 'assets/v9/exercises/abducteurs.svg';
- if(n.includes('marche'))return 'assets/v9/exercises/marche-rapide.svg';
- if(n.includes('jogging'))return 'assets/v9/exercises/jogging.svg';
- if(n.includes('crawl'))return 'assets/v9/exercises/crawl.svg';
- if(n.includes('brasse'))return 'assets/v9/exercises/brasse.svg';
- if(n.includes('planche'))return 'assets/v9/exercises/planche-avant-bras.svg';
- if(n.includes('relevés de jambes'))return 'assets/v9/exercises/releves-de-jambes.svg';
- return 'assets/v9/exercises/echauffement.svg';
+ if(n.includes('échauff'))return 'assets/v9/exercises/echauffement.png';
+ if(n.includes('reverse'))return 'assets/v9/exercises/reverse-fly.png';
+ if(n.includes('tirage vertical'))return 'assets/v9/exercises/tirage-vertical.png';
+ if(n.includes('tirage horizontal')||n.includes('rowing'))return 'assets/v9/exercises/tirage-horizontal.png';
+ if(n.includes('pec deck'))return 'assets/v9/exercises/pec-deck.png';
+ if(n.includes('élévations latérales'))return 'assets/v9/exercises/elevations-laterales.png';
+ if(n.includes('crunch'))return 'assets/v9/exercises/crunch.png';
+ if(n.includes('multi-press'))return 'assets/v9/exercises/multi-press.png';
+ if(n.includes('développé horizontal'))return 'assets/v9/exercises/developpe-horizontal.png';
+ if(n.includes('développé épaules'))return 'assets/v9/exercises/developpe-epaules.png';
+ if(n.includes('presse à cuisses')||n.includes('presse cuisses'))return 'assets/v9/exercises/presse-cuisses.png';
+ if(n.includes('squat'))return 'assets/v9/exercises/squats.png';
+ if(n.includes('flexion'))return 'assets/v9/exercises/flexion-jambes.png';
+ if(n.includes('quadriceps'))return 'assets/v9/exercises/presse-quadriceps.png';
+ if(n.includes('abduct'))return 'assets/v9/exercises/abducteurs.png';
+ if(n.includes('marche'))return 'assets/v9/exercises/marche-rapide.png';
+ if(n.includes('jogging'))return 'assets/v9/exercises/jogging.png';
+ if(n.includes('crawl'))return 'assets/v9/exercises/crawl.png';
+ if(n.includes('brasse'))return 'assets/v9/exercises/brasse.png';
+ if(n.includes('planche'))return 'assets/v9/exercises/planche-avant-bras.png';
+ if(n.includes('relevés de jambes'))return 'assets/v9/exercises/releves-de-jambes.png';
+ return 'assets/v9/exercises/echauffement.png';
 }
 function renderTraining(){
  plans.mardi=getTuesdayPlan();
@@ -2412,4 +2412,5 @@ renderToday();
 
 
 </script>
+<!-- assets fixed v15: hero png + exercises png + mannequin png -->
 </body></html>

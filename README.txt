@@ -1,17 +1,18 @@
-Correctif images hero Cap — PNG lisibles
+Correctif images Cap v15
 
-À mettre dans le dépôt GitHub cap :
-1. Remplacer index.html par celui fourni.
-2. Remplacer le dossier assets/v9/hero/ par celui fourni.
+Contenu :
+- index.html (renvois vérifiés)
+- assets/v9/hero/ (PNG)
+- assets/v9/exercises/ (PNG)
+- assets/v9/measures/mannequin-cap.png
+- VERIFICATION.txt
 
-Aucun autre fichier n'est nécessaire pour ce correctif.
+À remplacer dans le dépôt GitHub :
+- index.html
+- tout le dossier assets/v9/hero/
+- tout le dossier assets/v9/exercises/
+- tout le dossier assets/v9/measures/
 
-Correspondances :
-- hero-dos.png = séance dos
-- hero-haltere.png = séance maison / haltères
-- hero-jogging.png = jogging
-- hero-natation.png = natation
-- hero-pecs.png = séance pectoraux
-- hero-jambes.png = séance jambes
-- hero-repos.png = repos complet
-- hero-marche.png = marche / journée libre
+But :
+- corriger les chemins cassés
+- afficher de vraies images dans Aujourd'hui, Exercices et Mesures
