@@ -491,3 +491,90 @@ body.dark #nav .nav-settings{background:#202735 !important}
 .kpi-icon-protein::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 3h2v8H7zm8 0h2v8h-2zM6 13h3v8H6zm9 0h3v8h-3zM10 11h4v10h-4z' fill='black'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 3h2v8H7zm8 0h2v8h-2zM6 13h3v8H6zm9 0h3v8h-3zM10 11h4v10h-4z' fill='black'/%3E%3C/svg%3E")}
 .kpi-icon-recovery{color:var(--cyan);background:color-mix(in srgb,var(--cyan) 14%, var(--panel))}
 .kpi-icon-recovery::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-6.8-4.2-9.2-8.6A5.2 5.2 0 0 1 7.3 4c1.9 0 3.4 1 4.7 2.7C13.3 5 14.8 4 16.7 4a5.2 5.2 0 0 1 4.5 8.4C18.8 16.8 12 21 12 21Z' fill='black'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-6.8-4.2-9.2-8.6A5.2 5.2 0 0 1 7.3 4c1.9 0 3.4 1 4.7 2.7C13.3 5 14.8 4 16.7 4a5.2 5.2 0 0 1 4.5 8.4C18.8 16.8 12 21 12 21Z' fill='black'/%3E%3C/svg%3E")}
+
+
+/* =========================================================
+   CAP V12 — NAV MOBILE TOUJOURS ENTIÈREMENT VISIBLE
+   ========================================================= */
+@media (max-width:760px){
+  /* Sur téléphone, la barre Cap ne prend plus de hauteur au-dessus des onglets. */
+  .app-header{
+    position:sticky !important;
+    top:0 !important;
+    z-index:100 !important;
+    overflow:visible !important;
+    background:var(--panel) !important;
+    border-bottom:1px solid var(--line) !important;
+    box-shadow:0 4px 14px rgba(15,23,42,.07) !important;
+  }
+  .app-header .head{
+    display:none !important;
+  }
+
+  /* Une seule ligne complète, jamais rognée, scrollable horizontalement. */
+  #nav{
+    position:relative !important;
+    top:auto !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    align-items:stretch !important;
+    gap:8px !important;
+    width:100% !important;
+    max-width:none !important;
+    min-height:82px !important;
+    margin:0 !important;
+    padding:10px 10px 9px !important;
+    overflow-x:auto !important;
+    overflow-y:visible !important;
+    overscroll-behavior-x:contain !important;
+    -webkit-overflow-scrolling:touch !important;
+    scroll-snap-type:x proximity !important;
+    scrollbar-width:none !important;
+    background:var(--panel) !important;
+  }
+  #nav::-webkit-scrollbar{display:none !important}
+
+  #nav .navbtn{
+    flex:0 0 92px !important;
+    width:92px !important;
+    min-width:92px !important;
+    height:64px !important;
+    min-height:64px !important;
+    margin:0 !important;
+    padding:7px 6px 8px !important;
+    border-radius:16px !important;
+    overflow:visible !important;
+    scroll-snap-align:start !important;
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+    align-items:center !important;
+    gap:4px !important;
+  }
+  #nav .navbtn .nav-icon{
+    flex:0 0 30px !important;
+    width:30px !important;
+    height:30px !important;
+    min-height:30px !important;
+    margin:0 !important;
+    border-radius:10px !important;
+  }
+  #nav .navbtn .nav-icon svg{
+    width:18px !important;
+    height:18px !important;
+  }
+  #nav .navbtn span:last-child{
+    display:block !important;
+    max-width:100% !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    white-space:nowrap !important;
+    font-size:.78rem !important;
+    line-height:1.05 !important;
+  }
+
+  /* Le contenu commence sous la nav, sans passer derrière. */
+  main{
+    padding-top:14px !important;
+  }
+}
