@@ -1477,3 +1477,16 @@ body.dark .culina-proposal{background:var(--panel)!important}
   .culina-proposal-actions{justify-content:flex-start!important}
   .bus-nav-badge{top:1px!important;right:4px!important}
 }
+
+/* =========================================================
+   CAP V30 — repas planifiés Culina + synchronisation besoins
+   ========================================================= */
+.culina-planned-zone{margin-top:11px!important;padding-top:10px!important;border-top:1px dashed var(--line)!important}
+.culina-zone-title{display:grid!important;gap:2px!important;margin-bottom:8px!important}
+.culina-zone-title>span{font-size:.76rem!important;font-weight:900!important;color:var(--text)!important}
+.culina-zone-title>small{font-size:.58rem!important;color:var(--muted)!important;line-height:1.35!important}
+.culina-planned{background:color-mix(in srgb,var(--panel) 92%,var(--accent) 8%)!important;border-style:dashed!important}
+.culina-planned .culina-proposal-kicker{color:var(--accent)!important;font-weight:800!important}
+.culina-plan-stock{margin-top:5px!important;font-size:.58rem!important;color:var(--green)!important;font-weight:800!important}
+.culina-plan-stock.missing{color:var(--accent)!important}
+.culina-proposal-actions a.btn{text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
