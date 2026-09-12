@@ -9,7 +9,7 @@ function renderHabitShell(){
   </div>
   <details class="meal-accordion" data-quick-meal="breakfast" open>
    <summary><span>☀️</span><span>Petit-déjeuner</span><span class="meal-count" id="breakfastCount">0 ajouté</span></summary>
-   <div class="meal-accordion-body"><div id="breakfastFoods" class="food-tags"></div><div class="quick-summary" id="breakfastSummary"></div></div>
+   <div class="meal-accordion-body"><div id="breakfastFoods" class="food-tags"></div><div id="breakfastAdd"></div><div class="quick-summary" id="breakfastSummary"></div></div>
   </details>
   <details class="meal-accordion" data-quick-meal="lunch">
    <summary><span>🍽️</span><span>Déjeuner</span><span class="meal-count" id="lunchCount">0 élément</span></summary>
@@ -21,15 +21,31 @@ function renderHabitShell(){
   </details>
   <details class="meal-accordion" data-quick-meal="snack">
    <summary><span>🍎</span><span>En-cas / extras</span><span class="meal-count" id="snackCount">0 élément</span></summary>
-   <div class="meal-accordion-body"><div id="snackFoods" class="food-tags"></div><div class="quick-summary" id="snackSummary"></div></div>
+   <div class="meal-accordion-body"><div id="snackFoods" class="food-tags"></div><div id="snackAdd"></div><div class="quick-summary" id="snackSummary"></div></div>
   </details>
-  <div class="nutrition-source">Valeurs par défaut = estimations moyennes à partir de la table Ciqual de l’Anses quand un aliment générique existe. Pour un produit de marque ou une recette précise, l’étiquette reste prioritaire et tu peux toujours saisir tes calories/macros manuellement.</div>
+  <div class="nutrition-source"><strong>Aliments personnels :</strong> le bouton « + Ajouter un aliment » l’enregistre dans CAP et il restera disponible lors des prochaines visites. Les valeurs peuvent être saisies pour 100 g ou pour une portion selon la catégorie.</div>
+ </div>
+ <div id="customFoodModal" class="custom-food-modal" hidden>
+  <div class="custom-food-backdrop" onclick="closeCustomFoodModal()"></div>
+  <div class="custom-food-sheet" role="dialog" aria-modal="true" aria-labelledby="customFoodTitle">
+   <div class="custom-food-head"><div><small>Nouvel aliment</small><h3 id="customFoodTitle">Ajouter un aliment</h3></div><button type="button" class="custom-food-close" onclick="closeCustomFoodModal()" aria-label="Fermer">×</button></div>
+   <div class="custom-food-category" id="customFoodCategoryLabel"></div>
+   <div class="custom-food-form">
+    <label class="custom-food-name">Nom de l’aliment<input id="customFoodName" type="text" placeholder="Ex. Raisin"></label>
+    <label>Emoji <input id="customFoodEmoji" type="text" maxlength="4" placeholder="🍇"></label>
+    <label>Calories <div class="custom-food-with-unit"><input id="customFoodKcal" type="number" min="0" step="1" placeholder="0"><span id="customFoodBasis">/ 100 g</span></div></label>
+    <label>Protéines (g)<input id="customFoodProtein" type="number" min="0" step="0.1" placeholder="0"></label>
+    <label>Glucides (g)<input id="customFoodCarbs" type="number" min="0" step="0.1" placeholder="0"></label>
+    <label>Lipides (g)<input id="customFoodFat" type="number" min="0" step="0.1" placeholder="0"></label>
+   </div>
+   <p class="custom-food-help" id="customFoodHelp"></p>
+   <div class="custom-food-actions"><button type="button" class="btn" onclick="closeCustomFoodModal()">Annuler</button><button type="button" class="btn primary" onclick="saveCustomFood()">Enregistrer l’aliment</button></div>
+  </div>
  </div>`;
 }
 
 /* ============================================================
-   Nutrition rapide — habitudes alimentaires
-   Les valeurs sont des moyennes pratiques, modifiables via la saisie manuelle.
+   Nutrition rapide — catalogue + aliments personnels
    ============================================================ */
 const CAP_FOODS={
  breakfast:[
@@ -84,6 +100,9 @@ const CAP_FOODS={
   {id:'peas',label:'Petits pois',emoji:'🫛',kcal:80,p:5.4,c:10,f:.6},
   {id:'aubergine',label:'Aubergines',emoji:'🍆',kcal:35,p:1,c:6,f:.2}
  ],
+ fruits:[
+  {id:'fruit-generic',label:'Fruit',emoji:'🍎',kcal:60,p:.7,c:14,f:.2}
+ ],
  desserts:[
   {id:'fromage-blanc',label:'Fromage blanc',emoji:'🥛',base:100,unit:'g',kcal:75,p:7.5,c:4.5,f:3},
   {id:'skyr',label:'Skyr',emoji:'🥣',base:100,unit:'g',kcal:85,p:9,c:9,f:.3},
@@ -101,16 +120,86 @@ const CAP_FOODS={
   {id:'mentos',label:'Mentos',emoji:'🍬',base:1,unit:'portion',kcal:10,p:0,c:2.5,f:0}
  ]
 };
+
 const QUICK_GROUPS=[
  {key:'proteins',label:'Viandes / protéines',emoji:'🥩',quantity:true},
  {key:'starches',label:'Féculents',emoji:'🍚',quantity:true},
  {key:'vegetables',label:'Légumes',emoji:'🥬',quantity:true},
+ {key:'fruits',label:'Fruits',emoji:'🍎',quantity:true},
  {key:'desserts',label:'Desserts',emoji:'🍮',quantity:false}
 ];
+const CATEGORY_LABELS={
+ breakfast:'Petit-déjeuner',proteins:'Viandes / protéines',starches:'Féculents',vegetables:'Légumes',fruits:'Fruits',desserts:'Desserts',snacks:'En-cas / extras'
+};
+const CATEGORY_EMOJIS={breakfast:'☀️',proteins:'🥩',starches:'🍚',vegetables:'🥬',fruits:'🍎',desserts:'🍮',snacks:'🍪'};
+const QUANTITY_CATEGORIES=new Set(['proteins','starches','vegetables','fruits']);
+let customFoodTargetCategory=null;
+
+function ensureCustomFoods(){
+ if(!state.customFoods || typeof state.customFoods!=='object')state.customFoods={};
+ ['breakfast','proteins','starches','vegetables','fruits','desserts','snacks'].forEach(k=>{if(!Array.isArray(state.customFoods[k]))state.customFoods[k]=[]});
+ return state.customFoods;
+}
+function categoryFoods(key){
+ const custom=ensureCustomFoods()[key]||[];
+ return [...(CAP_FOODS[key]||[]),...custom];
+}
+function makeCustomFoodId(category,label){
+ const slug=String(label||'aliment').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,32)||'aliment';
+ return `custom-${category}-${slug}-${Date.now().toString(36)}`;
+}
+function openCustomFoodModal(category){
+ ensureCustomFoods();
+ customFoodTargetCategory=category;
+ const modal=document.getElementById('customFoodModal');if(!modal)return;
+ const label=CATEGORY_LABELS[category]||'Aliment';
+ const quantity=QUANTITY_CATEGORIES.has(category);
+ document.getElementById('customFoodCategoryLabel').textContent=`${CATEGORY_EMOJIS[category]||'＋'} ${label}`;
+ document.getElementById('customFoodBasis').textContent=quantity?'/ 100 g':'/ portion';
+ document.getElementById('customFoodHelp').textContent=quantity?'Les calories et macros saisies correspondent à 100 g. La quantité sera ensuite modifiable dans le repas.':'Les calories et macros saisies correspondent à une portion.';
+ ['customFoodName','customFoodEmoji','customFoodKcal','customFoodProtein','customFoodCarbs','customFoodFat'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+ modal.hidden=false;
+ document.body.classList.add('food-modal-open');
+ setTimeout(()=>document.getElementById('customFoodName')?.focus(),50);
+}
+function closeCustomFoodModal(){
+ const modal=document.getElementById('customFoodModal');if(modal)modal.hidden=true;
+ document.body.classList.remove('food-modal-open');
+ customFoodTargetCategory=null;
+}
+function saveCustomFood(){
+ const category=customFoodTargetCategory;if(!category)return;
+ const name=document.getElementById('customFoodName')?.value.trim();
+ const kcal=Number(document.getElementById('customFoodKcal')?.value);
+ if(!name){alert('Donne un nom à l’aliment.');document.getElementById('customFoodName')?.focus();return}
+ if(!Number.isFinite(kcal)||kcal<0){alert('Renseigne les calories de l’aliment.');document.getElementById('customFoodKcal')?.focus();return}
+ const quantity=QUANTITY_CATEGORIES.has(category);
+ const food={
+  id:makeCustomFoodId(category,name),label:name,emoji:document.getElementById('customFoodEmoji')?.value.trim()||CATEGORY_EMOJIS[category]||'•',
+  kcal, p:Number(document.getElementById('customFoodProtein')?.value)||0, c:Number(document.getElementById('customFoodCarbs')?.value)||0, f:Number(document.getElementById('customFoodFat')?.value)||0,
+  custom:true
+ };
+ if(!quantity){food.base=1;food.unit='portion'}
+ ensureCustomFoods()[category].push(food);
+ save();
+ closeCustomFoodModal();
+ renderHabitBuilder();
+ showFoodSavedToast(`${name} ajouté à « ${CATEGORY_LABELS[category]||category} »`);
+}
+function showFoodSavedToast(message){
+ let toast=document.getElementById('foodSavedToast');
+ if(!toast){toast=document.createElement('div');toast.id='foodSavedToast';toast.className='food-saved-toast';document.body.appendChild(toast)}
+ toast.textContent='✓ '+message;toast.classList.add('show');clearTimeout(showFoodSavedToast.t);showFoodSavedToast.t=setTimeout(()=>toast.classList.remove('show'),2200);
+}
+function addFoodButtonHtml(category){
+ return `<button type="button" class="food-add-tag" onclick="openCustomFoodModal('${category}')"><span>＋</span><span>Ajouter un aliment</span></button>`;
+}
+
 let quickMealDrafts={breakfast:{},lunch:{},dinner:{},snack:{}};
-function quickDatasetForMeal(meal){return meal==='breakfast'?CAP_FOODS.breakfast:meal==='snack'?CAP_FOODS.snacks:null}
 function getFoodById(id){
+ const custom=ensureCustomFoods();
  for(const arr of Object.values(CAP_FOODS)){const found=arr.find(x=>x.id===id);if(found)return found}
+ for(const arr of Object.values(custom)){const found=arr.find(x=>x.id===id);if(found)return found}
  return null;
 }
 function quickEntry(meal,id){return quickMealDrafts[meal]?.[id]||null}
@@ -140,7 +229,7 @@ function quickTotals(meal){
 }
 function quickTagHtml(meal,food){
  const selected=Boolean(quickEntry(meal,food.id));
- return `<button type="button" class="food-tag ${selected?'selected':''}" data-food-label="${escapeHtml(food.label.toLowerCase())}" onclick="toggleQuickFood('${meal}','${food.id}')"><span>${food.emoji||'•'}</span><span>${escapeHtml(food.label)}</span></button>`;
+ return `<button type="button" class="food-tag ${selected?'selected':''} ${food.custom?'custom-food':''}" data-food-label="${escapeHtml(food.label.toLowerCase())}" data-food-id="${escapeHtml(food.id)}" onclick="toggleQuickFood('${meal}','${food.id}')"><span>${food.emoji||'•'}</span><span>${escapeHtml(food.label)}</span></button>`;
 }
 function quickAmountHtml(meal,food){
  const entry=quickEntry(meal,food.id);if(!entry)return '';
@@ -150,9 +239,9 @@ function quickAmountHtml(meal,food){
 function renderQuickGroups(meal,targetId){
  const target=document.getElementById(targetId);if(!target)return;
  target.innerHTML=QUICK_GROUPS.map(g=>{
-   const foods=CAP_FOODS[g.key];
+   const foods=categoryFoods(g.key);
    const selectedAmounts=g.quantity?foods.filter(f=>quickEntry(meal,f.id)).map(f=>quickAmountHtml(meal,f)).join(''):'';
-   return `<div class="food-group" data-food-group="${g.key}"><div class="food-group-head"><strong>${g.emoji} ${g.label}</strong><span>${g.quantity?'Quantité par défaut : 100 g':'1 portion par sélection'}</span></div><div class="food-tags">${foods.map(f=>quickTagHtml(meal,f)).join('')}</div>${g.quantity?`<div class="food-amounts">${selectedAmounts}</div>`:''}</div>`;
+   return `<div class="food-group" data-food-group="${g.key}"><div class="food-group-head"><strong>${g.emoji} ${g.label}</strong><span>${g.quantity?'Quantité par défaut : 100 g':'1 portion par sélection'}</span></div><div class="food-tags">${foods.map(f=>quickTagHtml(meal,f)).join('')}${addFoodButtonHtml(g.key)}</div>${g.quantity?`<div class="food-amounts">${selectedAmounts}</div>`:''}</div>`;
  }).join('');
 }
 function renderQuickMealSummary(meal){
@@ -164,8 +253,11 @@ function renderQuickMealSummary(meal){
  const count=document.getElementById(meal+'Count');if(count)count.textContent=`${items.length} ${meal==='breakfast'?'ajouté'+(items.length>1?'s':''):'élément'+(items.length>1?'s':'')}`;
 }
 function renderHabitBuilder(){
- const breakfast=document.getElementById('breakfastFoods');if(breakfast)breakfast.innerHTML=CAP_FOODS.breakfast.map(f=>quickTagHtml('breakfast',f)).join('');
- const snack=document.getElementById('snackFoods');if(snack)snack.innerHTML=CAP_FOODS.snacks.map(f=>quickTagHtml('snack',f)).join('');
+ ensureCustomFoods();
+ const breakfast=document.getElementById('breakfastFoods');if(breakfast)breakfast.innerHTML=categoryFoods('breakfast').map(f=>quickTagHtml('breakfast',f)).join('');
+ const breakfastAdd=document.getElementById('breakfastAdd');if(breakfastAdd)breakfastAdd.innerHTML=addFoodButtonHtml('breakfast');
+ const snack=document.getElementById('snackFoods');if(snack)snack.innerHTML=categoryFoods('snacks').map(f=>quickTagHtml('snack',f)).join('');
+ const snackAdd=document.getElementById('snackAdd');if(snackAdd)snackAdd.innerHTML=addFoodButtonHtml('snacks');
  renderQuickGroups('lunch','lunchGroups');
  renderQuickGroups('dinner','dinnerGroups');
  ['breakfast','lunch','dinner','snack'].forEach(renderQuickMealSummary);
@@ -176,10 +268,10 @@ function addQuickMeal(meal){
  const tot=quickTotals(meal),label={breakfast:'Petit-déjeuner',lunch:'Déjeuner',dinner:'Dîner',snack:'En-cas'}[meal]||'Repas';
  const components=items.map(x=>({id:x.food.id,name:x.food.label,amount:x.calc.amount,unit:x.food.base?x.food.unit:'g',calories:round1(x.calc.kcal),protein:round1(x.calc.p),carbs:round1(x.calc.c),fat:round1(x.calc.f)}));
  const d=ensureNutritionDay();
- d.meals.push({id:'meal-'+Date.now(),name:label,calories:round1(tot.kcal),protein:round1(tot.p),carbs:round1(tot.c),fat:round1(tot.f),components,source:'habits',createdAt:new Date().toISOString()});
+ d.meals.push({id:'meal-'+Date.now(),name:label,mealType:meal,calories:round1(tot.kcal),protein:round1(tot.p),carbs:round1(tot.c),fat:round1(tot.f),components,source:'habits',createdAt:new Date().toISOString()});
  d.nutrition=nutritionTotalsFromMeals(d.meals);state.daily[nutritionDayKey()]=d;
  quickMealDrafts[meal]={};
- save();loadNutrition();renderToday();
+ save();loadNutrition();renderHabitBuilder();renderToday();
 }
 function openManualMeal(name='Repas libre'){
  const details=document.getElementById('mealEditor');if(details)details.setAttribute('open','');
