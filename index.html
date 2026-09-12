@@ -920,7 +920,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
   .kpi-icon-badge svg{width:20px !important;height:20px !important}
 }
 </style>
-<link rel="stylesheet" href="css/style.css?v=28">
+<link rel="stylesheet" href="css/style.css?v=29">
 </head>
 <body>
 <header class="app-header">
@@ -1062,6 +1062,8 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
     <div class="goal-row macro-card" id="fatGaugeRow"><div class="macro-ring" id="fatGauge"><strong id="dayFatTotal">0 g</strong><span>lipides</span></div><b>Lipides</b><small id="fatGaugeText"></small></div>
   </div>
 
+  <div id="culinaInbox" class="culina-inbox" hidden></div>
+
   <div id="nutritionHabits" class="nutrition-habits-root"></div>
 
   <div class="segment-bar"><button class="active" type="button">Repas enregistrés</button><button type="button" onclick="document.getElementById('nutritionDetails').toggleAttribute('open')">Apports détaillés</button></div>
@@ -1154,8 +1156,10 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
   </div>
 </section>
 </main>
+<script src="js/lenaic-bus.js?v=1"></script>
 <script src="js/cap-main.js?v=22"></script>
 <script src="js/nutrition-habits.js?v=26"></script>
+<script src="js/culina-bridge.js?v=1"></script>
 <!-- assets fixed v15: hero png + exercises png + mannequin png -->
 <!-- Cap index fix v16: chemins assets/ sans v9 + pictogrammes nav -->
 </body></html>
