@@ -1329,3 +1329,59 @@ body.dark #nutrition .habit-toolbar,body.dark #nutrition .meal-accordion>summary
   main{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
   .custom-food-sheet{border-radius:14px 14px 0 0!important}
 }
+
+
+/* =========================================================
+   CAP V28 — KPI ICONS SANS CARRÉ
+   Activité / Calories / Protéines / Sommeil : pictogramme seul
+   ========================================================= */
+.kpi-icon-badge,
+body.dark .kpi-icon-badge{
+  width:auto !important;
+  height:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 auto 2px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  display:grid !important;
+  place-items:center !important;
+}
+.kpi-icon-badge svg{
+  width:25px !important;
+  height:25px !important;
+  display:block !important;
+}
+.kpi-icon-badge.activity,
+body.dark .kpi-icon-badge.activity{
+  background:transparent !important;
+  border-color:transparent !important;
+  color:#3a9bb4 !important;
+}
+.kpi-icon-badge.calories,
+body.dark .kpi-icon-badge.calories{
+  background:transparent !important;
+  border-color:transparent !important;
+  color:#f36a21 !important;
+}
+.kpi-icon-badge.protein,
+body.dark .kpi-icon-badge.protein{
+  background:transparent !important;
+  border-color:transparent !important;
+  color:#58a631 !important;
+}
+.kpi-icon-badge.sleep,
+body.dark .kpi-icon-badge.sleep{
+  background:transparent !important;
+  border-color:transparent !important;
+  color:#7a57c7 !important;
+}
+@media(max-width:760px){
+  .kpi-icon-badge svg{
+    width:22px !important;
+    height:22px !important;
+  }
+}
