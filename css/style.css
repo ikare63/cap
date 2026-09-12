@@ -905,3 +905,427 @@ body.food-modal-open{overflow:hidden !important}
   .custom-food-form{grid-template-columns:1fr !important}
   .custom-food-form .custom-food-name{grid-column:auto !important}
 }
+
+
+/* =========================================================
+   CAP V27 — FLAT DESIGN ORANGE / LIGHT + DARK
+   Ce bloc est volontairement en dernier : il uniformise
+   l'interface sans modifier le dessin des pictogrammes.
+   ========================================================= */
+
+:root{
+  --bg:#fff8f3;
+  --panel:#ffffff;
+  --panel-2:#fff2e9;
+  --text:#2b211c;
+  --muted:#7d6e66;
+  --line:#efd9cc;
+  --accent:#f26722;
+  --accent-2:#f26722;
+  --orange:#f26722;
+  --orange-soft:#fff0e6;
+  --orange-soft-2:#ffe5d3;
+  --green:#4e9f55;
+  --cyan:#348fa3;
+  --violet:#755bc3;
+  --blue:#437fca;
+  --danger:#d84a45;
+  --shadow:none;
+  --radius:14px;
+  --radius-sm:10px;
+}
+body.dark{
+  --bg:#15100d;
+  --panel:#201713;
+  --panel-2:#2a1d17;
+  --text:#fff8f3;
+  --muted:#baa9a0;
+  --line:#493329;
+  --accent:#ff7a34;
+  --accent-2:#ff7a34;
+  --orange:#ff7a34;
+  --orange-soft:#352117;
+  --orange-soft-2:#47291b;
+  --green:#72bd78;
+  --cyan:#63b8ca;
+  --violet:#a58ae8;
+  --blue:#75a7e8;
+  --danger:#ff7770;
+  --shadow:none;
+}
+
+html{background:var(--bg)!important}
+body{background:var(--bg)!important;color:var(--text)!important}
+
+/* Flat = pas de relief décoratif, pas de dégradés sur les contrôles. */
+.card,.home-kpi,.home-recovery,.home-advice-card,.habit-card,.tool-card,.mode-accordion,.rest-timer-card,.measure-hero-card,.measure-chart-card,.day,.meal-item,.mockup-meal,.week-editor,.sheet-details,.home-details,.alert,.history-item,.score-part,.measure-kpi,.measure-chart,.measure-stat-mini,.custom-food-sheet{
+  box-shadow:none!important;
+}
+
+.card,.home-recovery,.home-advice-card,.habit-card,.sheet-details,.home-details,.week-editor{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:var(--radius)!important;
+}
+
+/* Header : simple bandeau clair/sombre, sans relief. */
+.app-header{
+  background:var(--panel)!important;
+  border-bottom:1px solid var(--line)!important;
+  box-shadow:none!important;
+}
+.logo.cap-logo,.mobile-theme-btn{
+  background:var(--panel-2)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+  border-radius:12px!important;
+}
+
+/* Boutons et champs */
+.btn,.hero-cta,#nutrition .habit-manual,#nutrition .quick-add,.floating-add{
+  box-shadow:none!important;
+  background:var(--accent)!important;
+  background-image:none!important;
+  color:#fff!important;
+  border:1px solid var(--accent)!important;
+  border-radius:11px!important;
+}
+.btn:not(.primary):not(.bad){
+  background:var(--panel)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+.btn.primary,.mode-tab.active{
+  background:var(--accent)!important;
+  background-image:none!important;
+  color:#fff!important;
+  border-color:var(--accent)!important;
+  box-shadow:none!important;
+}
+input,select,#nutrition .habit-search,#nutrition .food-amount-row input,.custom-food-form input{
+  background:var(--panel)!important;
+  color:var(--text)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+  border-radius:10px!important;
+}
+input:focus,select:focus,#nutrition .habit-search:focus,.custom-food-form input:focus{
+  outline:2px solid color-mix(in srgb,var(--accent) 28%,transparent)!important;
+  outline-offset:1px!important;
+  border-color:var(--accent)!important;
+}
+
+/* Navigation : seul l'onglet actif est mis en avant.
+   On garde exactement les pictogrammes SVG existants. */
+#nav{
+  background:var(--panel)!important;
+  box-shadow:none!important;
+}
+#nav .navbtn,body.dark #nav .navbtn{
+  background:transparent!important;
+  color:var(--muted)!important;
+  border:1px solid transparent!important;
+  box-shadow:none!important;
+  border-radius:12px!important;
+}
+#nav .navbtn:not(.active),body.dark #nav .navbtn:not(.active){
+  background:transparent!important;
+  color:var(--muted)!important;
+}
+#nav .navbtn.active,body.dark #nav .navbtn.active{
+  background:var(--orange-soft)!important;
+  color:var(--accent)!important;
+  border-color:color-mix(in srgb,var(--accent) 25%,var(--line))!important;
+  box-shadow:none!important;
+}
+#nav .navbtn .nav-icon,body.dark #nav .navbtn .nav-icon{
+  box-shadow:none!important;
+  border-width:1px!important;
+  border-style:solid!important;
+  border-radius:10px!important;
+}
+#nav .navbtn.active .nav-icon,body.dark #nav .navbtn.active .nav-icon{
+  background:color-mix(in srgb,var(--accent) 14%,var(--panel))!important;
+  color:var(--accent)!important;
+  border-color:color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+}
+/* Icônes inactives : leurs couleurs d'origine restent intactes,
+   seul le rendu est aplati. */
+#nav .navbtn:not(.active) .nav-icon{box-shadow:none!important}
+#nav .nav-theme{margin-left:2px!important}
+
+/* Accueil */
+.home-kpi{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+.home-kpi-ring{
+  box-shadow:none!important;
+}
+.home-kpi-ring::before{
+  background:var(--panel)!important;
+  box-shadow:none!important;
+}
+.kpi-icon-badge{
+  box-shadow:none!important;
+  border-radius:10px!important;
+}
+/* On ne change pas les SVG, seulement leurs aplats. */
+.kpi-icon-badge.activity{background:#eaf6f8!important;border-color:#cce5ea!important;color:#348fa3!important}
+.kpi-icon-badge.calories{background:#fff0e6!important;border-color:#ffd4bd!important;color:#f26722!important}
+.kpi-icon-badge.protein{background:#eef7ed!important;border-color:#d1e7cf!important;color:#4e9f55!important}
+.kpi-icon-badge.sleep{background:#f1edfb!important;border-color:#ddd3f3!important;color:#755bc3!important}
+body.dark .kpi-icon-badge.activity{background:#183238!important;border-color:#29505a!important;color:#71c4d2!important}
+body.dark .kpi-icon-badge.calories{background:#3a2217!important;border-color:#6a3a25!important;color:#ff8b4d!important}
+body.dark .kpi-icon-badge.protein{background:#1d3020!important;border-color:#34543a!important;color:#87cc8c!important}
+body.dark .kpi-icon-badge.sleep{background:#28203b!important;border-color:#4b3d70!important;color:#b49bea!important}
+
+.home-yesterday-score,.home-yesterday-score-compact{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+}
+.home-advice-card{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+}
+.home-advice-icon{
+  background:var(--orange-soft)!important;
+  color:var(--accent)!important;
+  border-radius:10px!important;
+}
+
+/* La photo hero reste lisible, mais aucun effet de carte flottante. */
+.home-hero{
+  border:1px solid var(--line)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+.hero-cta{border-radius:10px!important}
+#today .home-hero-meta #todayBadge,#today .home-hero-meta #todayHeroFocus{
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+
+/* Semaine / entraînement */
+.day{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:11px!important;
+}
+.day.today{
+  background:var(--orange-soft)!important;
+  border:1px solid var(--accent)!important;
+}
+.day.done{
+  background:color-mix(in srgb,var(--green) 10%,var(--panel))!important;
+  border-color:color-mix(in srgb,var(--green) 30%,var(--line))!important;
+}
+.training-chips span{
+  background:var(--panel-2)!important;
+  border:1px solid var(--line)!important;
+  border-radius:8px!important;
+}
+.training-mode-strip,.mode-accordion,.tool-card,.rest-timer-card,.rest-day-card{
+  background:var(--panel-2)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+  border-radius:11px!important;
+}
+.exercise{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+.exercise-thumb{
+  border:1px solid var(--line)!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+.series-dot{box-shadow:none!important}
+.timer-progress,.mini-progress,.symmetry-bar{background:var(--line)!important}
+.timer-progress>div,.home-kpi .mini-progress>div{background:var(--accent)!important}
+
+/* Nutrition : orange, simple, sans effets. */
+#nutrition{
+  --food-orange:var(--accent)!important;
+  --food-orange-2:var(--accent)!important;
+  --food-soft:var(--orange-soft)!important;
+  --food-line:var(--line)!important;
+}
+#nutrition .habit-card{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+#nutrition .habit-toolbar,#nutrition .meal-accordion>summary{
+  background:var(--panel-2)!important;
+}
+#nutrition .meal-accordion{border-bottom:1px solid var(--line)!important}
+#nutrition .food-tag{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+#nutrition .food-tag.selected{
+  background:var(--orange-soft)!important;
+  border-color:var(--accent)!important;
+  color:var(--accent)!important;
+  box-shadow:none!important;
+}
+#nutrition .food-amount-row{
+  background:var(--panel-2)!important;
+  border:1px solid var(--line)!important;
+  border-radius:10px!important;
+}
+#nutrition .quick-add{background:var(--accent)!important;background-image:none!important}
+#nutrition .nutrition-source{
+  background:var(--panel-2)!important;
+  border:1px solid var(--line)!important;
+  border-radius:10px!important;
+}
+#nutrition .food-add-tag{
+  background:transparent!important;
+  color:var(--accent)!important;
+  border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line))!important;
+  box-shadow:none!important;
+  border-radius:9px!important;
+}
+
+/* Macros */
+.macro-card{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+.macro-ring{box-shadow:none!important}
+.macro-ring:before{background:var(--panel)!important}
+.segment-bar button.active{color:var(--accent)!important;border-color:var(--accent)!important}
+.mockup-meal,.meal-item{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+}
+.meal-icon{background:var(--panel-2)!important;border-radius:9px!important}
+.icon-btn{background:var(--panel-2)!important;border-color:var(--line)!important;border-radius:8px!important;box-shadow:none!important}
+
+/* Sommeil */
+.sleep-score{
+  background:var(--panel-2)!important;
+  background-image:none!important;
+  border:1px solid var(--line)!important;
+  border-radius:14px!important;
+}
+.sleep-label{color:var(--accent)!important}
+
+/* Mesures / historique / bilan */
+.measure-kpi,.measure-chart,.measure-stat-mini,.score-part,.history-item,.alert{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+  border-radius:10px!important;
+}
+.measure-chart{background:var(--panel-2)!important}
+.score-cap-ring{box-shadow:none!important}
+
+/* Modale d'ajout d'aliment */
+.custom-food-modal{background:rgba(22,12,8,.44)!important}
+.custom-food-sheet{
+  background:var(--panel)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:none!important;
+  border-radius:14px!important;
+}
+.custom-food-close{
+  background:var(--panel-2)!important;
+  border:1px solid var(--line)!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+}
+.custom-food-category{
+  background:var(--orange-soft)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 28%,var(--line))!important;
+  color:var(--accent)!important;
+  border-radius:8px!important;
+}
+.custom-food-actions .btn:last-child{
+  background:var(--accent)!important;
+  color:#fff!important;
+  border-color:var(--accent)!important;
+}
+.food-saved-toast{
+  background:var(--text)!important;
+  color:var(--panel)!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+
+/* Dark mode : contraste chaleureux, toujours orange. */
+body.dark .card,body.dark .home-kpi,body.dark .home-recovery,body.dark .home-advice-card,body.dark .habit-card,body.dark .sheet-details,body.dark .home-details,body.dark .week-editor,body.dark .exercise,body.dark .mockup-meal,body.dark .meal-item{
+  background:var(--panel)!important;
+  border-color:var(--line)!important;
+}
+body.dark .home-kpi-ring::before{background:var(--panel)!important}
+body.dark #nutrition .habit-toolbar,body.dark #nutrition .meal-accordion>summary,body.dark .tool-card,body.dark .mode-accordion,body.dark .training-mode-strip{background:var(--panel-2)!important}
+
+/* Mobile : on conserve la nav en bas, en flat design. */
+@media(max-width:760px){
+  .app-header{
+    position:static!important;
+    top:auto!important;
+    border-bottom:0!important;
+    box-shadow:none!important;
+  }
+  .app-header .head{display:flex!important}
+  #nav{
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    top:auto!important;
+    z-index:1000!important;
+    width:100%!important;
+    max-width:none!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    align-items:stretch!important;
+    gap:4px!important;
+    margin:0!important;
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    background:var(--panel)!important;
+    border-top:1px solid var(--line)!important;
+    box-shadow:none!important;
+    scrollbar-width:none!important;
+  }
+  #nav::-webkit-scrollbar{display:none!important}
+  #nav .navbtn{
+    flex:0 0 78px!important;
+    width:78px!important;
+    min-width:78px!important;
+    height:58px!important;
+    min-height:58px!important;
+    padding:5px 4px!important;
+    gap:3px!important;
+    border-radius:10px!important;
+  }
+  #nav .navbtn .nav-icon{
+    width:29px!important;
+    height:29px!important;
+    min-height:29px!important;
+    border-radius:8px!important;
+  }
+  #nav .navbtn .nav-icon svg{width:18px!important;height:18px!important}
+  #nav .navbtn span:last-child{font-size:.68rem!important}
+  main{padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+  .custom-food-sheet{border-radius:14px 14px 0 0!important}
+}
