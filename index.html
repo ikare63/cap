@@ -564,7 +564,7 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
 
 </style>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<link rel="stylesheet" href="css/style.css?v=13">
+<link rel="stylesheet" href="css/style.css?v=24">
 <style id="cap-index-nav-fix-v16">
 /* Correctif embarqué : un seul fichier à remplacer (index.html). */
 #nav .nav-week{background:#f4eeff!important;}
@@ -805,6 +805,122 @@ body.dark #nutrition{--food-soft:#3c2418;--food-line:#70412b}
 }
 </style>
 
+<style id="cap-nav-pictos-final-v24">
+/* =========================================================
+   CAP V24 — NAV : SEUL L’ONGLET ACTIF EST MIS EN ÉVIDENCE
+   + pictogrammes KPI pastel centrés
+   ========================================================= */
+
+/* Chaque onglet garde une couleur d'identité, mais la carte reste neutre
+   tant qu'il n'est pas sélectionné. */
+#nav .nav-today{--nav-accent:#ef6a2e}
+#nav .nav-week{--nav-accent:#7a59c9}
+#nav .nav-nutrition{--nav-accent:#59a72f}
+#nav .nav-sleep{--nav-accent:#4b83dc}
+#nav .nav-history{--nav-accent:#b9851f}
+#nav .nav-trends{--nav-accent:#1994a5}
+#nav .nav-measures{--nav-accent:#328fd3}
+#nav .nav-summary{--nav-accent:#dc7047}
+#nav .nav-settings{--nav-accent:#66717e}
+#nav .nav-theme{--nav-accent:#7a66c7}
+
+#nav .navbtn,
+body.dark #nav .navbtn{
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 4px 12px rgba(15,23,42,.04) !important;
+}
+
+#nav .navbtn .nav-icon,
+body.dark #nav .navbtn .nav-icon{
+  display:grid !important;
+  place-items:center !important;
+  margin:0 auto !important;
+  background:color-mix(in srgb,var(--nav-accent) 13%,var(--panel)) !important;
+  color:var(--nav-accent) !important;
+  border:1px solid color-mix(in srgb,var(--nav-accent) 26%,var(--line)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+#nav .navbtn:not(.active),
+body.dark #nav .navbtn:not(.active){
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  transform:none !important;
+}
+
+#nav .navbtn.active,
+body.dark #nav .navbtn.active{
+  background:color-mix(in srgb,var(--nav-accent) 11%,var(--panel)) !important;
+  color:var(--nav-accent) !important;
+  border-color:color-mix(in srgb,var(--nav-accent) 34%,var(--line)) !important;
+  box-shadow:
+    inset 0 -3px 0 var(--nav-accent),
+    0 8px 20px rgba(15,23,42,.08) !important;
+  font-weight:900 !important;
+}
+
+body.dark #nav .navbtn.active{
+  box-shadow:
+    inset 0 -3px 0 var(--nav-accent),
+    0 8px 20px rgba(0,0,0,.20) !important;
+}
+
+/* Carrés pastel des quatre indicateurs de l'accueil. */
+.kpi-icon-badge{
+  width:36px !important;
+  height:36px !important;
+  flex:0 0 36px !important;
+  display:grid !important;
+  place-items:center !important;
+  margin:0 auto !important;
+  border-radius:12px !important;
+  border:1px solid transparent !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45) !important;
+}
+.kpi-icon-badge svg{
+  width:22px !important;
+  height:22px !important;
+  display:block !important;
+  margin:auto !important;
+  overflow:visible !important;
+}
+.kpi-icon-badge.activity{
+  background:#e8f7fb !important;
+  border-color:#c5e8ef !important;
+  color:#269bae !important;
+}
+.kpi-icon-badge.calories{
+  background:#fff0e6 !important;
+  border-color:#ffd2bb !important;
+  color:#f36a21 !important;
+}
+.kpi-icon-badge.protein{
+  background:#eef8e9 !important;
+  border-color:#d0e8c4 !important;
+  color:#57a52f !important;
+}
+.kpi-icon-badge.sleep{
+  background:#f1ebfd !important;
+  border-color:#ddd0f7 !important;
+  color:#7855c5 !important;
+}
+body.dark .kpi-icon-badge.activity{background:#11353e !important;border-color:#286a76 !important}
+body.dark .kpi-icon-badge.calories{background:#482315 !important;border-color:#8a4b31 !important}
+body.dark .kpi-icon-badge.protein{background:#183721 !important;border-color:#3c734b !important}
+body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f4393 !important}
+
+@media(max-width:560px){
+  .kpi-icon-badge{
+    width:32px !important;
+    height:32px !important;
+    flex-basis:32px !important;
+    border-radius:10px !important;
+  }
+  .kpi-icon-badge svg{width:20px !important;height:20px !important}
+}
+</style>
 </head>
 <body>
 <header class="app-header">
@@ -846,7 +962,7 @@ body.dark #nutrition{--food-soft:#3c2418;--food-line:#70412b}
       <div class="home-kpi activity">
         <div class="home-kpi-ring" id="kpiActivityRing"><div class="home-kpi-ring-inner"><strong id="kpiActivity">0</strong><span>%</span></div></div>
         <div class="home-kpi-copy">
-          <span class="kpi-icon-badge activity" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9h3v6H3zm15 0h3v6h-3zM7 10h2v4H7zm8 0h2v4h-2zM9 11h6v2H9z" fill="currentColor"/></svg></span>
+          <span class="kpi-icon-badge activity" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.2" y="8.4" width="3.6" height="7.2" rx="1.2" fill="#16889b"/><rect x="18.2" y="8.4" width="3.6" height="7.2" rx="1.2" fill="#16889b"/><rect x="6.1" y="9.7" width="2.8" height="4.6" rx="1" fill="#42bfd0"/><rect x="15.1" y="9.7" width="2.8" height="4.6" rx="1" fill="#42bfd0"/><rect x="8.5" y="10.9" width="7" height="2.2" rx="1.1" fill="#0f6f80"/></svg></span>
           <small>Activité</small>
           <span id="kpiActivityGoal">0/0 exercice</span>
         </div>
@@ -854,7 +970,7 @@ body.dark #nutrition{--food-soft:#3c2418;--food-line:#70412b}
       <div class="home-kpi calories">
         <div class="home-kpi-ring" id="kpiCaloriesRing"><div class="home-kpi-ring-inner"><strong id="kpiCalories">0</strong><span>kcal</span></div></div>
         <div class="home-kpi-copy">
-          <span class="kpi-icon-badge calories" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.2 2.5c.4 3.1 2.8 4.4 2.8 7.6 0 1.3-.4 2.5-1.2 3.5 2-.6 3.8-2.7 3.8-5.8 0-2-1.1-4.1-3.1-5.8.1 3.5-2.2 4.2-2.3.5Z" fill="currentColor"/><path d="M11.4 8.8c-2.8 2.7-5 5-5 8.1a6.1 6.1 0 0 0 12.2 0c0-2.9-1.7-5.3-4.5-7.6-.6 2-2.4 2.4-2.7-.5Z" fill="currentColor"/><path d="M12.3 12.3c-1.4 1.2-2.4 2.5-2.4 4a2.6 2.6 0 0 0 5.2 0c0-1.3-.8-2.5-2.1-3.7-.2.8-.6 1.2-.7-.3Z" fill="rgba(255,255,255,.78)"/></svg></span>
+          <span class="kpi-icon-badge calories" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.8 2.1c.9 2.8.2 4.6-1.3 6.2-1.1 1.2-1.9 2.4-1.9 4 0 .7.2 1.4.6 2-2.4-.9-4-3.1-4-5.8 0-2.8 1.7-5.2 6.6-6.4Z" fill="#ff7a1f"/><path d="M12.3 8.9c3.7 2.3 5.7 4.9 5.7 8a6 6 0 0 1-12 0c0-2.9 1.7-5.3 4.8-7.7.2 1.1.8 1.9 1.7 2.2.4-.7.3-1.6-.2-2.5Z" fill="#ff5b18"/><path d="M12.2 13c1.9 1.3 2.9 2.6 2.9 4.1a2.9 2.9 0 0 1-5.8 0c0-1.4.8-2.6 2.4-3.7.1.6.4 1.1.7 1.3.2-.4.2-.9-.2-1.7Z" fill="#ffc83d"/></svg></span>
           <small>Calories</small>
           <span id="kpiCaloriesGoal">Objectif · 2 200 kcal</span>
         </div>
@@ -862,7 +978,7 @@ body.dark #nutrition{--food-soft:#3c2418;--food-line:#70412b}
       <div class="home-kpi protein">
         <div class="home-kpi-ring" id="kpiProteinRing"><div class="home-kpi-ring-inner"><strong id="kpiProtein">0</strong><span>g</span></div></div>
         <div class="home-kpi-copy">
-          <span class="kpi-icon-badge protein" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="10" y="5" width="5" height="5" rx="1.2" fill="currentColor" opacity=".86"/><rect x="4" y="11" width="5" height="5" rx="1.2" fill="currentColor" opacity=".86"/><rect x="10" y="11" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="16" y="8" width="4" height="8" rx="1.2" fill="currentColor" opacity=".72"/></svg></span>
+          <span class="kpi-icon-badge protein" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="7" height="7" rx="2" fill="#3cae58"/><rect x="11" y="5" width="6" height="7" rx="2" fill="#72cb68"/><rect x="5" y="13" width="7" height="6" rx="2" fill="#5bc765"/><rect x="13" y="13" width="8" height="6" rx="2" fill="#2f9849"/><circle cx="6.5" cy="8.5" r="1.15" fill="#dff5d8"/><circle cx="14" cy="8.5" r="1.1" fill="#e9f8e5"/><circle cx="16.8" cy="16" r="1.2" fill="#dff5d8"/></svg></span>
           <small>Protéines</small>
           <span id="kpiProteinGoal">Objectif · 0 g</span>
         </div>
@@ -870,7 +986,7 @@ body.dark #nutrition{--food-soft:#3c2418;--food-line:#70412b}
       <div class="home-kpi sleep">
         <div class="home-kpi-ring" id="kpiSleepRing"><div class="home-kpi-ring-inner"><strong id="kpiSleep">—</strong><span>%</span></div></div>
         <div class="home-kpi-copy">
-          <span class="kpi-icon-badge sleep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18.8 3.8A9.2 9.2 0 1 0 20 19.4a8 8 0 0 1-8.2-12.1 8 8 0 0 1 7-3.5Z" fill="currentColor"/></svg></span>
+          <span class="kpi-icon-badge sleep" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16.7 3.4A8.8 8.8 0 1 0 20.2 18a7.4 7.4 0 0 1-7.4-11.2 7.4 7.4 0 0 1 3.9-3.4Z" fill="#7254c7"/><path d="m18.7 4.4.6 1.4 1.5.2-1.1 1 .3 1.5-1.3-.8-1.4.8.4-1.5-1.1-1 1.5-.2.6-1.4Z" fill="#f4c84c"/><circle cx="18.9" cy="11.2" r="1.2" fill="#a98cef"/></svg></span>
           <small>Sommeil</small>
           <span id="kpiSleepGoal">Nuit dernière</span>
         </div>
