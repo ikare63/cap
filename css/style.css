@@ -1385,3 +1385,95 @@ body.dark .kpi-icon-badge.sleep{
     height:22px !important;
   }
 }
+
+/* =========================================================
+   CAP V29 — boîte de réception Culina ↔ CAP
+   ========================================================= */
+.culina-inbox{
+  margin:10px 0 12px!important;
+  padding:12px!important;
+  border:1px solid #ffd4bd!important;
+  border-radius:14px!important;
+  background:#fff7f1!important;
+}
+.culina-inbox[hidden]{display:none!important}
+.culina-inbox-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin-bottom:9px!important;
+}
+.culina-inbox-head>div{display:grid!important;gap:1px!important}
+.culina-inbox-head small{
+  color:var(--accent)!important;
+  font-size:.62rem!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+.culina-inbox-head strong{font-size:.88rem!important;color:var(--text)!important}
+.culina-inbox-head>span{font-size:1.3rem!important}
+.culina-proposal{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:center!important;
+  padding:10px!important;
+  border:1px solid var(--line)!important;
+  border-radius:12px!important;
+  background:var(--panel)!important;
+}
+.culina-proposal+.culina-proposal{margin-top:7px!important}
+.culina-proposal-main{min-width:0!important}
+.culina-proposal-kicker{font-size:.58rem!important;color:var(--muted)!important;margin-bottom:2px!important}
+.culina-proposal-main>strong{display:block!important;font-size:.82rem!important;line-height:1.18!important}
+.culina-proposal-macros{display:flex!important;gap:7px!important;flex-wrap:wrap!important;margin-top:5px!important;align-items:center!important}
+.culina-proposal-macros b{font-size:.72rem!important;color:var(--accent)!important}
+.culina-proposal-macros span{font-size:.60rem!important;color:var(--muted)!important}
+.culina-proposal-components{margin-top:4px!important;font-size:.57rem!important;color:var(--muted)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.culina-proposal-actions{display:flex!important;gap:5px!important;flex-wrap:wrap!important;justify-content:flex-end!important}
+.culina-proposal-actions .btn{padding:7px 9px!important;font-size:.63rem!important;border-radius:9px!important}
+.bus-nav-badge{
+  position:absolute!important;
+  top:3px!important;
+  right:6px!important;
+  min-width:17px!important;
+  height:17px!important;
+  padding:0 4px!important;
+  border-radius:999px!important;
+  display:grid!important;
+  place-items:center!important;
+  background:var(--accent)!important;
+  color:white!important;
+  font-size:.52rem!important;
+  font-weight:900!important;
+  line-height:1!important;
+}
+#nav .navbtn{position:relative!important}
+.cap-bus-toast{
+  position:fixed!important;
+  left:50%!important;
+  bottom:96px!important;
+  z-index:1600!important;
+  transform:translate(-50%,16px)!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  padding:9px 12px!important;
+  border-radius:10px!important;
+  background:#2d241f!important;
+  color:white!important;
+  font-size:.68rem!important;
+  font-weight:800!important;
+  transition:.18s ease!important;
+  white-space:nowrap!important;
+}
+.cap-bus-toast.show{opacity:1!important;transform:translate(-50%,0)!important}
+body.dark .culina-inbox{background:#24180f!important;border-color:#62391f!important}
+body.dark .culina-proposal{background:var(--panel)!important}
+@media(max-width:760px){
+  .culina-inbox{padding:10px!important;margin:9px 0!important}
+  .culina-proposal{grid-template-columns:1fr!important;gap:7px!important}
+  .culina-proposal-actions{justify-content:flex-start!important}
+  .bus-nav-badge{top:1px!important;right:4px!important}
+}
