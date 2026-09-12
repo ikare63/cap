@@ -97,12 +97,38 @@
     };
   }
 
+  function nutritionSnapshot(){
+    const totals=typeof nutritionTotals==='function'?nutritionTotals():{calories:0,protein:0,carbs:0,fat:0};
+    const weight=Number(state.settings?.weight)||61.8;
+    const goals={
+      calories:Number(state.settings?.calories)||2200,
+      protein:weight*(Number(state.settings?.proteinRate)||1.8),
+      carbs:weight*(Number(state.settings?.carbRate)||5),
+      fat:weight*(Number(state.settings?.fatRate)||1
+      )
+    };
+    const roundedTotals={
+      calories:Number(totals.calories)||0,protein:Number(totals.protein)||0,
+      carbs:Number(totals.carbs)||0,fat:Number(totals.fat)||0
+    };
+    return {
+      totals:roundedTotals,goals,
+      remaining:{
+        calories:Math.max(0,goals.calories-roundedTotals.calories),
+        protein:Math.max(0,goals.protein-roundedTotals.protein),
+        carbs:Math.max(0,goals.carbs-roundedTotals.carbs),
+        fat:Math.max(0,goals.fat-roundedTotals.fat)
+      }
+    };
+  }
+
   function buildSnapshot(){
     return {
       version:1,
       date:todayKey(),
       updatedAt:new Date().toISOString(),
       activity:activitySnapshot(),
+      nutrition:nutritionSnapshot(),
       yesterday:yesterdaySnapshot(),
       measurements:measurementStatus(),
       sleep:sleepSnapshot()

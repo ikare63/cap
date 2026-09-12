@@ -1,14 +1,25 @@
-/* CAP ↔ Culina bridge v1 — reçoit les repas proposés par Culina. */
+/* CAP ↔ Culina bridge v2
+   - reçoit les repas réellement cuisinés à confirmer
+   - affiche aussi les repas programmés dans Culina sans les compter dans les totaux
+*/
 (function(){
   'use strict';
   if(!window.LenaicBus)return;
 
   const inbox=document.getElementById('culinaInbox');
   if(!inbox)return;
+  const CULINA_SNAPSHOT_KEY='lenaic-culina-snapshot-v1';
 
   function pendingMeals(){
     return LenaicBus.pending({type:'meal.proposed',source:'culina',target:'cap'})
       .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  }
+  function readCulinaSnapshot(){
+    try{return JSON.parse(localStorage.getItem(CULINA_SNAPSHOT_KEY)||'null')}catch(e){return null}
+  }
+  function plannedMeals(){
+    const snap=readCulinaSnapshot();
+    return Array.isArray(snap?.planned)?snap.planned.filter(p=>Number(p.at)>=Date.now()-15*60000).sort((a,b)=>a.at-b.at).slice(0,6):[];
   }
   function mealTypeLabel(type){
     return {breakfast:'Petit-déjeuner',lunch:'Déjeuner',dinner:'Dîner',snack:'En-cas'}[type]||'Repas';
@@ -19,6 +30,10 @@
     const raw=e.payload?.eatenAt||e.createdAt;
     const d=new Date(raw);if(!Number.isFinite(d.getTime()))return '';
     return d.toLocaleString('fr-FR',{weekday:'short',hour:'2-digit',minute:'2-digit'});
+  }
+  function planDateText(p){
+    const d=new Date(Number(p.at));if(!Number.isFinite(d.getTime()))return '';
+    return d.toLocaleString('fr-FR',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   }
   function componentsPreview(items){
     if(!Array.isArray(items)||!items.length)return '';
@@ -33,11 +48,26 @@
     if(!badge){badge=document.createElement('span');badge.className='bus-nav-badge';navBtn.insertBefore(badge,navBtn.lastElementChild)}
     badge.textContent=String(count);
   }
+  function plannedHtml(plans){
+    if(!plans.length)return '';
+    return `<div class="culina-planned-zone"><div class="culina-zone-title"><span>📅 Repas prévus dans Culina</span><small>Ils ne comptent pas dans tes calories tant qu’ils ne sont pas confirmés comme mangés.</small></div>${plans.map(p=>{
+      const missing=Number(p.missingCount)||0;
+      return `<article class="culina-proposal culina-planned">
+        <div class="culina-proposal-main">
+          <div class="culina-proposal-kicker">${safe(mealTypeLabel(p.mealType))} · ${safe(planDateText(p))} · PRÉVU</div>
+          <strong>${safe(p.name||'Repas Culina')}</strong>
+          <div class="culina-proposal-macros"><b>${Math.round(Number(p.calories)||0)} kcal</b><span>P ${round(p.protein)} g</span><span>G ${round(p.carbs)} g</span><span>L ${round(p.fat)} g</span></div>
+          <div class="culina-plan-stock ${missing?'missing':''}">${missing?`⚠ ${missing} ingrédient${missing>1?'s':''} principal${missing>1?'aux':''} manque${missing>1?'nt':''}`:'✓ Ingrédients principaux disponibles'}</div>
+        </div>
+        <div class="culina-proposal-actions"><a class="btn" href="../culina/">Voir dans Culina</a></div>
+      </article>`;
+    }).join('')}</div>`;
+  }
   function render(){
-    const events=pendingMeals();updateNavBadge(events.length);
-    if(!events.length){inbox.hidden=true;inbox.innerHTML='';return;}
+    const events=pendingMeals(),plans=plannedMeals();updateNavBadge(events.length);
+    if(!events.length&&!plans.length){inbox.hidden=true;inbox.innerHTML='';return;}
     inbox.hidden=false;
-    inbox.innerHTML=`<div class="culina-inbox-head"><div><small>Culina → CAP</small><strong>${events.length===1?'1 repas à confirmer':events.length+' repas à confirmer'}</strong></div><span>🍽️</span></div>`+
+    const confirmed=events.length?`<div class="culina-inbox-head"><div><small>Culina → CAP</small><strong>${events.length===1?'1 repas à confirmer':events.length+' repas à confirmer'}</strong></div><span>🍽️</span></div>`+
       events.map(e=>{
         const p=e.payload||{};
         return `<article class="culina-proposal">
@@ -49,7 +79,8 @@
           </div>
           <div class="culina-proposal-actions"><button type="button" class="btn primary" onclick="capAcceptCulinaMeal('${e.id}')">Ajouter</button><button type="button" class="btn" onclick="capIgnoreCulinaMeal('${e.id}')">Ignorer</button></div>
         </article>`;
-      }).join('');
+      }).join(''):'';
+    inbox.innerHTML=confirmed+plannedHtml(plans);
   }
   function ensureMealsForKey(key){
     const d=ensureDate(key);
@@ -98,4 +129,6 @@
 
   render();
   LenaicBus.subscribe(render);
+  window.addEventListener('storage',e=>{if(e.key===CULINA_SNAPSHOT_KEY)render()});
+  setInterval(render,3000);
 })();
