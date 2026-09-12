@@ -713,3 +713,195 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
   }
   .kpi-icon-badge svg{width:20px !important;height:20px !important}
 }
+
+/* =========================================================
+   CAP — aliments personnels + catégorie Fruits v26
+   ========================================================= */
+#nutrition .food-add-tag{
+  appearance:none !important;
+  border:1.5px dashed color-mix(in srgb,var(--accent) 62%,var(--line)) !important;
+  background:color-mix(in srgb,var(--accent) 6%,var(--panel)) !important;
+  color:var(--accent) !important;
+  border-radius:999px !important;
+  min-height:40px !important;
+  padding:9px 12px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:5px !important;
+  font-size:.84rem !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+}
+#nutrition .food-add-tag:hover{
+  background:color-mix(in srgb,var(--accent) 11%,var(--panel)) !important;
+  border-style:solid !important;
+}
+#nutrition .food-add-tag>span:first-child{
+  font-size:1.05rem !important;
+  line-height:1 !important;
+}
+#nutrition #breakfastAdd,#nutrition #snackAdd{margin-top:9px !important}
+#nutrition .food-tag.custom-food{
+  border-color:color-mix(in srgb,var(--accent) 22%,var(--line)) !important;
+}
+
+body.food-modal-open{overflow:hidden !important}
+.custom-food-modal{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:12000 !important;
+  display:grid !important;
+  align-items:end !important;
+  justify-items:center !important;
+  padding:18px !important;
+}
+.custom-food-modal[hidden]{display:none !important}
+.custom-food-backdrop{
+  position:absolute !important;
+  inset:0 !important;
+  background:rgba(4,12,25,.58) !important;
+  backdrop-filter:blur(5px) !important;
+  -webkit-backdrop-filter:blur(5px) !important;
+}
+.custom-food-sheet{
+  position:relative !important;
+  z-index:1 !important;
+  width:min(560px,100%) !important;
+  max-height:min(760px,calc(100dvh - 36px)) !important;
+  overflow:auto !important;
+  padding:18px !important;
+  border:1px solid var(--line) !important;
+  border-radius:24px !important;
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  box-shadow:0 22px 65px rgba(0,0,0,.26) !important;
+}
+.custom-food-head{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+}
+.custom-food-head small{
+  display:block !important;
+  color:var(--muted) !important;
+  font-size:.72rem !important;
+  font-weight:800 !important;
+  text-transform:uppercase !important;
+  letter-spacing:.06em !important;
+}
+.custom-food-head h3{
+  margin:2px 0 0 !important;
+  color:var(--text) !important;
+  font-size:1.25rem !important;
+  letter-spacing:-.025em !important;
+}
+.custom-food-close{
+  width:38px !important;
+  height:38px !important;
+  flex:0 0 38px !important;
+  display:grid !important;
+  place-items:center !important;
+  padding:0 !important;
+  border:1px solid var(--line) !important;
+  border-radius:12px !important;
+  background:var(--panel-2) !important;
+  color:var(--text) !important;
+  font-size:1.45rem !important;
+  line-height:1 !important;
+}
+.custom-food-category{
+  display:inline-flex !important;
+  align-items:center !important;
+  margin-top:10px !important;
+  padding:6px 10px !important;
+  border-radius:999px !important;
+  background:color-mix(in srgb,var(--accent) 9%,var(--panel)) !important;
+  border:1px solid color-mix(in srgb,var(--accent) 26%,var(--line)) !important;
+  color:var(--accent) !important;
+  font-size:.78rem !important;
+  font-weight:900 !important;
+}
+.custom-food-form{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:11px !important;
+  margin-top:14px !important;
+}
+.custom-food-form label{
+  display:block !important;
+  color:var(--muted) !important;
+  font-size:.73rem !important;
+  font-weight:800 !important;
+}
+.custom-food-form .custom-food-name{grid-column:1/-1 !important}
+.custom-food-form input{
+  width:100% !important;
+  margin-top:5px !important;
+  padding:10px 11px !important;
+  border:1px solid var(--line) !important;
+  border-radius:12px !important;
+  background:var(--panel-2) !important;
+  color:var(--text) !important;
+}
+.custom-food-with-unit{position:relative !important}
+.custom-food-with-unit input{padding-right:78px !important}
+.custom-food-with-unit span{
+  position:absolute !important;
+  right:10px !important;
+  top:50% !important;
+  transform:translateY(-35%) !important;
+  color:var(--muted) !important;
+  font-size:.66rem !important;
+  pointer-events:none !important;
+}
+.custom-food-help{
+  margin:11px 0 0 !important;
+  color:var(--muted) !important;
+  font-size:.72rem !important;
+  line-height:1.4 !important;
+}
+.custom-food-actions{
+  display:flex !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+  margin-top:15px !important;
+}
+.food-saved-toast{
+  position:fixed !important;
+  left:50% !important;
+  bottom:calc(105px + env(safe-area-inset-bottom)) !important;
+  z-index:13000 !important;
+  max-width:calc(100vw - 28px) !important;
+  transform:translate(-50%,20px) !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+  padding:10px 14px !important;
+  border-radius:999px !important;
+  background:var(--text) !important;
+  color:var(--panel) !important;
+  font-size:.76rem !important;
+  font-weight:850 !important;
+  box-shadow:0 12px 30px rgba(0,0,0,.2) !important;
+  transition:.2s ease !important;
+}
+.food-saved-toast.show{opacity:1 !important;transform:translate(-50%,0) !important}
+
+@media(max-width:760px){
+  #nutrition .food-add-tag{min-height:38px !important;padding:8px 10px !important;font-size:.79rem !important}
+  .custom-food-modal{padding:0 !important;align-items:end !important}
+  .custom-food-sheet{
+    width:100% !important;
+    max-height:88dvh !important;
+    padding:16px 14px calc(16px + env(safe-area-inset-bottom)) !important;
+    border-radius:24px 24px 0 0 !important;
+  }
+  .custom-food-form{gap:9px !important}
+  .custom-food-actions{display:grid !important;grid-template-columns:1fr 1.35fr !important}
+  .custom-food-actions .btn{padding:10px 8px !important;font-size:.76rem !important}
+}
+@media(max-width:410px){
+  .custom-food-form{grid-template-columns:1fr !important}
+  .custom-food-form .custom-food-name{grid-column:auto !important}
+}
