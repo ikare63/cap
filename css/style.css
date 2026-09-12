@@ -598,3 +598,118 @@ body.dark .nav-sleep .nav-icon{background:#102f58;color:#68a9ff;border-color:#24
   display:block;
 }
 .home-hero{overflow:hidden}
+
+/* =========================================================
+   CAP V24 — NAV : SEUL L’ONGLET ACTIF EST MIS EN ÉVIDENCE
+   + pictogrammes KPI pastel centrés
+   ========================================================= */
+
+/* Chaque onglet garde une couleur d'identité, mais la carte reste neutre
+   tant qu'il n'est pas sélectionné. */
+#nav .nav-today{--nav-accent:#ef6a2e}
+#nav .nav-week{--nav-accent:#7a59c9}
+#nav .nav-nutrition{--nav-accent:#59a72f}
+#nav .nav-sleep{--nav-accent:#4b83dc}
+#nav .nav-history{--nav-accent:#b9851f}
+#nav .nav-trends{--nav-accent:#1994a5}
+#nav .nav-measures{--nav-accent:#328fd3}
+#nav .nav-summary{--nav-accent:#dc7047}
+#nav .nav-settings{--nav-accent:#66717e}
+#nav .nav-theme{--nav-accent:#7a66c7}
+
+#nav .navbtn,
+body.dark #nav .navbtn{
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:0 4px 12px rgba(15,23,42,.04) !important;
+}
+
+#nav .navbtn .nav-icon,
+body.dark #nav .navbtn .nav-icon{
+  display:grid !important;
+  place-items:center !important;
+  margin:0 auto !important;
+  background:color-mix(in srgb,var(--nav-accent) 13%,var(--panel)) !important;
+  color:var(--nav-accent) !important;
+  border:1px solid color-mix(in srgb,var(--nav-accent) 26%,var(--line)) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+
+#nav .navbtn:not(.active),
+body.dark #nav .navbtn:not(.active){
+  background:var(--panel) !important;
+  color:var(--text) !important;
+  transform:none !important;
+}
+
+#nav .navbtn.active,
+body.dark #nav .navbtn.active{
+  background:color-mix(in srgb,var(--nav-accent) 11%,var(--panel)) !important;
+  color:var(--nav-accent) !important;
+  border-color:color-mix(in srgb,var(--nav-accent) 34%,var(--line)) !important;
+  box-shadow:
+    inset 0 -3px 0 var(--nav-accent),
+    0 8px 20px rgba(15,23,42,.08) !important;
+  font-weight:900 !important;
+}
+
+body.dark #nav .navbtn.active{
+  box-shadow:
+    inset 0 -3px 0 var(--nav-accent),
+    0 8px 20px rgba(0,0,0,.20) !important;
+}
+
+/* Carrés pastel des quatre indicateurs de l'accueil. */
+.kpi-icon-badge{
+  width:36px !important;
+  height:36px !important;
+  flex:0 0 36px !important;
+  display:grid !important;
+  place-items:center !important;
+  margin:0 auto !important;
+  border-radius:12px !important;
+  border:1px solid transparent !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45) !important;
+}
+.kpi-icon-badge svg{
+  width:22px !important;
+  height:22px !important;
+  display:block !important;
+  margin:auto !important;
+  overflow:visible !important;
+}
+.kpi-icon-badge.activity{
+  background:#e8f7fb !important;
+  border-color:#c5e8ef !important;
+  color:#269bae !important;
+}
+.kpi-icon-badge.calories{
+  background:#fff0e6 !important;
+  border-color:#ffd2bb !important;
+  color:#f36a21 !important;
+}
+.kpi-icon-badge.protein{
+  background:#eef8e9 !important;
+  border-color:#d0e8c4 !important;
+  color:#57a52f !important;
+}
+.kpi-icon-badge.sleep{
+  background:#f1ebfd !important;
+  border-color:#ddd0f7 !important;
+  color:#7855c5 !important;
+}
+body.dark .kpi-icon-badge.activity{background:#11353e !important;border-color:#286a76 !important}
+body.dark .kpi-icon-badge.calories{background:#482315 !important;border-color:#8a4b31 !important}
+body.dark .kpi-icon-badge.protein{background:#183721 !important;border-color:#3c734b !important}
+body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f4393 !important}
+
+@media(max-width:560px){
+  .kpi-icon-badge{
+    width:32px !important;
+    height:32px !important;
+    flex-basis:32px !important;
+    border-radius:10px !important;
+  }
+  .kpi-icon-badge svg{width:20px !important;height:20px !important}
+}
