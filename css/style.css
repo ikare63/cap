@@ -1490,3 +1490,20 @@ body.dark .culina-proposal{background:var(--panel)!important}
 .culina-plan-stock{margin-top:5px!important;font-size:.58rem!important;color:var(--green)!important;font-weight:800!important}
 .culina-plan-stock.missing{color:var(--accent)!important}
 .culina-proposal-actions a.btn{text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+
+
+/* CAP v31 — nouveaux visuels d’exercices + icône Aujourd’hui */
+.exercise-thumb{
+  width:52px!important;
+  height:52px!important;
+  padding:0!important;
+  background:#10283f!important;
+  object-fit:cover!important;
+  border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line))!important;
+  border-radius:12px!important;
+}
+#nav .nav-today .nav-icon svg{width:26px!important;height:26px!important;display:block!important;margin:auto!important}
+@media(max-width:560px){
+  .exercise-main label{grid-template-columns:15px 48px minmax(0,1fr)!important}
+  .exercise-thumb{width:48px!important;height:48px!important;border-radius:11px!important}
+}
