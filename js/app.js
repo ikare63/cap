@@ -367,12 +367,7 @@ ensureDate();
 function save(){localStorage.setItem('cap-data',JSON.stringify(state))}
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='today')renderToday();if(id==='week')renderWeek();if(id==='nutrition')loadNutrition();if(id==='sleep')loadSleep();if(id==='history')renderHistory(30);if(id==='trends')renderTrends();if(id==='measures')renderMeasures();if(id==='summary')renderWeeklySummary();if(id==='settings')loadSettings();scrollTo(0,0)}
 function todayNavIcon(){
- const activity=getActivityKeyForDay(dayName());
- if(activity==='lundi'||activity==='mercredi')return '🏋';
- if(activity==='mardi')return getTuesdayPlan().strength?'🏋':'🏃';
- if(activity==='jeudi')return '🏊‍♂️';
- if(activity==='vendredi')return '🧘';
- return '💪';
+ return 'today';
 }
 nav.innerHTML=navItems.map((x,i)=>{const icon=x[0]==='today'?todayNavIcon():x[2];return `<button class="navbtn nav-${x[0]} ${i?'':'active'}" data-view="${x[0]}"><span class="nav-icon">${icon}</span><span>${x[1]}</span></button>`}).join('');nav.querySelectorAll('button').forEach(b=>b.onclick=()=>showView(b.dataset.view));
 
@@ -1122,7 +1117,7 @@ function renderTraining(){
    const series=light&&strength&&count?Math.max(1,count-1):count;
    if(series)getSeriesState(selectedTraining,i,series);
    const checked=series?t.series[i]?.slice(0,series).every(x=>x.done):Boolean(t.checks[i]);
-   return `<div class="exercise"><div class="exercise-row ${showLoad?'':'no-charge'}"><div class="exercise-main"><label><input type="checkbox" ${checked?'checked':''} onchange="toggleExercise(${i},this.checked)"><img class="exercise-thumb" src="${exerciseAssetByName(e[0])}" alt="Illustration ${escapeHtml(e[0])}"><div class="exercise-copy"><div class="exercise-title">${e[0]}</div><div class="exercise-meta">${meta}</div>${strength&&count?exerciseSeriesHtml(selectedTraining,i,e[1],light):''}${e[0]==='Planche avant-bras'?plankTimerHtml(selectedTraining,i):''}${progressionTip(selectedTraining,i)}</div></label></div>${showLoad?`<div class="charge-field"><label>Charge</label><input class="charge-input" type="text" inputmode="decimal" value="${escapeHtml(String(getExerciseLoad(selectedTraining,i)))}" placeholder="32,5 kg" onchange="saveExerciseLoad('${selectedTraining}',${i},this.value)" onblur="saveExerciseLoad('${selectedTraining}',${i},this.value)"></div>`:''}</div></div>`;
+   return `<div class="exercise"><div class="exercise-row ${showLoad?'':'no-charge'}"><div class="exercise-main"><label><input type="checkbox" ${checked?'checked':''} onchange="toggleExercise(${i},this.checked)"><img class="exercise-thumb" src="${exerciseAssetByName(e[0])}?v=31" alt="Illustration ${escapeHtml(e[0])}"><div class="exercise-copy"><div class="exercise-title">${e[0]}</div><div class="exercise-meta">${meta}</div>${strength&&count?exerciseSeriesHtml(selectedTraining,i,e[1],light):''}${e[0]==='Planche avant-bras'?plankTimerHtml(selectedTraining,i):''}${progressionTip(selectedTraining,i)}</div></label></div>${showLoad?`<div class="charge-field"><label>Charge</label><input class="charge-input" type="text" inputmode="decimal" value="${escapeHtml(String(getExerciseLoad(selectedTraining,i)))}" placeholder="32,5 kg" onchange="saveExerciseLoad('${selectedTraining}',${i},this.value)" onblur="saveExerciseLoad('${selectedTraining}',${i},this.value)"></div>`:''}</div></div>`;
   }).join('')+`</div>`;
   if(strength)out+=`<div class="rest-timer-wrap">${restTimerHtml()}</div>`;
   out+=`<label class="finish-session"><input type="checkbox" ${t.completed?'checked':''} onchange="setDone(this.checked)"> Séance terminée</label><div class="session-meta">${t.completed&&t.durationMs?`Durée enregistrée : ${formatMinutes(t.durationMs)} min`:''}</div>`;
