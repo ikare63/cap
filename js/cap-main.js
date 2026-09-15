@@ -408,6 +408,48 @@ function totalsForDate(key){
  const hasData=Boolean(n.calories||n.protein||n.carbs||n.fat);
  return {calories:Number(n.calories)||0,protein:Number(n.protein)||0,carbs:Number(n.carbs)||0,fat:Number(n.fat)||0,hasData};
 }
+function calorieBand(value,target){
+ const v=Number(value)||0,t=Number(target)||0;
+ const low=t*.9,high=t*1.1,outerLow=t*.8,outerHigh=t*1.2;
+ if(!v||!t)return {label:'À compléter',className:'',low,high};
+ if(v<outerLow)return {label:'Trop bas',className:'bad',low,high};
+ if(v<low)return {label:'Un peu bas',className:'warn',low,high};
+ if(v<=high)return {label:'Zone cible ✓',className:'good',low,high};
+ if(v<=outerHigh)return {label:'Un peu haut',className:'warn',low,high};
+ return {label:'Trop haut',className:'bad',low,high};
+}
+function proteinBand(value,weight,optimalStart=1.8){
+ const v=Number(value)||0,w=Number(weight)||0,start=Math.max(1.6,Number(optimalStart)||1.8);
+ const upper=Math.max(2.0,start+.2);
+ const perKg=w?v/w:0;
+ const insufficientEnd=Math.round(w*1.2);
+ const sufficientStart=Math.round(w*1.45);
+ const veryGoodStart=Math.round(w*1.6);
+ const low=Math.round(w*start),high=Math.floor(w*upper);
+ const elevatedHigh=Math.floor(w*Math.max(2.2,upper+.2));
+ if(!v||!w)return {label:'À compléter',className:'',low,high,perKg};
+ if(v<insufficientEnd)return {label:'Insuffisant',className:'bad',low,high,perKg};
+ if(v<sufficientStart)return {label:'Un peu bas',className:'warn',low,high,perKg};
+ if(v<veryGoodStart)return {label:'Suffisant',className:'good',low,high,perKg};
+ if(v<low)return {label:'Très bien',className:'good',low,high,perKg};
+ if(v<=high)return {label:'Optimal ✓',className:'good',low,high,perKg};
+ if(v<=elevatedHigh)return {label:'Élevé ✓',className:'good',low,high,perKg};
+ return {label:'Très élevé',className:'warn',low,high,perKg};
+}
+function macroBand(value,target){
+ const v=Number(value)||0,t=Number(target)||0;
+ const low=t*.9,high=t*1.1;
+ if(!v||!t)return {label:'À compléter',className:'',low,high};
+ if(v<t*.75)return {label:'Bas',className:'bad',low,high};
+ if(v<low)return {label:'Un peu bas',className:'warn',low,high};
+ if(v<=high)return {label:'Zone cible ✓',className:'good',low,high};
+ if(v<=t*1.25)return {label:'Un peu haut',className:'warn',low,high};
+ return {label:'Élevé',className:'bad',low,high};
+}
+function rangeCompletion(value,low){
+ const v=Number(value)||0,l=Number(low)||0;
+ return l?Math.max(0,Math.min(100,v/l*100)):0;
+}
 function calorieTargetScore(value,target,maxPoints){
  const v=Number(value)||0,t=Number(target)||0;
  if(v<=0||t<=0)return 0;
@@ -415,6 +457,16 @@ function calorieTargetScore(value,target,maxPoints){
  if(v>=low&&v<=high)return maxPoints;
  if(v<low)return maxPoints*Math.max(0,v/low);
  return maxPoints*Math.max(0,1-(v-high)/(t*.4));
+}
+function proteinTargetScore(value,weight,maxPoints,optimalStart=1.8){
+ const v=Number(value)||0,w=Number(weight)||0,start=Math.max(1.6,Number(optimalStart)||1.8);
+ if(v<=0||w<=0)return 0;
+ const optimal=Math.round(w*start),veryGood=Math.round(w*1.6),sufficient=Math.round(w*1.45),low=Math.round(w*1.2);
+ if(v>=optimal)return maxPoints;
+ if(v>=veryGood)return maxPoints*.9;
+ if(v>=sufficient)return maxPoints*.8;
+ if(v>=low)return maxPoints*.65;
+ return maxPoints*.65*Math.max(0,v/low);
 }
 function targetScore(value,target,maxPoints){
  const v=Number(value)||0,t=Number(target)||0;
@@ -487,7 +539,7 @@ function calculateYesterdayScore(){
   const w=Number(state.settings.weight)||61.8;
   const nutritionBase=
     calorieTargetScore(nt.calories,state.settings.calories,8)+
-    targetScore(nt.protein,w*state.settings.proteinRate,9)+
+    proteinTargetScore(nt.protein,w,9,state.settings.proteinRate)+
     targetScore(nt.carbs,w*state.settings.carbRate,7)+
     targetScore(nt.fat,w*state.settings.fatRate,6);
   parts.nutrition=nutritionBase/30*MAX;
@@ -636,15 +688,19 @@ function renderToday(){
  kpiCarbs.textContent=round1(totals.carbs)+' g';
  kpiFat.textContent=round1(totals.fat)+' g';
 
- kpiCaloriesGoal.textContent=`Objectif · ${calGoal.toLocaleString('fr-FR')} kcal`;
- kpiProteinGoal.textContent=`Objectif · ${proteinGoal} g`;
- kpiCarbsGoal.textContent=`/ ${carbsGoal} g`;
- kpiFatGoal.textContent=`/ ${fatGoal} g`;
+ const calBand=calorieBand(totals.calories,calGoal);
+ const proBand=proteinBand(totals.protein,state.settings.weight,state.settings.proteinRate);
+ const carbBand=macroBand(totals.carbs,carbsGoal);
+ const fatBand=macroBand(totals.fat,fatGoal);
+ kpiCaloriesGoal.textContent=`${calBand.label} · ${Math.round(calBand.low).toLocaleString('fr-FR')}–${Math.round(calBand.high).toLocaleString('fr-FR')} kcal`;
+ kpiProteinGoal.textContent=`${proBand.label} · optimal ${Math.round(proBand.low)}–${Math.round(proBand.high)} g`;
+ kpiCarbsGoal.textContent=`${carbBand.label} · ${Math.round(carbBand.low)}–${Math.round(carbBand.high)} g`;
+ kpiFatGoal.textContent=`${fatBand.label} · ${Math.round(fatBand.low)}–${Math.round(fatBand.high)} g`;
 
- setHomeStatRing('kpiCaloriesRing',totals.calories,calGoal,'var(--orange)');
- setHomeStatRing('kpiProteinRing',totals.protein,proteinGoal,'var(--green)');
- setMiniBar(kpiCarbsBar,totals.carbs,carbsGoal);
- setMiniBar(kpiFatBar,totals.fat,fatGoal);
+ setHomeStatRing('kpiCaloriesRing',rangeCompletion(totals.calories,calBand.low),100,'var(--orange)');
+ setHomeStatRing('kpiProteinRing',rangeCompletion(totals.protein,proBand.low),100,'var(--green)');
+ setMiniBar(kpiCarbsBar,rangeCompletion(totals.carbs,carbBand.low),100);
+ setMiniBar(kpiFatBar,rangeCompletion(totals.fat,fatBand.low),100);
 
  renderAlerts();
 }
@@ -1173,34 +1229,31 @@ function setDone(v){
 }
 function freeGenerator(){const t=state.training[selectedTraining];return `<div class="form three"><div class="field"><label>Zone</label><select id="freeZone">${Object.keys(freeSets).map(x=>`<option>${x}</option>`).join('')}</select></div><div class="field"><label>Durée</label><select id="freeDuration"><option>5</option><option>10</option><option selected>15</option><option>20</option><option>30</option></select></div><div class="field"><label>Fatigue</label><select id="freeFatigue"><option value="low">Faible</option><option value="medium">Moyenne</option><option value="high">Élevée</option><option value="neuro">Neurologique</option></select></div></div><button class="btn primary" style="margin-top:12px" onclick="generateFree()">Générer</button><div id="freeResult">${t.generated?renderGenerated(t.generated):''}</div><label style="display:block;margin-top:14px"><input type="checkbox" ${t.completed?'checked':''} onchange="setDone(this.checked)"> Séance terminée</label>`}
 function generateFree(){let z=freeZone.value,d=+freeDuration.value,f=freeFatigue.value;if(f==='high'||f==='neuro')z='Mobilité douce';let rounds=d<=10?1:d<=20?2:3;if(f==='medium')rounds=Math.max(1,rounds-1);const g={zone:z,rounds,items:freeSets[z],warning:f==='neuro'?'Reste sur des mouvements faciles et stables. Arrête si le contrôle diminue.':'La qualité prime sur le volume.'};state.training[selectedTraining].generated=g;save();freeResult.innerHTML=renderGenerated(g)}function renderGenerated(g){return `<div class="rec" style="margin-top:14px"><strong>${g.zone} — ${g.rounds} tour${g.rounds>1?'s':''}</strong><p>${g.warning}</p><ol>${g.items.map(x=>`<li>${x[0]} — ${x[1]}</li>`).join('')}</ol></div>`}
-function calorieGoalClass(value,goal){
- if(!value)return '';
- const ratio=value/goal;
- if(ratio>=.9&&ratio<=1.1)return 'good';
- if(ratio>=.8&&ratio<=1.2)return 'warn';
- return 'bad';
-}
-function goalClass(value,goal){
- if(!value)return '';
- const ratio=value/goal;
- if(ratio>=.9&&ratio<=1.1)return 'good';
- if(ratio>=.75&&ratio<=1.25)return 'warn';
- return 'bad';
-}
 function setGauge(id,value,goal,unit){
- const pct=Math.max(0,Math.min(100,(value||0)/goal*100));
+ const weight=Number(state.settings.weight)||61.8;
+ const band=id==='cal'?calorieBand(value,goal):id==='protein'?proteinBand(value,weight,state.settings.proteinRate):macroBand(value,goal);
+ const pct=rangeCompletion(value,band.low);
  const gauge=document.getElementById(id+'Gauge');
  const ringColors={cal:'var(--accent)',protein:'var(--green)',carb:'var(--cyan)',fat:'var(--violet)'};
  if(gauge){
    gauge.style.setProperty('--macro',pct);
    gauge.style.setProperty('background',`conic-gradient(${ringColors[id]||'var(--green)'} ${pct}%, var(--line) 0)`,'important');
+   const rangeLabel=gauge.querySelector('span');
+   if(rangeLabel){
+     if(id==='cal')rangeLabel.textContent=`${Math.round(band.low)}–${Math.round(band.high)}`;
+     else if(id==='protein')rangeLabel.textContent=`optimal ${Math.round(band.low)}–${Math.round(band.high)} g`;
+     else rangeLabel.textContent=`${Math.round(band.low)}–${Math.round(band.high)} g`;
+   }
  }
  const text=document.getElementById(id+'GaugeText');
- if(text)text.textContent=`${round1(value||0)} / ${round1(goal)} ${unit}`;
- const cls=id==='cal'?calorieGoalClass(value,goal):goalClass(value,goal);
+ if(text){
+   const val=id==='cal'?Math.round(Number(value)||0):round1(value||0);
+   const perKg=id==='protein'&&weight?` · ${round1((Number(value)||0)/weight)} g/kg`:'';
+   text.textContent=`${val} ${unit} · ${band.label}${perKg}`;
+ }
  const row=document.getElementById(id+'GaugeRow');
  if(row){
-   row.className='goal-row macro-card '+cls;
+   row.className='goal-row macro-card '+band.className;
    row.style.setProperty('border-color',`color-mix(in srgb, ${ringColors[id]||'var(--green)'} 34%, var(--line))`,'important');
  }
 }
@@ -1317,21 +1370,18 @@ function escapeHtml(v){
  return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
 function nutritionTip(){
- const n=nutritionTotals(),w=state.settings.weight;
- const goals={calories:state.settings.calories,protein:w*state.settings.proteinRate,carbs:w*state.settings.carbRate,fat:w*state.settings.fatRate};
+ const n=nutritionTotals(),w=Number(state.settings.weight)||61.8;
+ const goals={calories:Number(state.settings.calories)||2200,carbs:w*state.settings.carbRate,fat:w*state.settings.fatRate};
  if(!n.calories&&!n.protein&&!n.carbs&&!n.fat){nutritionAdvice.textContent='Ajoute ton premier repas pour commencer la journée.';return}
- const missing=[];
- if(n.protein<goals.protein*.9)missing.push(`${Math.max(0,Math.round(goals.protein-n.protein))} g de protéines`);
- if(n.carbs<goals.carbs*.9)missing.push(`${Math.max(0,Math.round(goals.carbs-n.carbs))} g de glucides`);
- if(n.fat<goals.fat*.9)missing.push(`${Math.max(0,Math.round(goals.fat-n.fat))} g de lipides`);
- const cd=Math.round(n.calories-goals.calories);
- const lowCal=goals.calories*.9,highCal=goals.calories*1.1;
- let calorieText='';
- if(n.calories>=lowCal&&n.calories<=highCal)calorieText='dans la zone cible';
- else calorieText=cd>0?`${cd} kcal au-dessus de l’objectif`:`${Math.abs(cd)} kcal sous l’objectif`;
- let t=`Calories : ${calorieText}. `;
- t+=missing.length?`Sous les objectifs indicatifs : ${missing.join(', ')}.`:'Les trois objectifs de macros sont dans leur zone cible.';
- nutritionAdvice.textContent=t;
+ const cal=calorieBand(n.calories,goals.calories);
+ const pro=proteinBand(n.protein,w,state.settings.proteinRate);
+ const carb=macroBand(n.carbs,goals.carbs);
+ const fat=macroBand(n.fat,goals.fat);
+ const parts=[`Calories : ${cal.label} (${Math.round(cal.low)}–${Math.round(cal.high)} kcal)`];
+ parts.push(`Protéines : ${pro.label} (${round1(pro.perKg)} g/kg ; zone optimale ${Math.round(pro.low)}–${Math.round(pro.high)} g)`);
+ if(n.carbs)parts.push(`Glucides : ${carb.label}`);
+ if(n.fat)parts.push(`Lipides : ${fat.label}`);
+ nutritionAdvice.textContent=parts.join(' · ')+'.';
 }
 function sleepRating(s){
  if(!s.hours)return {label:'À renseigner',moon:'🌙',score:0};
@@ -1805,7 +1855,7 @@ function exportMeasurementsCsv(){
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`cap-mesures-${todayKey()}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 
-function renderTrends(){const r=Object.values(state.daily).slice(-30),avg=v=>v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10:0,s=r.map(x=>x.sleep?.hours).filter(Boolean),pr=r.map(x=>x.sleep?.physical).filter(Boolean),c=r.map(x=>x.nutrition?.calories).filter(Boolean),p=r.map(x=>x.nutrition?.protein).filter(Boolean);trendKpis.innerHTML=[[avg(s)+' h','Sommeil moyen'],[avg(pr)+' %','Récupération physique'],[avg(c)+' kcal','Calories moyennes'],[avg(p)+' g','Protéines moyennes']].map(x=>`<div class="kpi"><strong>${x[0]}</strong><span>${x[1]}</span></div>`).join('');const a=[];if(s.length>=3&&avg(s)<6.5)a.push('Ton sommeil moyen est bas.');if(p.length>=3&&avg(p)<state.settings.weight*state.settings.proteinRate*.9)a.push('Tes protéines moyennes restent sous ta zone cible.');if(pr.length>=3&&avg(pr)<55)a.push('La récupération physique moyenne est faible.');trendAdvice.innerHTML=(a.length?a:['Pas encore assez de données ou aucune tendance préoccupante.']).map(x=>`<div class="alert">${x}</div>`).join('')}
+function renderTrends(){const r=Object.values(state.daily).slice(-30),avg=v=>v.length?Math.round(v.reduce((a,b)=>a+b,0)/v.length*10)/10:0,s=r.map(x=>x.sleep?.hours).filter(Boolean),pr=r.map(x=>x.sleep?.physical).filter(Boolean),c=r.map(x=>x.nutrition?.calories).filter(Boolean),p=r.map(x=>x.nutrition?.protein).filter(Boolean);trendKpis.innerHTML=[[avg(s)+' h','Sommeil moyen'],[avg(pr)+' %','Récupération physique'],[avg(c)+' kcal','Calories moyennes'],[avg(p)+' g','Protéines moyennes']].map(x=>`<div class="kpi"><strong>${x[0]}</strong><span>${x[1]}</span></div>`).join('');const a=[];if(s.length>=3&&avg(s)<6.5)a.push('Ton sommeil moyen est bas.');if(p.length>=3&&avg(p)/(Number(state.settings.weight)||61.8)<1.45)a.push('Tes protéines moyennes restent sous la zone suffisante.');if(pr.length>=3&&avg(pr)<55)a.push('La récupération physique moyenne est faible.');trendAdvice.innerHTML=(a.length?a:['Pas encore assez de données ou aucune tendance préoccupante.']).map(x=>`<div class="alert">${x}</div>`).join('')}
 function loadSettings(){settingWeight.value=state.settings.weight;settingHeight.value=CAP_PROFILE.heightCm;settingCalories.value=state.settings.calories||2200;settingProteinRate.value=state.settings.proteinRate;settingCarbRate.value=state.settings.carbRate;settingFatRate.value=state.settings.fatRate}function saveSettings(){state.settings={weight:+settingWeight.value||61.8,height:CAP_PROFILE.heightCm,calories:+settingCalories.value||2200,proteinRate:+settingProteinRate.value||1.8,carbRate:+settingCarbRate.value||5,fatRate:+settingFatRate.value||1,navy:state.settings.navy||{sex:'male',neck:36.5,waist:80,hip:95}};save();renderToday();alert('Réglages enregistrés.')}
 function updateThemeButton(){
  const isDark=document.body.classList.contains('dark');
