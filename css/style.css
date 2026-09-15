@@ -1507,3 +1507,24 @@ body.dark .culina-proposal{background:var(--panel)!important}
   .exercise-main label{grid-template-columns:15px 48px minmax(0,1fr)!important}
   .exercise-thumb{width:48px!important;height:48px!important;border-radius:11px!important}
 }
+
+/* Patch mesures v32 : mesure partielle + marge de poids */
+.measure-carry-note{margin:8px 10px 10px!important;padding:9px 10px!important;border-radius:10px!important;background:var(--panel-2)!important;border:1px solid var(--line)!important;color:var(--muted)!important;font-size:.68rem!important;line-height:1.4!important}
+.measure-margin-band{fill:color-mix(in srgb,var(--accent) 14%,transparent)!important;stroke:none!important}
+@media(max-width:760px){.measure-carry-note{font-size:.58rem!important;padding:7px 8px!important}}
+
+
+/* v33 — Mesures: IMC + Navy déplacés depuis Aujourd’hui */
+.measure-health-card{padding:12px !important}
+.measure-health-card>h3{margin-bottom:9px !important;font-size:.92rem !important}
+.measure-health-card .bmi-panel,.measure-health-card .navy-panel{margin-top:10px !important;padding:12px !important;box-shadow:none !important}
+.measure-health-card .bmi-value,.measure-health-card .navy-value{font-size:2rem !important}
+.measure-health-card .field input[readonly]{background:var(--panel-2) !important;color:var(--text) !important;opacity:1 !important;cursor:default}
+.measure-source-note{margin:9px 0 0 !important}
+@media(max-width:620px){
+ .measure-health-card{padding:10px !important}
+ .measure-health-card .form{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+ .measure-health-card .field label{font-size:.58rem !important}
+ .measure-health-card .field input{padding:8px !important;font-size:.72rem !important}
+ .measure-health-card .bmi-panel,.measure-health-card .navy-panel{padding:10px !important}
+}
