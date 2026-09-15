@@ -43,11 +43,6 @@ const kpiCaloriesGoal=document.getElementById('kpiCaloriesGoal');
 const kpiProteinGoal=document.getElementById('kpiProteinGoal');
 const kpiCarbsGoal=document.getElementById('kpiCarbsGoal');
 const kpiFatGoal=document.getElementById('kpiFatGoal');
-const fatigue=document.getElementById('fatigue');
-const fatigueVal=document.getElementById('fatigueVal');
-const neuro=document.getElementById('neuro');
-const neuroVal=document.getElementById('neuroVal');
-const pain=document.getElementById('pain');
 const bmiHeight=document.getElementById('bmiHeight');
 const bmiWeight=document.getElementById('bmiWeight');
 const bmiResult=document.getElementById('bmiResult');
@@ -341,10 +336,9 @@ Object.values(state.trainingHistory).forEach(x=>{
 if(!state.weekSchedules['2026-W33'])state.weekSchedules['2026-W33']={lundi:'dimanche',mardi:'lundi',mercredi:'mardi',jeudi:'mercredi',vendredi:'jeudi',samedi:'vendredi',dimanche:'samedi'};
 let selectedTraining=dayName();
 function ensureDate(k=todayKey()){
- if(!state.daily[k])state.daily[k]={nutrition:{},sleep:{},wellness:{fatigue:5,neuro:3,pain:0}};
+ if(!state.daily[k])state.daily[k]={nutrition:{},sleep:{}};
  if(!state.daily[k].nutrition)state.daily[k].nutrition={};
  if(!state.daily[k].sleep)state.daily[k].sleep={};
- if(!state.daily[k].wellness)state.daily[k].wellness={fatigue:5,neuro:3,pain:0};
  return state.daily[k];
 }
 function ensureNutritionDay(){
@@ -446,69 +440,82 @@ function setScorePart(value,max,labelEl,barEl){
  labelEl.textContent=`${Math.round(value*10)/10} / ${max}`;
  barEl.style.width=Math.max(0,Math.min(100,value/max*100))+'%';
 }
+function activityKeyForDate(date,day){
+ const custom=state.weekSchedules?.[currentWeekKey(date)];
+ const schedule={...defaultWeekSchedule(),...(custom||{})};
+ return schedule[day]||day;
+}
+function scoreActivityForDate(date,key,day,maxPoints){
+ const history=Object.values(state.trainingHistory||{}).find(x=>x?.date===key&&x?.day===day&&x?.completed);
+ if(history)return {points:maxPoints,pct:100,plan:plans[history.activityKey]||plans[day],activityKey:history.activityKey||day,matches:true};
+ const tr=state.training?.[day]||null;
+ const sessionKey=tr?.sessionDate||tr?.date||null;
+ const matches=Boolean(tr && sessionKey===key);
+ const activityKey=matches?(tr.activityKey||activityKeyForDate(date,day)):activityKeyForDate(date,day);
+ plans.mardi=getTuesdayPlan();
+ plans.mercredi=getWednesdayPlan();
+ const p=plans[activityKey]||plans[day];
+ let pct=0;
+ if(matches){
+  if(tr.completed)pct=100;
+  else if(p?.rest||p?.free)pct=0;
+  else{
+   const total=p?.exercises?.length||0;
+   const done=Object.keys(tr.checks||{}).filter(k=>tr.checks[k]&&Number(k)<total).length;
+   pct=total?Math.round(done/total*100):0;
+  }
+ }
+ return {points:maxPoints*(pct/100),pct,plan:p,activityKey,matches};
+}
 function calculateYesterdayScore(){
  const date=new Date();
  date.setDate(date.getDate()-1);
  const key=localDateKey(date);
  const day=dow[date.getDay()];
- const raw=state.daily[key]||null;
+ const sleepDate=new Date(date);
+ sleepDate.setDate(sleepDate.getDate()+1);
+ const sleepKey=localDateKey(sleepDate);
+ const sleepRaw=state.daily[sleepKey]?.sleep||{};
+ const MAX=100/3;
  const parts={};
  let earned=0,available=0;
  const reasons=[];
 
- // Sommeil — 30 points.
- const s=raw?.sleep||{};
- const sleepFields=[s.hours,s.quality,s.physical,s.mental].map(Number);
- if(sleepFields.some(v=>Number.isFinite(v)&&v>0)){
-  const duration=Math.min(10,Math.max(0,(Number(s.hours)||0)/8*10));
-  const quality=Math.max(0,Math.min(7,(Number(s.quality)||0)/100*7));
-  const physical=Math.max(0,Math.min(7,(Number(s.physical)||0)/100*7));
-  const mental=Math.max(0,Math.min(6,(Number(s.mental)||0)/100*6));
-  parts.sleep=duration+quality+physical+mental;
-  earned+=parts.sleep;available+=30;
-  if((Number(s.hours)||0)<6)reasons.push('nuit trop courte');
-  else if(parts.sleep>=25)reasons.push('bonne récupération nocturne');
- }
-
- // Nutrition — 30 points.
+ // Nutrition de la journée — un tiers du score.
  const nt=totalsForDate(key);
  if(nt.hasData){
   const w=Number(state.settings.weight)||61.8;
-  parts.nutrition=
+  const nutritionBase=
     calorieTargetScore(nt.calories,state.settings.calories,8)+
     targetScore(nt.protein,w*state.settings.proteinRate,9)+
     targetScore(nt.carbs,w*state.settings.carbRate,7)+
     targetScore(nt.fat,w*state.settings.fatRate,6);
-  earned+=parts.nutrition;available+=30;
-  if(parts.nutrition>=26)reasons.push('objectifs nutritionnels bien respectés');
-  else if(parts.nutrition<18)reasons.push('apports éloignés des objectifs');
+  parts.nutrition=nutritionBase/30*MAX;
+  earned+=parts.nutrition;available+=MAX;
+  if(nutritionBase>=26)reasons.push('objectifs nutritionnels bien respectés');
+  else if(nutritionBase<18)reasons.push('apports éloignés des objectifs');
  }
 
- // Activité — 20 points.
- const tr=state.training[day];
- if(tr && tr.date===key){
-  parts.activity=tr.completed?20:5;
-  earned+=parts.activity;available+=20;
-  reasons.push(tr.completed?'activité prévue accomplie':'activité non terminée');
- }
+ // Activité de la journée — un tiers du score.
+ const act=scoreActivityForDate(date,key,day,MAX);
+ parts.activity=act.points;
+ earned+=parts.activity;available+=MAX;
+ if(act.pct>=100)reasons.push('activité prévue accomplie');
+ else if(act.pct>0)reasons.push(`activité réalisée à ${act.pct} %`);
+ else reasons.push('activité non validée');
 
- // Bien-être — 20 points.
- const w=raw?.wellness;
- if(w && [w.fatigue,w.neuro,w.pain].some(v=>v!==undefined&&v!==null&&v!=='')){
-  const fatigue=Number(w.fatigue);
-  const neuro=Number(w.neuro);
-  const pain=Number(w.pain);
-  const fatiguePts=Number.isFinite(fatigue)?Math.max(0,Math.min(8,(10-fatigue)/9*8)):0;
-  const neuroPts=Number.isFinite(neuro)?Math.max(0,Math.min(8,(10-neuro)/9*8)):0;
-  const painPts=pain===0?4:pain===1?3:pain===2?1.5:0;
-  parts.wellness=fatiguePts+neuroPts+painPts;
-  earned+=parts.wellness;available+=20;
-  if(pain>=2)reasons.push('douleur à surveiller');
-  else if(fatigue>=7||neuro>=7)reasons.push('fatigue élevée');
+ // Sommeil qui suit la journée (ex. lundi -> nuit de lundi à mardi) — un tiers.
+ const sleepFields=[sleepRaw.hours,sleepRaw.quality,sleepRaw.physical,sleepRaw.mental].map(Number);
+ if(sleepFields.some(v=>Number.isFinite(v)&&v>0)){
+  const sleepPct=sleepCompositeScore(sleepRaw);
+  parts.sleep=sleepPct/100*MAX;
+  earned+=parts.sleep;available+=MAX;
+  if((Number(sleepRaw.hours)||0)<6)reasons.push('nuit suivante trop courte');
+  else if(sleepPct>=85)reasons.push('très bonne récupération la nuit suivante');
  }
 
  const score=available?Math.round(earned/available*100):null;
- return {date,key,parts,earned,available,coverage:available,score,reasons};
+ return {date,key,sleepDate,sleepKey,parts,earned,available,coverage:Math.round(available),score,reasons};
 }
 function renderYesterdayScore(){
  const result=calculateYesterdayScore();
@@ -518,7 +525,7 @@ function renderYesterdayScore(){
   yesterdayScoreValue.textContent='—';
   yesterdayScoreStatus.textContent='Données insuffisantes';
   yesterdayScoreBar.style.width='0%';
-  yesterdayScoreCoverage.textContent='Renseigne au moins une catégorie pour obtenir un score.';
+  yesterdayScoreCoverage.textContent='Score basé sur nutrition + activité + sommeil de la nuit qui suit la journée.';
   return;
  }
  const status=capScoreLabel(result.score);
@@ -526,11 +533,24 @@ function renderYesterdayScore(){
  yesterdayScoreValue.textContent=result.score;
  yesterdayScoreStatus.textContent=status.label;
  yesterdayScoreBar.style.width=result.score+'%';
- yesterdayScoreCoverage.textContent=`Calculé à partir de ${result.coverage} % des données possibles.`;
-
+ const sleepDone=result.parts.sleep!=null;
+ yesterdayScoreCoverage.textContent=sleepDone
+  ? `Nutrition + activité + sommeil de la nuit suivante · ${result.coverage} % des données disponibles.`
+  : `Score provisoire · le sommeil de la nuit suivante n’est pas encore renseigné · ${result.coverage} % des données disponibles.`;
 }
 
-function advice(){const d=ensureDate(),s=d.sleep,w=d.wellness;let score=100,r=[],level='good',action='Séance normale';if(w.neuro>=7){score-=45;r.push('fatigue neurologique élevée');action='Repos ou mobilité douce';level='bad'}if(w.pain>=3){score-=40;r.push('douleur forte ou inhabituelle');action='Ne commence pas une séance intense';level='bad'}else if(w.pain===2){score-=22;r.push('douleur moyenne');action='Séance allégée en évitant la zone douloureuse';level='warn'}else if(w.pain===1){score-=10;r.push('douleur légère');action='Séance normale sans progression, en adaptant tout exercice douloureux'}if(s.hours&&s.hours<6.5){score-=18;r.push('nuit courte')}if(s.physical&&s.physical<50){score-=20;r.push('récupération physique faible')}if(w.fatigue>=7){score-=16;r.push('fatigue générale élevée')}if(level!=='bad'&&score<70){level='warn';action='Séance allégée'}else if(level==='good'&&score<85){level='warn';action='Séance normale sans progression'}let text=`${action}. ${r.length?'Cap se base sur : '+r.join(', ')+'.':'Aucun signal important ne justifie d’alléger.'}`;if(getPlanForDay(dayName()).rest)text='Repos complet prévu aujourd’hui. Le repos compte comme une action utile.';return{level,text}}
+function advice(){
+ const d=ensureDate(),s=d.sleep;
+ let score=100,r=[],level='good',action='Séance normale';
+ if(s.hours&&s.hours<6){score-=35;r.push('nuit très courte');action='Séance allégée';level='warn'}
+ else if(s.hours&&s.hours<6.5){score-=18;r.push('nuit courte')}
+ if(s.physical&&s.physical<40){score-=30;r.push('récupération physique faible');action='Séance allégée';level='warn'}
+ else if(s.physical&&s.physical<55){score-=15;r.push('récupération physique moyenne')}
+ if(level==='good'&&score<85){level='warn';action='Séance normale sans progression'}
+ let text=`${action}. ${r.length?'Cap se base sur ton sommeil : '+r.join(', ')+'.':'Aucun signal lié au sommeil ne justifie d’alléger.'}`;
+ if(getPlanForDay(dayName()).rest)text='Repos complet prévu aujourd’hui. Le repos compte comme une action utile.';
+ return{level,text};
+}
 function setMiniBar(el,value,goal){
  const pct=goal>0?Math.max(0,Math.min(100,(Number(value)||0)/goal*100)):0;
  el.style.width=pct+'%';
@@ -626,30 +646,12 @@ function renderToday(){
  setMiniBar(kpiCarbsBar,totals.carbs,carbsGoal);
  setMiniBar(kpiFatBar,totals.fat,fatGoal);
 
- fatigue.value=d.wellness.fatigue;
- fatigueVal.textContent=d.wellness.fatigue;
- neuro.value=d.wellness.neuro;
- neuroVal.textContent=d.wellness.neuro;
- pain.value=d.wellness.pain;
- fatigue.oninput=()=>fatigueVal.textContent=fatigue.value;
- neuro.oninput=()=>neuroVal.textContent=neuro.value;
-
- bmiHeight.value=CAP_PROFILE.heightCm;
- bmiWeight.value=state.settings.weight;
- calcBMI();
- bmiHeight.oninput=calcBMI;
- bmiWeight.oninput=calcBMI;
- if(!state.settings.navy)state.settings.navy={neck:36.5,waist:80};
- navyNeck.value=state.settings.navy.neck??36.5;
- navyWaist.value=state.settings.navy.waist??80;
- navyNeck.oninput=calcNavy;
- navyWaist.oninput=calcNavy;
- calcNavy();
  renderAlerts();
 }
 function calcBMI(){
+ if(!bmiHeight||!bmiWeight||!bmiResult||!bmiCategory||!bmiPointer)return;
  const h=Number(bmiHeight.value)/100,w=Number(bmiWeight.value);
- if(!h||!w){bmiResult.textContent='—';bmiCategory.textContent='À calculer';bmiPointer.style.left='0%';return}
+ if(!h||!w){bmiResult.textContent='—';bmiCategory.textContent='À calculer';bmiPointer.style.left='0%';if(bmiText)bmiText.textContent='Ajoute au moins un poids dans Mesures.';return}
  const b=w/(h*h);
  let label='';
  if(b<18.5)label='Corpulence insuffisante';
@@ -661,7 +663,7 @@ function calcBMI(){
  const min=16,max=35;
  const pos=Math.max(0,Math.min(100,(b-min)/(max-min)*100));
  bmiPointer.style.left=pos+'%';
- bmiText.textContent='Repère général : il ne mesure pas directement la masse musculaire ni la répartition des graisses.';
+ if(bmiText)bmiText.textContent=`Poids interprété avec une marge de ± ${WEIGHT_MARGIN_KG} kg · taille possible 170–172 cm.`;
 }
 
 function navyCategoryLabel(value){
@@ -672,7 +674,8 @@ function navyCategoryLabel(value){
  return 'Zone élevée';
 }
 function calcNavy(){
- const height=CAP_PROFILE.heightCm;
+ if(!navyNeck||!navyWaist||!navyResult||!navyCategory||!navyPointer)return;
+ const height=Number(bmiHeight?.value)||measurementHeight();
  const neck=Number(navyNeck.value);
  const waist=Number(navyWaist.value);
  if(!neck||!waist||waist<=neck){
@@ -693,14 +696,9 @@ function calcNavy(){
  navyResult.textContent=rounded.toFixed(1).replace('.',',')+' %';
  navyCategory.textContent=navyCategoryLabel(rounded);
  navyPointer.style.left=Math.max(0,Math.min(100,(rounded-5)/40*100))+'%';
- if(!state.settings.navy)state.settings.navy={};
- state.settings.navy.neck=neck;
- state.settings.navy.waist=waist;
- save();
 }
 
-function saveWellness(){ensureDate().wellness={fatigue:+fatigue.value,neuro:+neuro.value,pain:+pain.value};save();renderToday()}
-function renderAlerts(){const d=ensureDate(),pg=Math.round(state.settings.weight*state.settings.proteinRate),a=[];if(d.sleep.hours&&d.sleep.hours<6.5)a.push('Nuit courte : évite de rechercher une performance maximale.');if(d.sleep.physical&&d.sleep.physical<50)a.push('Récupération physique basse : réduis le volume.');if(d.wellness.neuro>=7)a.push('Fatigue neurologique élevée : Cap déconseille une séance exigeante.');if(d.wellness.pain===1)a.push('Douleur légère : conserve seulement les mouvements indolores et ne cherche pas à progresser aujourd’hui.');if(d.wellness.pain===2)a.push('Douleur moyenne : allège la séance et évite la zone concernée.');if(d.wellness.pain>=3)a.push('Douleur forte ou inhabituelle : ne force pas et demande un avis médical si elle persiste.');const nt=nutritionTotals();if(nt.protein&&nt.protein<pg*.8)a.push(`Protéines basses : ${round1(nt.protein)} g sur environ ${pg} g.`);alerts.innerHTML=(a.length?a:['Aucune alerte importante pour aujourd’hui.']).map(x=>`<div class="alert">${x}</div>`).join('')}
+function renderAlerts(){const d=ensureDate(),pg=Math.round(state.settings.weight*state.settings.proteinRate),a=[];if(d.sleep.hours&&d.sleep.hours<6.5)a.push('Nuit courte : évite de rechercher une performance maximale.');if(d.sleep.physical&&d.sleep.physical<50)a.push('Récupération physique basse : réduis le volume.');const nt=nutritionTotals();if(nt.protein&&nt.protein<pg*.8)a.push(`Protéines basses : ${round1(nt.protein)} g sur environ ${pg} g.`);alerts.innerHTML=(a.length?a:['Aucune alerte importante pour aujourd’hui.']).map(x=>`<div class="alert">${x}</div>`).join('')}
 function renderWeek(){
  plans.mardi=getTuesdayPlan();
  plans.mercredi=getWednesdayPlan();
@@ -886,10 +884,6 @@ function lightenMeta(meta){
 }
 function getLightReason(){
  const d=ensureDate();
- if((d.wellness?.pain||0)>=3)return 'Douleur forte ou inhabituelle : séance intense déconseillée.';
- if((d.wellness?.pain||0)>=2)return 'Douleur moyenne détectée.';
- if((d.wellness?.neuro||0)>=6)return 'Fatigue neurologique élevée.';
- if((d.wellness?.fatigue||0)>=7)return 'Fatigue générale élevée.';
  if(d.sleep?.hours && d.sleep.hours<6)return 'Sommeil inférieur à 6 heures.';
  if(d.sleep?.physical && d.sleep.physical<50)return 'Récupération physique inférieure à 50 %.';
  return '';
@@ -1365,16 +1359,34 @@ function sleepTip(){
  if(s.hours)t=r.score<55?'Récupération limitée : privilégie une séance allégée, douce ou du repos.':r.score>=85?'Excellente récupération : la séance prévue peut être maintenue normalement.':r.score>=70?'Bonne récupération : suis le programme prévu en restant attentif à tes sensations.':'Récupération moyenne : évite de chercher une performance maximale.';
  sleepAdvice.textContent=t;
 }
-function renderHistory(days){const out=[],now=new Date();for(let i=0;i<days;i++){const d=new Date(now);d.setDate(now.getDate()-i);const k=d.toISOString().slice(0,10),x=state.daily[k];if(!x)continue;const p=[];if(x.nutrition?.calories)p.push(`${x.nutrition.calories} kcal · ${x.nutrition.protein||0} g protéines`);if(x.sleep?.hours)p.push(`${x.sleep.hours} h · récupération ${x.sleep.physical||0} %`);if(x.wellness?.fatigue)p.push(`fatigue ${x.wellness.fatigue}/10`);out.push(`<div class="history-item"><strong>${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</strong><div class="muted">${p.join(' · ')||'Aucune donnée détaillée'}</div></div>`)}historyList.innerHTML=out.join('')||'<p class="note">Aucune donnée enregistrée.</p>'}
+function renderHistory(days){const out=[],now=new Date();for(let i=0;i<days;i++){const d=new Date(now);d.setDate(now.getDate()-i);const k=d.toISOString().slice(0,10),x=state.daily[k];if(!x)continue;const p=[];if(x.nutrition?.calories)p.push(`${x.nutrition.calories} kcal · ${x.nutrition.protein||0} g protéines`);if(x.sleep?.hours)p.push(`${x.sleep.hours} h · récupération ${x.sleep.physical||0} %`);out.push(`<div class="history-item"><strong>${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</strong><div class="muted">${p.join(' · ')||'Aucune donnée détaillée'}</div></div>`)}historyList.innerHTML=out.join('')||'<p class="note">Aucune donnée enregistrée.</p>'}
 
 let editingMeasurementDate=null;
 const MEASURE_FIELDS=['weight','waist','neck','chest','hips','armL','armR','thighL','thighR'];
+const WEIGHT_MARGIN_KG=1;
 function numberOrNull(v){
  const n=Number(v);
  return Number.isFinite(n)&&n>0?n:null;
 }
+function isMeasureValue(v){
+ return v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v));
+}
 function fmtMeasure(v,digits=1,suffix=''){
- return Number.isFinite(Number(v))?`${Number(v).toFixed(digits).replace('.',',')}${suffix}`:'—';
+ return isMeasureValue(v)?`${Number(v).toFixed(digits).replace('.',',')}${suffix}`:'—';
+}
+function fmtWeight(v){
+ return isMeasureValue(v)?`${Number(v).toFixed(1).replace('.',',')} kg ± ${WEIGHT_MARGIN_KG.toFixed(0)} kg`:'—';
+}
+function fmtWeightChange(v){
+ if(v==null||!Number.isFinite(v))return '—';
+ if(Math.abs(v)<=WEIGHT_MARGIN_KG)return `≈ stable (± ${WEIGHT_MARGIN_KG.toFixed(0)} kg)`;
+ const sign=v>0?'+':'';
+ return `${sign}${v.toFixed(1).replace('.',',')} kg`;
+}
+function fmtEstimateWithMargin(value,margin,unit='kg'){
+ if(!isMeasureValue(value)||!Number.isFinite(Number(margin)))return '—';
+ const suffix=unit?` ${unit}`:'';
+ return `${Number(value).toFixed(1).replace('.',',')}${suffix} ± ${Number(margin).toFixed(1).replace('.',',')}${suffix}`;
 }
 function measurementHeight(){
  const h=Number(state.measureProfile?.height)||171;
@@ -1409,6 +1421,50 @@ function derivedMeasurement(m){
 function sortedMeasurements(){
  return [...state.measurements].sort((a,b)=>a.date.localeCompare(b.date));
 }
+function resolvedMeasurements(){
+ const carry={};
+ const sources={};
+ const legacyNavy=state.settings?.navy||{};
+ if(isMeasureValue(state.settings?.weight)){carry.weight=Number(state.settings.weight);sources.weight='settings';}
+ if(isMeasureValue(legacyNavy.waist)){carry.waist=Number(legacyNavy.waist);sources.waist='legacy';}
+ if(isMeasureValue(legacyNavy.neck)){carry.neck=Number(legacyNavy.neck);sources.neck='legacy';}
+ let carryHeight=measurementHeight();
+ return sortedMeasurements().map(raw=>{
+  const resolved={...raw};
+  const carried=[];
+  if(isMeasureValue(raw.height))carryHeight=Number(raw.height);
+  resolved.height=isMeasureValue(raw.height)?Number(raw.height):carryHeight;
+  MEASURE_FIELDS.forEach(key=>{
+   if(isMeasureValue(raw[key])){
+    carry[key]=Number(raw[key]);
+    sources[key]=raw.date;
+    resolved[key]=Number(raw[key]);
+   }else if(isMeasureValue(carry[key])){
+    resolved[key]=carry[key];
+    carried.push(key);
+   }else{
+    resolved[key]=null;
+   }
+  });
+  resolved._carriedFields=carried;
+  resolved._sources={...sources};
+  return resolved;
+ });
+}
+function formatMeasureSource(source){
+ if(!source)return '—';
+ if(source==='legacy')return 'dernier relevé conservé';
+ if(source==='settings')return 'réglages';
+ const d=new Date(source+'T12:00:00');
+ return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'});
+}
+function lastActualField(field){
+ const rows=sortedMeasurements().filter(m=>isMeasureValue(m[field]));
+ return rows.at(-1)||null;
+}
+function firstActualField(field){
+ return sortedMeasurements().find(m=>isMeasureValue(m[field]))||null;
+}
 function measureDelta(current,previous,key){
  if(!current||!previous||current[key]==null||previous[key]==null)return null;
  return current[key]-previous[key];
@@ -1420,10 +1476,9 @@ function deltaText(v,suffix=''){
  return `<span class="${cls}">${sign}${v.toFixed(1).replace('.',',')}${suffix}</span>`;
 }
 function loadMeasureForm(m=null){
- const latest=m||sortedMeasurements().at(-1)||{};
  measureDate.value=m?.date||todayKey();
  measureHeight.value=String(m?.height||state.measureProfile?.height||171);
- measureHeightLabel.textContent=`${String(measureHeight.value).replace('.',',')} cm`;
+ measureHeightLabel.textContent='170–172 cm';
  MEASURE_FIELDS.forEach(key=>{
   const el=document.getElementById('measure'+key[0].toUpperCase()+key.slice(1));
   if(el)el.value=m?.[key]??'';
@@ -1451,12 +1506,23 @@ function saveMeasurement(){
  state.measureProfile={sex:'male',height};
  state.settings.height=height;
  if(m.weight)state.settings.weight=m.weight;
- const targetDate=editingMeasurementDate||date;
- const idx=state.measurements.findIndex(x=>x.date===targetDate);
- if(idx>=0)state.measurements.splice(idx,1);
- const sameDate=state.measurements.findIndex(x=>x.date===date);
- if(sameDate>=0)state.measurements.splice(sameDate,1);
- state.measurements.push(m);
+ if(editingMeasurementDate){
+  const idx=state.measurements.findIndex(x=>x.date===editingMeasurementDate);
+  if(idx>=0)state.measurements.splice(idx,1);
+  const sameDate=state.measurements.findIndex(x=>x.date===date);
+  if(sameDate>=0)state.measurements.splice(sameDate,1);
+  state.measurements.push(m);
+ }else{
+  const sameDate=state.measurements.findIndex(x=>x.date===date);
+  if(sameDate>=0){
+   const existing=state.measurements[sameDate];
+   const merged={...existing,date,height};
+   MEASURE_FIELDS.forEach(key=>{if(m[key]!=null)merged[key]=m[key]});
+   state.measurements[sameDate]=merged;
+  }else{
+   state.measurements.push(m);
+  }
+ }
  state.measurements.sort((a,b)=>a.date.localeCompare(b.date));
  save();
  editingMeasurementDate=null;
@@ -1476,26 +1542,36 @@ function deleteMeasurement(date){
  renderMeasures();
 }
 function renderMeasureKpis(){
- const arr=sortedMeasurements().map(derivedMeasurement),latest=arr.at(-1),prev=arr.at(-2);
+ const arr=resolvedMeasurements().map(derivedMeasurement),latest=arr.at(-1),prev=arr.at(-2);
  if(!latest){
   measureKpis.innerHTML='<div class="alert">Ajoute une première mesure pour afficher les statistiques.</div>';
   measureComposition.innerHTML='';
   return;
  }
+ const weightDelta=prev?measureDelta(latest,prev,'weight'):null;
  const kpis=[
-  ['Poids',fmtMeasure(latest.weight,1,' kg'),deltaText(measureDelta(latest,prev,'weight'),' kg')],
+  ['Poids',fmtWeight(latest.weight),fmtWeightChange(weightDelta)],
   ['IMC',fmtMeasure(latest.bmi,1,''),prev?deltaText(measureDelta(latest,prev,'bmi')):'—'],
   ['Masse grasse',fmtMeasure(latest.bodyFat,1,' %'),prev?deltaText(measureDelta(latest,prev,'bodyFat'),' pt'):'—'],
   ['Taille / hauteur',latest.whtr?latest.whtr.toFixed(3).replace('.',','):'—',prev?deltaText(measureDelta(latest,prev,'whtr')):'—']
  ];
  measureKpis.innerHTML=kpis.map(([label,value,delta])=>`<div class="measure-kpi"><span>${label}</span><strong>${value}</strong><small>vs précédente : ${delta}</small></div>`).join('');
- const bmiRange=latest.weight?`${calcBmi(latest.weight,172).toFixed(1).replace('.',',')}–${calcBmi(latest.weight,170).toFixed(1).replace('.',',')}`:'—';
+ const bfFraction=isMeasureValue(latest.bodyFat)?Number(latest.bodyFat)/100:null;
+ const leanFraction=bfFraction!=null?1-bfFraction:null;
+ const h2=(Number(latest.height||measurementHeight())/100)**2;
+ const leanMargin=leanFraction!=null?WEIGHT_MARGIN_KG*leanFraction:null;
+ const fatMargin=bfFraction!=null?WEIGHT_MARGIN_KG*bfFraction:null;
+ const ffmiMargin=leanMargin!=null?leanMargin/h2:null;
+ const fmiMargin=fatMargin!=null?fatMargin/h2:null;
+ const bmiRange=isMeasureValue(latest.weight)?`${calcBmi(Math.max(1,latest.weight-WEIGHT_MARGIN_KG),172).toFixed(1).replace('.',',')}–${calcBmi(latest.weight+WEIGHT_MARGIN_KG,170).toFixed(1).replace('.',',')}`:'—';
+ const navySources=latest._sources?.waist&&latest._sources?.neck?`${formatMeasureSource(latest._sources.waist)} / ${formatMeasureSource(latest._sources.neck)}`:'—';
  measureComposition.innerHTML=[
-  ['Masse maigre estimée',fmtMeasure(latest.leanMass,1,' kg')],
-  ['Masse grasse estimée',fmtMeasure(latest.fatMass,1,' kg')],
-  ['FFMI',fmtMeasure(latest.ffmi,1,'')],
-  ['FMI',fmtMeasure(latest.fmi,1,'')],
-  ['IMC selon 170–172 cm',bmiRange],
+  ['Masse maigre estimée',fmtEstimateWithMargin(latest.leanMass,leanMargin,'kg')],
+  ['Masse grasse estimée',fmtEstimateWithMargin(latest.fatMass,fatMargin,'kg')],
+  ['FFMI',fmtEstimateWithMargin(latest.ffmi,ffmiMargin,'')],
+  ['FMI',fmtEstimateWithMargin(latest.fmi,fmiMargin,'')],
+  ['IMC · marge + 170–172 cm',bmiRange],
+  ['Taille / cou utilisés',navySources],
   ['Dernière date',new Date(latest.date+'T12:00:00').toLocaleDateString('fr-FR')]
  ].map(([a,b])=>`<div class="measure-composition-row"><span>${a}</span><strong>${b}</strong></div>`).join('');
 }
@@ -1512,57 +1588,72 @@ function metricInfo(key){
 }
 function renderMeasureChart(){
  const key=measureMetric?.value||'weight',info=metricInfo(key);
- const points=sortedMeasurements().map(derivedMeasurement).filter(m=>Number.isFinite(Number(m[key]))).slice(-30);
+ const rawMetrics=new Set(['weight','waist','chest']);
+ const source=rawMetrics.has(key)?sortedMeasurements().map(derivedMeasurement):resolvedMeasurements().map(derivedMeasurement);
+ const points=source.filter(m=>isMeasureValue(m[key])).slice(-30);
  if(points.length<2){
   measureChart.innerHTML='<div class="measure-chart-empty">Au moins deux mesures sont nécessaires pour tracer une évolution.</div>';
   measureChartStats.innerHTML='';
   return;
  }
  const vals=points.map(p=>Number(p[key])),min=Math.min(...vals),max=Math.max(...vals);
- const pad=Math.max((max-min)*.15, key==='weight'?0.5:.25),lo=min-pad,hi=max+pad;
+ const margin=key==='weight'?WEIGHT_MARGIN_KG:0;
+ const pad=Math.max((max-min)*.15, key==='weight'?0.35:.25),lo=min-margin-pad,hi=max+margin+pad;
  const W=720,H=215,L=42,R=14,T=14,B=30;
  const x=i=>L+(W-L-R)*(points.length===1?0.5:i/(points.length-1));
  const y=v=>T+(H-T-B)*(1-(v-lo)/(hi-lo||1));
  const poly=points.map((p,i)=>`${x(i).toFixed(1)},${y(Number(p[key])).toFixed(1)}`).join(' ');
- const dots=points.map((p,i)=>`<circle cx="${x(i)}" cy="${y(Number(p[key]))}" r="3.5"><title>${p.date} · ${Number(p[key]).toFixed(info.digits)} ${info.unit}</title></circle>`).join('');
+ const dots=points.map((p,i)=>`<circle cx="${x(i)}" cy="${y(Number(p[key]))}" r="3.5"><title>${p.date} · ${Number(p[key]).toFixed(info.digits)} ${info.unit}${key==='weight'?` ± ${WEIGHT_MARGIN_KG} kg`:''}</title></circle>`).join('');
+ const band=key==='weight'?(()=>{
+  const upper=points.map((p,i)=>`${x(i).toFixed(1)},${y(Number(p[key])+WEIGHT_MARGIN_KG).toFixed(1)}`);
+  const lower=[...points].reverse().map((p,ri)=>{const i=points.length-1-ri;return `${x(i).toFixed(1)},${y(Number(p[key])-WEIGHT_MARGIN_KG).toFixed(1)}`});
+  return `<polygon points="${[...upper,...lower].join(' ')}" class="measure-margin-band"><title>Marge de variation du poids : ± ${WEIGHT_MARGIN_KG} kg</title></polygon>`;
+ })():'';
  const first=points[0],last=points.at(-1),avg=vals.reduce((a,b)=>a+b,0)/vals.length;
  measureChart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Courbe ${info.label}">
   <line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" class="chart-axis"/>
   <line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" class="chart-axis"/>
   <text x="4" y="${T+6}" class="chart-label">${hi.toFixed(info.digits)}</text>
   <text x="4" y="${H-B}" class="chart-label">${lo.toFixed(info.digits)}</text>
+  ${band}
   <polyline points="${poly}" fill="none" class="measure-line"/>
   <g class="measure-dots">${dots}</g>
   <text x="${L}" y="${H-7}" class="chart-label">${first.date.slice(5)}</text>
   <text x="${W-R-34}" y="${H-7}" class="chart-label">${last.date.slice(5)}</text>
  </svg>`;
  const change=vals.at(-1)-vals[0];
- const stdev=Math.sqrt(vals.reduce((a,v)=>a+(v-avg)**2,0)/vals.length);
+ const startText=key==='weight'?`${vals[0].toFixed(1).replace('.',',')} ± ${WEIGHT_MARGIN_KG} kg`:`${vals[0].toFixed(info.digits)} ${info.unit}`;
+ const currentText=key==='weight'?`${vals.at(-1).toFixed(1).replace('.',',')} ± ${WEIGHT_MARGIN_KG} kg`:`${vals.at(-1).toFixed(info.digits)} ${info.unit}`;
+ const changeText=key==='weight'?fmtWeightChange(change):`${change>0?'+':''}${change.toFixed(info.digits)} ${info.unit}`;
  measureChartStats.innerHTML=[
-  ['Départ',`${vals[0].toFixed(info.digits)} ${info.unit}`],
-  ['Actuel',`${vals.at(-1).toFixed(info.digits)} ${info.unit}`],
-  ['Évolution',`${change>0?'+':''}${change.toFixed(info.digits)} ${info.unit}`],
+  ['Départ',startText],
+  ['Actuel',currentText],
+  ['Évolution',changeText],
   ['Moyenne',`${avg.toFixed(info.digits)} ${info.unit}`]
  ].map(x=>`<div class="measure-stat-mini"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join('');
 }
 function renderMeasureStats(){
- const arr=sortedMeasurements().map(derivedMeasurement),latest=arr.at(-1),first=arr[0];
+ const raw=sortedMeasurements(),arr=resolvedMeasurements().map(derivedMeasurement),latest=arr.at(-1),first=arr[0];
  if(!latest){
   measureStats.innerHTML='<div class="alert">Pas encore assez de données.</div>';
   measureSymmetry.innerHTML='<div class="alert">Renseigne les mensurations gauche/droite pour comparer.</div>';
   return;
  }
- const weightVals=arr.map(x=>x.weight).filter(Number.isFinite);
+ const weightVals=raw.map(x=>x.weight).filter(isMeasureValue).map(Number);
  const recent7=weightVals.slice(-7), recent30=weightVals.slice(-30);
  const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
  const days=first&&latest?Math.max(0,Math.round((new Date(latest.date)-new Date(first.date))/86400000)):0;
+ const firstWeight=firstActualField('weight'),lastWeight=lastActualField('weight');
+ const firstWaist=firstActualField('waist'),lastWaist=lastActualField('waist');
+ const weightEvolution=firstWeight&&lastWeight?Number(lastWeight.weight)-Number(firstWeight.weight):null;
+ const waistEvolution=firstWaist&&lastWaist?Number(lastWaist.waist)-Number(firstWaist.waist):null;
  const stats=[
-  ['Mesures enregistrées',arr.length,`${days} jour${days>1?'s':''} de suivi`],
+  ['Mesures enregistrées',raw.length,`${days} jour${days>1?'s':''} de suivi`],
   ['Poids moyen · 7 mesures',fmtMeasure(avg(recent7),1,' kg'),recent7.length?`sur ${recent7.length} mesure${recent7.length>1?'s':''}`:'—'],
   ['Poids moyen · 30 mesures',fmtMeasure(avg(recent30),1,' kg'),recent30.length?`sur ${recent30.length} mesure${recent30.length>1?'s':''}`:'—'],
-  ['Poids min / max',weightVals.length?`${Math.min(...weightVals).toFixed(1).replace('.',',')} / ${Math.max(...weightVals).toFixed(1).replace('.',',')} kg`:'—','sur tout l’historique'],
-  ['Évolution du poids',first?.weight&&latest?.weight?`${latest.weight-first.weight>=0?'+':''}${(latest.weight-first.weight).toFixed(1).replace('.',',')} kg`:'—','depuis la première mesure'],
-  ['Évolution du tour de taille',first?.waist&&latest?.waist?`${latest.waist-first.waist>=0?'+':''}${(latest.waist-first.waist).toFixed(1).replace('.',',')} cm`:'—','depuis la première mesure']
+  ['Poids min / max',weightVals.length?`${Math.min(...weightVals).toFixed(1).replace('.',',')} / ${Math.max(...weightVals).toFixed(1).replace('.',',')} kg`:'—','sur les pesées réelles'],
+  ['Évolution du poids',fmtWeightChange(weightEvolution),'une variation ≤ 1 kg reste dans la marge'],
+  ['Évolution du tour de taille',waistEvolution!=null?`${waistEvolution>=0?'+':''}${waistEvolution.toFixed(1).replace('.',',')} cm`:'—','entre la première et la dernière mesure réelle']
  ];
  measureStats.innerHTML=stats.map(([a,b,c])=>`<div class="measure-stat-row"><div class="row-head"><span>${a}</span><strong>${b}</strong></div><small>${c}</small></div>`).join('');
  const sym=[];
@@ -1586,18 +1677,42 @@ function renderMeasureHistory(){
   <div class="measure-history-buttons"><button class="btn" onclick="editMeasurement('${m.date}')">Modifier</button><button class="btn" onclick="deleteMeasurement('${m.date}')">×</button></div>
  </div>`).join(''):'<div class="alert">Aucune mesure enregistrée.</div>';
 }
+function renderMeasureHealthCards(){
+ if(!bmiHeight||!bmiWeight||!navyNeck||!navyWaist)return;
+ const latest=resolvedMeasurements().map(derivedMeasurement).at(-1)||null;
+ const height=latest?.height||measurementHeight();
+ const weight=isMeasureValue(latest?.weight)?Number(latest.weight):(isMeasureValue(state.settings?.weight)?Number(state.settings.weight):null);
+ const legacyNavy=state.settings?.navy||{};
+ const neck=isMeasureValue(latest?.neck)?Number(latest.neck):(isMeasureValue(legacyNavy.neck)?Number(legacyNavy.neck):null);
+ const waist=isMeasureValue(latest?.waist)?Number(latest.waist):(isMeasureValue(legacyNavy.waist)?Number(legacyNavy.waist):null);
+ bmiHeight.value=height||171;
+ bmiWeight.value=weight??'';
+ navyNeck.value=neck??'';
+ navyWaist.value=waist??'';
+ calcBMI();
+ calcNavy();
+ const sourceText=document.getElementById('navySourceText');
+ if(sourceText){
+  const ws=latest?._sources?.waist||((isMeasureValue(legacyNavy.waist))?'legacy':null);
+  const ns=latest?._sources?.neck||((isMeasureValue(legacyNavy.neck))?'legacy':null);
+  sourceText.textContent=(waist&&neck)
+   ? `Dernières valeurs connues · taille : ${formatMeasureSource(ws)} · cou : ${formatMeasureSource(ns)}.`
+   : 'Ajoute un tour de taille et un tour de cou pour calculer la masse grasse Navy.';
+ }
+}
 function renderMeasures(){
  if(!state.measureProfile)state.measureProfile={sex:'male',height:171};
  measureHeight.value=String(Math.max(170,Math.min(172,Number(state.measureProfile.height)||171)));
- measureHeightLabel.textContent=`${measureHeight.value.replace('.',',')} cm`;
+ measureHeightLabel.textContent='170–172 cm';
  measureHeight.onchange=()=>{
   state.measureProfile.height=Number(measureHeight.value)||171;
   state.settings.height=state.measureProfile.height;
-  measureHeightLabel.textContent=`${measureHeight.value.replace('.',',')} cm`;
-  save();renderMeasureKpis();renderMeasureChart();renderMeasureStats();
+  measureHeightLabel.textContent='170–172 cm';
+  save();renderMeasureKpis();renderMeasureHealthCards();renderMeasureChart();renderMeasureStats();
  };
  if(!editingMeasurementDate)loadMeasureForm();
  renderMeasureKpis();
+ renderMeasureHealthCards();
  renderMeasureChart();
  renderMeasureStats();
  renderMeasureHistory();
@@ -1606,8 +1721,9 @@ function exportMeasurementsCsv(){
  const rows=sortedMeasurements();
  if(!rows.length){alert('Aucune mesure à exporter.');return}
  const headers=['date','taille_cm','poids_kg','tour_taille_cm','cou_cm','poitrine_cm','hanches_cm','bras_gauche_cm','bras_droit_cm','cuisse_gauche_cm','cuisse_droite_cm','imc','masse_grasse_pct','masse_maigre_kg','masse_grasse_kg','ffmi','fmi','ratio_taille_hauteur'];
+ const resolvedByDate=new Map(resolvedMeasurements().map(m=>[m.date,m]));
  const data=rows.map(m=>{
-  const d=derivedMeasurement(m);
+  const d=derivedMeasurement(resolvedByDate.get(m.date)||m);
   return [m.date,m.height,m.weight,m.waist,m.neck,m.chest,m.hips,m.armL,m.armR,m.thighL,m.thighR,d.bmi,d.bodyFat,d.leanMass,d.fatMass,d.ffmi,d.fmi,d.whtr];
  });
  const csv=[headers,...data].map(r=>r.map(v=>v==null?'':String(v).replace('.',',')).join(';')).join('\n');
