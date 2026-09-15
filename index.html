@@ -559,7 +559,6 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
 
 .measure-chart .chart-axis{stroke:color-mix(in srgb,var(--muted) 35%,transparent);stroke-width:1}
 .measure-chart .chart-label{fill:var(--muted);font-size:11px}
-.measure-chart .measure-margin-band{fill:color-mix(in srgb,var(--cyan) 15%,transparent);stroke:none}
 .measure-chart .measure-line{stroke:var(--cyan);stroke-width:3;vector-effect:non-scaling-stroke}
 .measure-chart .measure-dots circle{fill:var(--panel);stroke:var(--violet);stroke-width:2;vector-effect:non-scaling-stroke}
 
@@ -921,7 +920,10 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
   .kpi-icon-badge svg{width:20px !important;height:20px !important}
 }
 </style>
-<link rel="stylesheet" href="css/style.css?v=33">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=32">
 </head>
 <body>
 <header class="app-header">
@@ -1020,6 +1022,26 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
       <summary>Détails du jour</summary>
       <div class="detail-grid">
         <div class="card compact-card"><h3>Alertes utiles</h3><div id="alerts" class="alerts"></div></div>
+        <div class="card compact-card">
+          <h3>Bien-être rapide</h3>
+          <div class="form">
+            <div class="field"><label>Fatigue générale : <span id="fatigueVal"></span>/10</label><input id="fatigue" type="range" min="1" max="10"></div>
+            <div class="field"><label>Fatigue neurologique : <span id="neuroVal"></span>/10</label><input id="neuro" type="range" min="1" max="10"></div>
+            <div class="field"><label>Douleur</label><select id="pain"><option value="0">Aucune</option><option value="1">Légère</option><option value="2">Moyenne</option><option value="3">Forte ou inhabituelle</option></select></div>
+          </div>
+          <button class="btn primary" onclick="saveWellness()">Enregistrer mon état</button>
+        </div>
+        <div class="card compact-card">
+          <h3>IMC</h3>
+          <div class="form"><div class="field"><label>Taille (cm)</label><input id="bmiHeight" type="number" step="0.1"></div><div class="field"><label>Poids (kg)</label><input id="bmiWeight" type="number" step="0.1"></div></div>
+          <div class="bmi-panel"><div class="bmi-value" id="bmiResult">—</div><div class="bmi-category" id="bmiCategory">À calculer</div><div class="bmi-scale-wrap"><div class="bmi-pointer" id="bmiPointer"></div><div class="bmi-scale"></div><div class="bmi-labels"><span>16</span><span>18,5</span><span>25</span><span>30</span><span>35</span></div></div></div>
+          <p class="note small" id="bmiText">L’IMC reste un indicateur général.</p>
+        </div>
+        <div class="card compact-card">
+          <h3>Masse grasse — Navy</h3>
+          <div class="form"><div class="field"><label>Tour de cou (cm)</label><input id="navyNeck" type="number" min="20" max="70" step="0.1"></div><div class="field"><label>Tour de taille (cm)</label><input id="navyWaist" type="number" min="40" max="200" step="0.1"></div></div>
+          <div class="navy-panel"><div class="navy-result"><div><div class="navy-value" id="navyResult">—</div><div class="navy-label" id="navyCategory">Renseigne les mensurations</div></div></div><div class="navy-gauge"><div class="navy-pointer" id="navyPointer"></div></div><div class="navy-scale"><span>5 %</span><span>15 %</span><span>25 %</span><span>35 %</span><span>45 %</span></div></div>
+        </div>
         <div class="hidden-kpis" aria-hidden="true"><strong id="kpiCarbs">—</strong><div class="mini-progress"><div id="kpiCarbsBar"></div></div><span id="kpiCarbsGoal"></span><strong id="kpiFat">—</strong><div class="mini-progress"><div id="kpiFatBar"></div></div><span id="kpiFatGoal"></span></div>
       </div>
     </details>
@@ -1082,23 +1104,10 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
       <div class="measure-chart-head"><div><h3>Évolution</h3><p class="note small">Les 30 dernières mesures.</p></div><select id="measureMetric" onchange="renderMeasureChart()"><option value="weight">Poids</option><option value="waist">Tour de taille</option><option value="bodyFat">Masse grasse estimée</option><option value="bmi">IMC</option><option value="chest">Poitrine</option><option value="armAvg">Bras moyen</option><option value="thighAvg">Cuisse moyenne</option></select></div>
       <div id="measureChart" class="measure-chart"></div><div id="measureChartStats" class="measure-chart-stats"></div>
     </div>
-    <div class="card measure-health-card">
-      <h3>IMC</h3>
-      <div class="form"><div class="field"><label>Taille de référence (cm)</label><input id="bmiHeight" type="number" step="0.1" readonly></div><div class="field"><label>Poids utilisé (kg)</label><input id="bmiWeight" type="number" step="0.1" readonly></div></div>
-      <div class="bmi-panel"><div class="bmi-value" id="bmiResult">—</div><div class="bmi-category" id="bmiCategory">À calculer</div><div class="bmi-scale-wrap"><div class="bmi-pointer" id="bmiPointer"></div><div class="bmi-scale"></div><div class="bmi-labels"><span>16</span><span>18,5</span><span>25</span><span>30</span><span>35</span></div></div></div>
-      <p class="note small" id="bmiText">Calculé à partir de la dernière mesure connue.</p>
-    </div>
-    <div class="card measure-health-card">
-      <h3>Masse grasse — Navy</h3>
-      <div class="form"><div class="field"><label>Tour de cou utilisé (cm)</label><input id="navyNeck" type="number" min="20" max="70" step="0.1" readonly></div><div class="field"><label>Tour de taille utilisé (cm)</label><input id="navyWaist" type="number" min="40" max="200" step="0.1" readonly></div></div>
-      <div class="navy-panel"><div class="navy-result"><div><div class="navy-value" id="navyResult">—</div><div class="navy-label" id="navyCategory">Renseigne les mensurations</div></div></div><div class="navy-gauge"><div class="navy-pointer" id="navyPointer"></div></div><div class="navy-scale"><span>5 %</span><span>15 %</span><span>25 %</span><span>35 %</span><span>45 %</span></div></div>
-      <p class="note small measure-source-note" id="navySourceText">Utilise les dernières valeurs connues de tour de taille et de cou.</p>
-    </div>
   </div>
   <details id="measureEditor" class="sheet-details measure-editor">
     <summary>Nouvelle mesure</summary>
-    <div class="measure-profile-strip"><div><span>Sexe</span><strong>Homme</strong></div><div><span>Plage de taille</span><strong id="measureHeightLabel">170–172 cm</strong></div><label>Référence calcul<select id="measureHeight"><option value="170">170 cm</option><option value="170.5">170,5 cm</option><option value="171" selected>171 cm</option><option value="171.5">171,5 cm</option><option value="172">172 cm</option></select></label></div>
-    <p class="measure-carry-note">Tu peux saisir seulement ce que tu viens de mesurer : les champs laissés vides n’effacent plus les valeurs précédentes. Pour les estimations (Navy, masse maigre, FFMI…), Cap réutilise les dernières mensurations connues. Le poids est lu avec une marge de ± 1 kg.</p>
+    <div class="measure-profile-strip"><div><span>Sexe</span><strong>Homme</strong></div><div><span>Taille utilisée</span><strong id="measureHeightLabel">171 cm</strong></div><label>Taille précise<select id="measureHeight"><option value="170">170 cm</option><option value="170.5">170,5 cm</option><option value="171" selected>171 cm</option><option value="171.5">171,5 cm</option><option value="172">172 cm</option></select></label></div>
     <div class="measure-entry-grid"><label>Date<input id="measureDate" type="date"></label><label>Poids<div class="input-unit"><input id="measureWeight" type="number" min="30" max="250" step="0.1"><span>kg</span></div></label><label>Tour de taille<div class="input-unit"><input id="measureWaist" type="number" min="40" max="200" step="0.1"><span>cm</span></div></label><label>Cou<div class="input-unit"><input id="measureNeck" type="number" min="20" max="80" step="0.1"><span>cm</span></div></label><label>Poitrine<div class="input-unit"><input id="measureChest" type="number" min="50" max="200" step="0.1"><span>cm</span></div></label><label>Hanches<div class="input-unit"><input id="measureHips" type="number" min="50" max="200" step="0.1"><span>cm</span></div></label><label>Bras gauche<div class="input-unit"><input id="measureArmL" type="number" min="10" max="80" step="0.1"><span>cm</span></div></label><label>Bras droit<div class="input-unit"><input id="measureArmR" type="number" min="10" max="80" step="0.1"><span>cm</span></div></label><label>Cuisse gauche<div class="input-unit"><input id="measureThighL" type="number" min="20" max="100" step="0.1"><span>cm</span></div></label><label>Cuisse droite<div class="input-unit"><input id="measureThighR" type="number" min="20" max="100" step="0.1"><span>cm</span></div></label></div>
     <div class="measure-entry-actions"><button class="btn primary" id="saveMeasureBtn" onclick="saveMeasurement()">Enregistrer</button><button class="btn" id="cancelMeasureEditBtn" onclick="cancelMeasurementEdit()" style="display:none">Annuler la modification</button></div>
   </details>
@@ -1151,11 +1160,11 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 </section>
 </main>
 <script src="js/lenaic-bus.js?v=2"></script>
-<script src="js/cap-main.js?v=33"></script>
+<script src="js/cap-main.js?v=23"></script>
 <script src="js/nutrition-habits.js?v=26"></script>
 <script src="js/culina-bridge.js?v=2"></script>
 <script src="js/3615-bridge.js?v=3"></script>
-<!-- assets exercises v31: visuels harmonisés + nav Aujourd’hui clarifiée -->
+<!-- assets fixed v15: hero png + exercises png + mannequin png -->
 <!-- Cap index fix v16: chemins assets/ sans v9 + pictogrammes nav -->
 <script src="lenaic-integration.js?v=2"></script>
 </body></html>
