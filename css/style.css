@@ -1491,40 +1491,154 @@ body.dark .culina-proposal{background:var(--panel)!important}
 .culina-plan-stock.missing{color:var(--accent)!important}
 .culina-proposal-actions a.btn{text-decoration:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
 
-
-/* CAP v31 — nouveaux visuels d’exercices + icône Aujourd’hui */
-.exercise-thumb{
-  width:52px!important;
-  height:52px!important;
-  padding:0!important;
-  background:#10283f!important;
-  object-fit:cover!important;
-  border:1px solid color-mix(in srgb,var(--accent) 32%,var(--line))!important;
-  border-radius:12px!important;
+/* ============================================================
+   CAP V32 — header & navigation épurés
+   - aucun petit fond arrondi autour des pictogrammes
+   - seul l'onglet actif garde son grand pavé
+   - logo et thème sans pastille
+   ============================================================ */
+.app-header .head{
+  min-height:72px !important;
+  padding:9px 16px !important;
 }
-#nav .nav-today .nav-icon svg{width:26px!important;height:26px!important;display:block!important;margin:auto!important}
-@media(max-width:560px){
-  .exercise-main label{grid-template-columns:15px 48px minmax(0,1fr)!important}
-  .exercise-thumb{width:48px!important;height:48px!important;border-radius:11px!important}
+.app-header .brand{
+  gap:12px !important;
+}
+.logo.cap-logo,
+body.dark .logo.cap-logo{
+  width:58px !important;
+  height:58px !important;
+  flex:0 0 58px !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+.logo.cap-logo img{
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  object-fit:contain !important;
+}
+.brand-copy h1,
+.app-header h1{
+  font-family:"DM Serif Display", Georgia, "Times New Roman", serif !important;
+  font-size:2rem !important;
+  font-weight:400 !important;
+  letter-spacing:-.025em !important;
+  line-height:.92 !important;
+}
+.app-header .subtitle{
+  margin-top:5px !important;
+  font-size:.79rem !important;
+  letter-spacing:.01em !important;
+}
+.mobile-theme-btn,
+body.dark .mobile-theme-btn{
+  width:48px !important;
+  height:48px !important;
+  flex:0 0 48px !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  font-size:1.65rem !important;
 }
 
-/* Patch mesures v32 : mesure partielle + marge de poids */
-.measure-carry-note{margin:8px 10px 10px!important;padding:9px 10px!important;border-radius:10px!important;background:var(--panel-2)!important;border:1px solid var(--line)!important;color:var(--muted)!important;font-size:.68rem!important;line-height:1.4!important}
-.measure-margin-band{fill:color-mix(in srgb,var(--accent) 14%,transparent)!important;stroke:none!important}
-@media(max-width:760px){.measure-carry-note{font-size:.58rem!important;padding:7px 8px!important}}
+/* Pas de mini-carré derrière les pictogrammes : le dessin flotte dans le bouton. */
+#nav .navbtn .nav-icon,
+body.dark #nav .navbtn .nav-icon,
+#nav .navbtn.active .nav-icon,
+body.dark #nav .navbtn.active .nav-icon{
+  width:34px !important;
+  height:34px !important;
+  display:grid !important;
+  place-items:center !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+#nav .navbtn .nav-icon svg,
+body.dark #nav .navbtn .nav-icon svg{
+  width:28px !important;
+  height:28px !important;
+}
 
+/* Les onglets inactifs restent nus ; seul le grand onglet sélectionné est encadré. */
+#nav .navbtn,
+body.dark #nav .navbtn,
+#nav .navbtn:not(.active),
+body.dark #nav .navbtn:not(.active){
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+}
+#nav .navbtn.active,
+body.dark #nav .navbtn.active{
+  background:var(--orange-soft) !important;
+  color:var(--accent) !important;
+  border:1px solid color-mix(in srgb,var(--accent) 24%,var(--line)) !important;
+  border-radius:17px !important;
+  box-shadow:none !important;
+}
 
-/* v33 — Mesures: IMC + Navy déplacés depuis Aujourd’hui */
-.measure-health-card{padding:12px !important}
-.measure-health-card>h3{margin-bottom:9px !important;font-size:.92rem !important}
-.measure-health-card .bmi-panel,.measure-health-card .navy-panel{margin-top:10px !important;padding:12px !important;box-shadow:none !important}
-.measure-health-card .bmi-value,.measure-health-card .navy-value{font-size:2rem !important}
-.measure-health-card .field input[readonly]{background:var(--panel-2) !important;color:var(--text) !important;opacity:1 !important;cursor:default}
-.measure-source-note{margin:9px 0 0 !important}
-@media(max-width:620px){
- .measure-health-card{padding:10px !important}
- .measure-health-card .form{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
- .measure-health-card .field label{font-size:.58rem !important}
- .measure-health-card .field input{padding:8px !important;font-size:.72rem !important}
- .measure-health-card .bmi-panel,.measure-health-card .navy-panel{padding:10px !important}
+/* Le bouton thème de la nav, s'il est présent, reste lui aussi sans petite pastille. */
+#nav .nav-theme,
+body.dark #nav .nav-theme{
+  background:transparent !important;
+  border-color:transparent !important;
+}
+#nav .nav-theme .nav-icon,
+body.dark #nav .nav-theme .nav-icon{
+  background:transparent !important;
+  border:0 !important;
+}
+
+@media(max-width:760px){
+  .app-header .head{
+    min-height:68px !important;
+    padding:7px 13px !important;
+  }
+  .logo.cap-logo,
+  body.dark .logo.cap-logo{
+    width:52px !important;
+    height:52px !important;
+    flex-basis:52px !important;
+  }
+  .brand-copy h1,
+  .app-header h1{
+    font-size:1.85rem !important;
+  }
+  .app-header .subtitle{
+    font-size:.73rem !important;
+    max-width:55vw !important;
+  }
+  .mobile-theme-btn,
+  body.dark .mobile-theme-btn{
+    width:44px !important;
+    height:44px !important;
+    flex-basis:44px !important;
+    font-size:1.5rem !important;
+  }
+  #nav .navbtn .nav-icon,
+  body.dark #nav .navbtn .nav-icon,
+  #nav .navbtn.active .nav-icon,
+  body.dark #nav .navbtn.active .nav-icon{
+    width:31px !important;
+    height:31px !important;
+  }
+  #nav .navbtn .nav-icon svg,
+  body.dark #nav .navbtn .nav-icon svg{
+    width:25px !important;
+    height:25px !important;
+  }
+  #nav .navbtn.active,
+  body.dark #nav .navbtn.active{
+    border-radius:16px !important;
+  }
 }
