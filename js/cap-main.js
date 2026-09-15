@@ -129,7 +129,7 @@ const yesterdayWellnessBar=document.getElementById('yesterdayWellnessBar');
 const yesterdayScoreComment=document.getElementById('yesterdayScoreComment');
 
 const versionEgg=document.getElementById('versionEgg');
-const navItems=[['today','Aujourd’hui','today'],['week','Semaine','week'],['nutrition','Nutrition','nutrition'],['sleep','Sommeil','sleep'],['history','Historique','history'],['trends','Tendances','trends'],['measures','Mesures','measures'],['summary','Bilan','summary'],['settings','Réglages','settings']];
+const navItems=[['today','Aujourd’hui','today'],['week','Semaine','week'],['nutrition','Nutrition','nutrition'],['sleep','Sommeil','sleep'],['measures','Mesures','measures'],['trends','Tendances','trends'],['summary','Bilan','summary'],['settings','Réglages','settings']];
 
 function getISOWeekNumber(date=new Date()){
  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
@@ -360,7 +360,7 @@ function ensureNutritionDay(){
 }
 ensureDate();
 function save(){localStorage.setItem('cap-data',JSON.stringify(state))}
-function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='today')renderToday();if(id==='week')renderWeek();if(id==='nutrition')loadNutrition();if(id==='sleep')loadSleep();if(id==='history')renderHistory(30);if(id==='trends')renderTrends();if(id==='measures')renderMeasures();if(id==='summary')renderWeeklySummary();if(id==='settings')loadSettings();scrollTo(0,0)}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='today')renderToday();if(id==='week')renderWeek();if(id==='nutrition')loadNutrition();if(id==='sleep')loadSleep();if(id==='trends')renderTrends();if(id==='measures')renderMeasures();if(id==='summary')renderWeeklySummary();if(id==='settings'){loadSettings();renderHistory(30);}scrollTo(0,0)}
 function todayNavIcon(){
  return 'today';
 }
