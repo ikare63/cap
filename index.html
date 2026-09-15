@@ -983,7 +983,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
         <div class="home-kpi-copy">
           <span class="kpi-icon-badge calories" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.8 2.1c.9 2.8.2 4.6-1.3 6.2-1.1 1.2-1.9 2.4-1.9 4 0 .7.2 1.4.6 2-2.4-.9-4-3.1-4-5.8 0-2.8 1.7-5.2 6.6-6.4Z" fill="#ff7a1f"/><path d="M12.3 8.9c3.7 2.3 5.7 4.9 5.7 8a6 6 0 0 1-12 0c0-2.9 1.7-5.3 4.8-7.7.2 1.1.8 1.9 1.7 2.2.4-.7.3-1.6-.2-2.5Z" fill="#ff5b18"/><path d="M12.2 13c1.9 1.3 2.9 2.6 2.9 4.1a2.9 2.9 0 0 1-5.8 0c0-1.4.8-2.6 2.4-3.7.1.6.4 1.1.7 1.3.2-.4.2-.9-.2-1.7Z" fill="#ffc83d"/></svg></span>
           <small>Calories</small>
-          <span id="kpiCaloriesGoal">Objectif · 2 200 kcal</span>
+          <span id="kpiCaloriesGoal">Zone cible · 1 980–2 420 kcal</span>
         </div>
       </div>
       <div class="home-kpi protein">
@@ -991,7 +991,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
         <div class="home-kpi-copy">
           <span class="kpi-icon-badge protein" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="7" height="7" rx="2" fill="#3cae58"/><rect x="11" y="5" width="6" height="7" rx="2" fill="#72cb68"/><rect x="5" y="13" width="7" height="6" rx="2" fill="#5bc765"/><rect x="13" y="13" width="8" height="6" rx="2" fill="#2f9849"/><circle cx="6.5" cy="8.5" r="1.15" fill="#dff5d8"/><circle cx="14" cy="8.5" r="1.1" fill="#e9f8e5"/><circle cx="16.8" cy="16" r="1.2" fill="#dff5d8"/></svg></span>
           <small>Protéines</small>
-          <span id="kpiProteinGoal">Objectif · 0 g</span>
+          <span id="kpiProteinGoal">Zone optimale selon le poids</span>
         </div>
       </div>
       <div class="home-kpi sleep">
@@ -1047,7 +1047,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 <section id="nutrition" class="view">
   <div class="view-heading"><div><h2>Nutrition</h2><p>Ajoute ce que tu manges en quelques secondes.</p></div><span class="date-pill">Aujourd’hui</span></div>
   <div class="macro-grid">
-    <div class="goal-row macro-card" id="calGaugeRow"><div class="macro-ring" id="calGauge"><strong id="dayCaloriesTotal">0</strong><span>/ 2200</span></div><b>kcal</b><small id="calGaugeText"></small></div>
+    <div class="goal-row macro-card" id="calGaugeRow"><div class="macro-ring" id="calGauge"><strong id="dayCaloriesTotal">0</strong><span>1 980–2 420</span></div><b>kcal</b><small id="calGaugeText"></small></div>
     <div class="goal-row macro-card" id="proteinGaugeRow"><div class="macro-ring" id="proteinGauge"><strong id="dayProteinTotal">0 g</strong><span>protéines</span></div><b>Protéines</b><small id="proteinGaugeText"></small></div>
     <div class="goal-row macro-card" id="carbGaugeRow"><div class="macro-ring" id="carbGauge"><strong id="dayCarbsTotal">0 g</strong><span>glucides</span></div><b>Glucides</b><small id="carbGaugeText"></small></div>
     <div class="goal-row macro-card" id="fatGaugeRow"><div class="macro-ring" id="fatGauge"><strong id="dayFatTotal">0 g</strong><span>lipides</span></div><b>Lipides</b><small id="fatGaugeText"></small></div>
@@ -1072,7 +1072,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
     </div>
     <div class="meal-actions"><button class="btn primary" id="saveMealBtn" onclick="saveMeal()">Ajouter le repas</button><button class="btn hidden" id="cancelMealEditBtn" onclick="cancelMealEdit()">Annuler la modification</button></div>
   </details>
-  <details id="nutritionDetails" class="sheet-details"><summary>Objectifs et détails</summary><div class="detail-goals"><p>Calories : tolérance ±10 %.</p><p>Protéines : 1,8 g/kg · Glucides : 5 g/kg · Lipides : 1 g/kg.</p><p>La journée nutritionnelle change à 1 h du matin.</p></div></details>
+  <details id="nutritionDetails" class="sheet-details"><summary>Zones et détails</summary><div class="detail-goals"><p><strong>Calories :</strong> zone cible ±10 % autour du repère central. À 2 200 kcal : 1 980–2 420 kcal.</p><p><strong>Protéines :</strong> lecture progressive selon le poids. 1,45–1,59 g/kg = suffisant ; 1,60–1,79 = très bien ; 1,80–2,00 = optimal ; 2,00–2,20 = élevé mais toujours validé ; au-delà = très élevé, sans bonus.</p><p><strong>Glucides et lipides :</strong> zone cible ±10 % autour du repère configuré.</p><p>La journée nutritionnelle change à 1 h du matin.</p></div></details>
 </section>
 
 
@@ -1138,8 +1138,8 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
       <div class="form">
         <div class="field"><label>Poids actuel (kg)</label><input id="settingWeight" type="number" step="0.1"></div>
         <div class="field"><label>Taille (cm)</label><input id="settingHeight" type="number" step="0.1"></div>
-        <div class="field"><label>Objectif calorique</label><input id="settingCalories" type="number"></div>
-        <div class="field"><label>Protéines par kg</label><input id="settingProteinRate" type="number" step="0.1"></div>
+        <div class="field"><label>Repère calorique central</label><input id="settingCalories" type="number"><small>CAP calcule automatiquement une zone cible de ±10 %.</small></div>
+        <div class="field"><label>Début de zone protéines optimale (g/kg)</label><input id="settingProteinRate" type="number" step="0.1"><small>Par défaut 1,8 g/kg ; CAP ne pénalise pas un apport supérieur.</small></div>
         <div class="field"><label>Glucides par kg</label><input id="settingCarbRate" type="number" step="0.1"></div>
         <div class="field"><label>Lipides par kg</label><input id="settingFatRate" type="number" step="0.1"></div>
       </div>
@@ -1167,10 +1167,11 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 </section>
 </main>
 <script src="js/lenaic-bus.js?v=2"></script>
-<script src="js/cap-main.js?v=36"></script>
+<script src="js/cap-main.js?v=37"></script>
 <script src="js/nutrition-habits.js?v=26"></script>
 <script src="js/culina-bridge.js?v=2"></script>
 <script src="js/3615-bridge.js?v=3"></script>
+<!-- Cap v37 : nutrition par fourchettes + protéines non pénalisées au-dessus de la cible -->
 <!-- assets exercises v31: visuels harmonisés + nav Aujourd’hui clarifiée -->
 <!-- Cap index fix v16: chemins assets/ sans v9 + pictogrammes nav -->
 <script src="lenaic-integration.js?v=2"></script>
