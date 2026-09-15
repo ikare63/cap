@@ -1541,6 +1541,77 @@ function deleteMeasurement(date){
  save();
  renderMeasures();
 }
+function interpretationTone(kind,value){
+ if(!isMeasureValue(value))return 'info';
+ const v=Number(value);
+ if(kind==='bmi')return v>=18.5&&v<25?'good':(v>=25&&v<30?'warn':'bad');
+ if(kind==='bodyFat')return v>=6&&v<18?'good':(v>=18&&v<25?'warn':'bad');
+ if(kind==='whtr')return v>=0.4&&v<0.5?'good':(v>=0.5&&v<0.6?'warn':'bad');
+ if(kind==='ffmi')return v>=18&&v<23.5?'good':(v>=16&&v<18?'neutral':'info');
+ if(kind==='fmi')return v>=3&&v<6?'good':(v>=6&&v<9?'warn':'bad');
+ return 'info';
+}
+function bmiInterpretation(v){
+ if(!isMeasureValue(v))return 'À calculer';
+ v=Number(v);
+ if(v<18.5)return 'Corpulence insuffisante';
+ if(v<25)return 'Corpulence normale';
+ if(v<30)return 'Surpoids';
+ return 'Zone élevée';
+}
+function bodyFatInterpretation(v){
+ if(!isMeasureValue(v))return 'À calculer';
+ return navyCategoryLabel(Number(v));
+}
+function whtrInterpretation(v){
+ if(!isMeasureValue(v))return 'À calculer';
+ v=Number(v);
+ if(v<0.4)return 'Très bas';
+ if(v<0.5)return 'Zone favorable';
+ if(v<0.6)return 'À surveiller';
+ return 'Zone élevée';
+}
+function ffmiInterpretation(v){
+ if(!isMeasureValue(v))return 'À calculer';
+ v=Number(v);
+ if(v<16)return 'Faible';
+ if(v<18)return 'Sous la moyenne';
+ if(v<20)return 'Moyen';
+ if(v<22)return 'Bon niveau';
+ if(v<23.5)return 'Très bon niveau';
+ return 'Très élevé';
+}
+function fmiInterpretation(v){
+ if(!isMeasureValue(v))return 'À calculer';
+ v=Number(v);
+ if(v<3)return 'Bas';
+ if(v<6)return 'Zone habituelle';
+ if(v<9)return 'Élevé';
+ return 'Très élevé';
+}
+function weightInterpretation(delta){
+ if(delta==null||!Number.isFinite(delta))return 'Référence';
+ if(Math.abs(delta)<=WEIGHT_MARGIN_KG)return 'Stable';
+ return delta>0?'Hausse à confirmer':'Baisse à confirmer';
+}
+function relativeMassInterpretation(value,weight,fallback='Repère perso'){
+ if(!isMeasureValue(value)||!isMeasureValue(weight))return fallback;
+ return `${Math.round(Number(value)/Number(weight)*100)} % du poids`;
+}
+function measurementRecencyLabel(date){
+ if(!date)return '—';
+ const d=new Date(date+'T12:00:00');
+ const t=new Date();
+ const today=new Date(t.getFullYear(),t.getMonth(),t.getDate(),12);
+ const days=Math.round((today-d)/(24*3600*1000));
+ if(days===0)return "Aujourd’hui";
+ if(days===1)return 'Hier';
+ if(days>1&&days<=14)return `Il y a ${days} j`;
+ return 'Historique';
+}
+function renderMeasureInterpretation(text,tone='info'){
+ return `<em class="measure-interpretation tone-${tone}">${text}</em>`;
+}
 function renderMeasureKpis(){
  const arr=resolvedMeasurements().map(derivedMeasurement),latest=arr.at(-1),prev=arr.at(-2);
  if(!latest){
@@ -1549,13 +1620,14 @@ function renderMeasureKpis(){
   return;
  }
  const weightDelta=prev?measureDelta(latest,prev,'weight'):null;
+ const weightTone=weightDelta==null||Math.abs(weightDelta)<=WEIGHT_MARGIN_KG?'good':'neutral';
  const kpis=[
-  ['Poids',fmtWeight(latest.weight),fmtWeightChange(weightDelta)],
-  ['IMC',fmtMeasure(latest.bmi,1,''),prev?deltaText(measureDelta(latest,prev,'bmi')):'—'],
-  ['Masse grasse',fmtMeasure(latest.bodyFat,1,' %'),prev?deltaText(measureDelta(latest,prev,'bodyFat'),' pt'):'—'],
-  ['Taille / hauteur',latest.whtr?latest.whtr.toFixed(3).replace('.',','):'—',prev?deltaText(measureDelta(latest,prev,'whtr')):'—']
+  ['Poids',fmtWeight(latest.weight),fmtWeightChange(weightDelta),weightInterpretation(weightDelta),weightTone],
+  ['IMC',fmtMeasure(latest.bmi,1,''),prev?deltaText(measureDelta(latest,prev,'bmi')):'—',bmiInterpretation(latest.bmi),interpretationTone('bmi',latest.bmi)],
+  ['Masse grasse',fmtMeasure(latest.bodyFat,1,' %'),prev?deltaText(measureDelta(latest,prev,'bodyFat'),' pt'):'—',bodyFatInterpretation(latest.bodyFat),interpretationTone('bodyFat',latest.bodyFat)],
+  ['Ratio abdominal',latest.whtr?latest.whtr.toFixed(3).replace('.',','):'—',prev?deltaText(measureDelta(latest,prev,'whtr')):'—',whtrInterpretation(latest.whtr),interpretationTone('whtr',latest.whtr)]
  ];
- measureKpis.innerHTML=kpis.map(([label,value,delta])=>`<div class="measure-kpi"><span>${label}</span><strong>${value}</strong><small>vs précédente : ${delta}</small></div>`).join('');
+ measureKpis.innerHTML=kpis.map(([label,value,delta,meaning,tone])=>`<div class="measure-kpi"><span>${label}</span><div class="measure-kpi-value-row"><strong>${value}</strong>${renderMeasureInterpretation(meaning,tone)}</div><small>vs précédente : ${delta}</small></div>`).join('');
  const bfFraction=isMeasureValue(latest.bodyFat)?Number(latest.bodyFat)/100:null;
  const leanFraction=bfFraction!=null?1-bfFraction:null;
  const h2=(Number(latest.height||measurementHeight())/100)**2;
@@ -1565,15 +1637,17 @@ function renderMeasureKpis(){
  const fmiMargin=fatMargin!=null?fatMargin/h2:null;
  const bmiRange=isMeasureValue(latest.weight)?`${calcBmi(Math.max(1,latest.weight-WEIGHT_MARGIN_KG),172).toFixed(1).replace('.',',')}–${calcBmi(latest.weight+WEIGHT_MARGIN_KG,170).toFixed(1).replace('.',',')}`:'—';
  const navySources=latest._sources?.waist&&latest._sources?.neck?`${formatMeasureSource(latest._sources.waist)} / ${formatMeasureSource(latest._sources.neck)}`:'—';
- measureComposition.innerHTML=[
-  ['Masse maigre estimée',fmtEstimateWithMargin(latest.leanMass,leanMargin,'kg')],
-  ['Masse grasse estimée',fmtEstimateWithMargin(latest.fatMass,fatMargin,'kg')],
-  ['FFMI',fmtEstimateWithMargin(latest.ffmi,ffmiMargin,'')],
-  ['FMI',fmtEstimateWithMargin(latest.fmi,fmiMargin,'')],
-  ['IMC · marge + 170–172 cm',bmiRange],
-  ['Taille / cou utilisés',navySources],
-  ['Dernière date',new Date(latest.date+'T12:00:00').toLocaleDateString('fr-FR')]
- ].map(([a,b])=>`<div class="measure-composition-row"><span>${a}</span><strong>${b}</strong></div>`).join('');
+ const sourceMeaning=(latest._sources?.waist===latest.date&&latest._sources?.neck===latest.date)?'Mesurés ce jour':'Dernières connues';
+ const composition=[
+  ['Masse maigre estimée',fmtEstimateWithMargin(latest.leanMass,leanMargin,'kg'),relativeMassInterpretation(latest.leanMass,latest.weight),'info'],
+  ['Masse grasse estimée',fmtEstimateWithMargin(latest.fatMass,fatMargin,'kg'),bodyFatInterpretation(latest.bodyFat),interpretationTone('bodyFat',latest.bodyFat)],
+  ['FFMI',fmtEstimateWithMargin(latest.ffmi,ffmiMargin,''),ffmiInterpretation(latest.ffmi),interpretationTone('ffmi',latest.ffmi)],
+  ['FMI',fmtEstimateWithMargin(latest.fmi,fmiMargin,''),fmiInterpretation(latest.fmi),interpretationTone('fmi',latest.fmi)],
+  ['IMC · marge + 170–172 cm',bmiRange,bmiInterpretation(latest.bmi),interpretationTone('bmi',latest.bmi)],
+  ['Taille / cou utilisés',navySources,sourceMeaning,'info'],
+  ['Dernière date',new Date(latest.date+'T12:00:00').toLocaleDateString('fr-FR'),measurementRecencyLabel(latest.date),'info']
+ ];
+ measureComposition.innerHTML=composition.map(([a,b,c,tone])=>`<div class="measure-composition-row"><span>${a}</span><div class="measure-composition-result"><strong>${b}</strong>${renderMeasureInterpretation(c,tone)}</div></div>`).join('');
 }
 function metricInfo(key){
  return {
