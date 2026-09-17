@@ -397,14 +397,14 @@ body.dark .nav-settings .nav-icon{background:#252e3c;color:#c6ced9;border-color:
 .version-hint{font-size:.7rem;color:color-mix(in srgb,var(--muted) 72%,transparent);margin-top:2px}
 
 
-.exercise-row{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:14px;align-items:center}.exercise-row.no-charge{grid-template-columns:1fr}
-.exercise-main label{margin:0}
-.charge-field label{display:block;font-size:.7rem;color:var(--muted);margin-bottom:4px}
-.charge-input{width:100%;min-width:118px;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:10px 8px;text-align:center;font-weight:750;font-size:1rem}
+.exercise-row{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:14px;align-items:center}.exercise-row.no-charge{grid-template-columns:1fr}
+.exercise-main-layout{margin:0}
+.charge-field{width:64px;justify-self:end}.charge-field label{display:block;font-size:.7rem;color:var(--muted);margin-bottom:4px}
+.charge-input{width:64px;max-width:64px;min-width:0;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:10px;padding:10px 5px;text-align:center;font-weight:750;font-size:1rem}
 .charge-input::placeholder{color:var(--muted);font-weight:500}
 @media(max-width:520px){
- .exercise-row{grid-template-columns:minmax(0,1fr) 128px;gap:10px}.exercise-row.no-charge{grid-template-columns:1fr}
- .charge-input{padding:8px 5px}
+ .exercise-row{grid-template-columns:minmax(0,1fr) 60px;gap:10px}.exercise-row.no-charge{grid-template-columns:1fr}
+ .charge-field{width:60px}.charge-input{width:60px;max-width:60px;padding:8px 4px}
 }
 
 
@@ -924,7 +924,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=36">
+<link rel="stylesheet" href="css/style.css?v=37">
 </head>
 <body>
 <style id="cap-settings-history-v35">
@@ -1167,7 +1167,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 </section>
 </main>
 <script src="js/lenaic-bus.js?v=2"></script>
-<script src="js/cap-main.js?v=37"></script>
+<script src="js/cap-main.js?v=38"></script>
 <script src="js/nutrition-habits.js?v=26"></script>
 <script src="js/culina-bridge.js?v=2"></script>
 <script src="js/3615-bridge.js?v=3"></script>
