@@ -1668,3 +1668,11 @@ body.dark #nav .navbtn.active{
  .measure-composition-result{gap:4px!important}
  .measure-composition-result .measure-interpretation{font-size:.38rem!important;flex-basis:66px!important;max-width:66px!important;text-align:left!important}
 }
+
+/* Fruit — rappel après déjeuner/dîner */
+.fruit-prompt-dialog{border:0;padding:0;background:transparent;color:var(--text);max-width:min(92vw,420px)}
+.fruit-prompt-dialog::backdrop{background:rgba(8,12,10,.58);backdrop-filter:blur(2px)}
+.fruit-prompt-card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px 20px 18px;box-shadow:0 22px 70px rgba(0,0,0,.28);text-align:center}
+.fruit-prompt-icon{font-size:2.2rem;margin-bottom:6px}.fruit-prompt-card h3{margin:0 0 8px;font-size:1.22rem}.fruit-prompt-card p{margin:0;color:var(--muted);line-height:1.5}
+.fruit-prompt-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}.fruit-prompt-close{position:absolute;right:10px;top:8px;border:0;background:transparent;color:var(--muted);font-size:1.5rem;cursor:pointer}
+@media(max-width:520px){.fruit-prompt-actions{display:grid}.fruit-prompt-actions .btn{width:100%}}
