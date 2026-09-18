@@ -925,6 +925,38 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=20260918-reset1">
+
+<style id="cap-charge-field-only-fix-v40">
+/* Correctif STRICTEMENT limité au champ Charge des séances */
+#weekTrainingContent .exercise-row:not(.no-charge){
+  grid-template-columns:minmax(0,1fr) 68px !important;
+}
+#weekTrainingContent .charge-field{
+  width:68px !important;
+  min-width:0 !important;
+  max-width:68px !important;
+  justify-self:end !important;
+}
+#weekTrainingContent .charge-input{
+  box-sizing:border-box !important;
+  width:68px !important;
+  min-width:0 !important;
+  max-width:68px !important;
+  padding-left:5px !important;
+  padding-right:5px !important;
+}
+@media (max-width:520px){
+  #weekTrainingContent .exercise-row:not(.no-charge){
+    grid-template-columns:minmax(0,1fr) 64px !important;
+  }
+  #weekTrainingContent .charge-field,
+  #weekTrainingContent .charge-input{
+    width:64px !important;
+    max-width:64px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <style id="cap-settings-history-v35">
@@ -1175,4 +1207,35 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 <!-- assets exercises v31: visuels harmonisés + nav Aujourd’hui clarifiée -->
 <!-- Cap index fix v16: chemins assets/ sans v9 + pictogrammes nav -->
 <script src="lenaic-integration.js?v=20260918-reset1"></script>
+
+<script id="cap-charge-maxlength-only-v40">
+/* Les champs Charge sont générés dynamiquement : on leur applique
+   uniquement une limite de 5 caractères, sans toucher au rendu des séances. */
+(function(){
+  function fixChargeInputs(root){
+    (root || document).querySelectorAll?.('#weekTrainingContent .charge-input').forEach(function(input){
+      input.maxLength = 5;
+      input.setAttribute('size','5');
+      input.placeholder = '32,5';
+    });
+  }
+
+  fixChargeInputs(document);
+
+  var host = document.getElementById('weekTrainingContent');
+  if(host){
+    new MutationObserver(function(){
+      fixChargeInputs(host);
+    }).observe(host,{childList:true,subtree:true});
+  }
+
+  document.addEventListener('focusin',function(e){
+    if(e.target && e.target.matches('#weekTrainingContent .charge-input')){
+      e.target.maxLength = 5;
+      e.target.setAttribute('size','5');
+    }
+  });
+})();
+</script>
+
 </body></html>
