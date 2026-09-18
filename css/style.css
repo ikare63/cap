@@ -1668,21 +1668,3 @@ body.dark #nav .navbtn.active{
  .measure-composition-result{gap:4px!important}
  .measure-composition-result .measure-interpretation{font-size:.38rem!important;flex-basis:66px!important;max-width:66px!important;text-align:left!important}
 }
-
-
-/* v39 — correctif localisé séance : aucune règle globale Nutrition/Culina */
-#weekTrainingContent .exercise-row{grid-template-columns:minmax(0,1fr) 58px!important}
-#weekTrainingContent .exercise-row.no-charge{grid-template-columns:1fr!important}
-#weekTrainingContent .exercise-main-layout{display:grid!important;grid-template-columns:18px 46px minmax(0,1fr)!important;gap:7px!important;align-items:center!important;margin:0!important}
-#weekTrainingContent .exercise-master-check{width:16px!important;height:16px!important;margin:0!important;accent-color:var(--green)!important}
-#weekTrainingContent .charge-field{width:58px!important;max-width:58px!important;min-width:0!important;justify-self:end!important}
-#weekTrainingContent .charge-input{box-sizing:border-box!important;width:58px!important;max-width:58px!important;min-width:0!important;padding-left:4px!important;padding-right:4px!important;text-align:center!important}
-#weekTrainingContent .series-check{display:flex!important;align-items:center!important;gap:4px!important;margin:0!important}
-#weekTrainingContent .series-check input{flex:0 0 auto!important;margin:0!important}
-#weekTrainingContent .series-check label{display:inline!important;margin:0!important;font-size:.58rem!important;cursor:pointer!important}
-@media(max-width:560px){
- #weekTrainingContent .exercise-row{grid-template-columns:minmax(0,1fr) 56px!important}
- #weekTrainingContent .exercise-main-layout{grid-template-columns:15px 43px minmax(0,1fr)!important;gap:6px!important}
- #weekTrainingContent .exercise-master-check{width:15px!important;height:15px!important}
- #weekTrainingContent .charge-field,#weekTrainingContent .charge-input{width:56px!important;max-width:56px!important;min-width:0!important}
-}
