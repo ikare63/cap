@@ -359,7 +359,62 @@ function ensureNutritionDay(){
  return d;
 }
 ensureDate();
-function save(){localStorage.setItem('cap-data',JSON.stringify(state))}
+let __capSaveSeq=0;
+function __capApproxLocalStorageKb(){
+ try{
+  let chars=0;
+  for(let i=0;i<localStorage.length;i++){
+   const k=localStorage.key(i)||'';
+   const v=localStorage.getItem(k)||'';
+   chars+=k.length+v.length;
+  }
+  return Math.round((chars*2)/1024);
+ }catch(_){return null}
+}
+function __capSaveErrorMessage(err,payload,phase){
+ const totalKb=__capApproxLocalStorageKb();
+ const payloadKb=Math.round((payload.length*2)/1024);
+ const name=(err&&err.name)||'Erreur inconnue';
+ const msg=(err&&err.message)||String(err||'');
+ return [
+  'CAP — diagnostic d\'enregistrement',
+  '',
+  phase,
+  'Erreur : '+name+(msg?' — '+msg:''),
+  'cap-data : ~'+payloadKb+' Ko',
+  'localStorage total : '+(totalKb===null?'inconnu':'~'+totalKb+' Ko'),
+  '',
+  'Fais une capture de ce message et envoie-la-moi.'
+ ].join('\n');
+}
+function save(){
+ const payload=JSON.stringify(state);
+ const seq=++__capSaveSeq;
+ try{
+  localStorage.setItem('cap-data',payload);
+  const reread=localStorage.getItem('cap-data');
+  if(reread!==payload){
+   throw new Error('La lecture de contrôle ne correspond pas aux données qui viennent d\'être écrites.');
+  }
+ }catch(err){
+  alert(__capSaveErrorMessage(err,payload,'L\'écriture dans le stockage du navigateur a échoué.'));
+  throw err;
+ }
+ // Contrôle différé : détecte un autre script qui réécrirait cap-data juste après save().
+ setTimeout(()=>{
+  if(seq!==__capSaveSeq)return;
+  try{
+   const reread=localStorage.getItem('cap-data');
+   if(reread!==payload){
+    const err=new Error('cap-data a été modifié juste après son enregistrement.');
+    alert(__capSaveErrorMessage(err,payload,'Un autre code a réécrit les données après save().'));
+   }
+  }catch(err){
+   alert(__capSaveErrorMessage(err,payload,'Le contrôle après enregistrement a échoué.'));
+  }
+ },300);
+ return true;
+}
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='today')renderToday();if(id==='week')renderWeek();if(id==='nutrition')loadNutrition();if(id==='sleep')loadSleep();if(id==='trends')renderTrends();if(id==='measures')renderMeasures();if(id==='summary')renderWeeklySummary();if(id==='settings'){loadSettings();renderHistory(30);}scrollTo(0,0)}
 function todayNavIcon(){
  return 'today';
