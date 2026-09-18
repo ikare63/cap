@@ -195,6 +195,32 @@ function addFoodButtonHtml(category){
  return `<button type="button" class="food-add-tag" onclick="openCustomFoodModal('${category}')"><span>＋</span><span>Ajouter un aliment</span></button>`;
 }
 
+const CAP_FRUIT_PROMPT_KEY='cap-fruit-prompt-v1';
+function capFruitDayKey(){return nutritionDayKey?nutritionDayKey():new Date().toISOString().slice(0,10)}
+function capFruitPromptState(){try{return JSON.parse(localStorage.getItem(CAP_FRUIT_PROMPT_KEY)||'{}')}catch(e){return {}}}
+function capFruitMealTypeFromName(name=''){
+ const n=String(name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ if(/dejeuner|midi|lunch/.test(n))return 'lunch';
+ if(/diner|soir|dinner/.test(n))return 'dinner';
+ return null;
+}
+function ensureCapFruitDialog(){
+ let dialog=document.getElementById('capFruitDialog');if(dialog)return dialog;
+ dialog=document.createElement('dialog');dialog.id='capFruitDialog';dialog.className='fruit-prompt-dialog';
+ dialog.innerHTML=`<div class="fruit-prompt-card"><button class="fruit-prompt-close" type="button" aria-label="Fermer">×</button><div class="fruit-prompt-icon">🍎</div><h3>Un fruit pour finir ce repas ?</h3><p id="capFruitPromptText">Petit rappel pour penser aux fruits.</p><div class="fruit-prompt-actions"><button class="btn primary" type="button" data-fruit-ok>Bonne idée 🍎</button><button class="btn" type="button" data-fruit-close>Pas maintenant</button></div></div>`;
+ document.body.appendChild(dialog);
+ dialog.querySelector('.fruit-prompt-close').onclick=()=>dialog.close();dialog.querySelector('[data-fruit-close]').onclick=()=>dialog.close();dialog.querySelector('[data-fruit-ok]').onclick=()=>dialog.close();
+ return dialog;
+}
+function maybeShowFruitPrompt(mealType){
+ if(!['lunch','dinner'].includes(mealType))return;
+ const key=`${capFruitDayKey()}:${mealType}`,seen=capFruitPromptState();if(seen[key])return;
+ seen[key]=new Date().toISOString();localStorage.setItem(CAP_FRUIT_PROMPT_KEY,JSON.stringify(seen));
+ const d=ensureCapFruitDialog(),p=d.querySelector('#capFruitPromptText');if(p)p.textContent=mealType==='lunch'?'Déjeuner enregistré. Pense à prendre un fruit si tu n’en as pas encore mangé.':'Dîner enregistré. Un fruit peut être une bonne façon de terminer le repas.';
+ if(typeof d.showModal==='function'&&!d.open)d.showModal();
+}
+window.maybeShowFruitPromptForMealName=name=>{const type=capFruitMealTypeFromName(name);if(type)maybeShowFruitPrompt(type)};
+
 let quickMealDrafts={breakfast:{},lunch:{},dinner:{},snack:{}};
 function getFoodById(id){
  const custom=ensureCustomFoods();
@@ -272,6 +298,7 @@ function addQuickMeal(meal){
  d.nutrition=nutritionTotalsFromMeals(d.meals);state.daily[nutritionDayKey()]=d;
  quickMealDrafts[meal]={};
  save();loadNutrition();renderHabitBuilder();renderToday();
+ if(meal==='lunch'||meal==='dinner')maybeShowFruitPrompt(meal);
 }
 function openManualMeal(name='Repas libre'){
  const details=document.getElementById('mealEditor');if(details)details.setAttribute('open','');

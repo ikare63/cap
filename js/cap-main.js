@@ -1342,6 +1342,7 @@ function loadNutrition(){
 }
 function saveMeal(){
  const name=mealName.value.trim()||'Repas';
+ const wasEditing=Boolean(editingMealId);
  const meal={
    id:editingMealId||('meal-'+Date.now()),
    name,
@@ -1365,6 +1366,7 @@ function saveMeal(){
  cancelMealEdit();
  loadNutrition();
  renderToday();
+ if(!wasEditing&&typeof window.maybeShowFruitPromptForMealName==='function')window.maybeShowFruitPromptForMealName(name);
 }
 function nutritionTotalsFromMeals(meals){
  return meals.reduce((a,m)=>({
