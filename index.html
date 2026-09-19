@@ -972,7 +972,12 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
       <div class="logo cap-logo" aria-label="Logo Cap"><img src="assets/logo-cap.svg" alt="Logo Cap"></div>
       <div class="brand-copy"><h1>Cap</h1><div class="subtitle">Sport, nutrition et récupération</div></div>
     </div>
-    <button class="mobile-theme-btn" id="mobileThemeBtn" type="button" aria-label="Changer de thème">🌙</button>
+    <div class="header-actions">
+      <a class="cap-reward-link" id="capRewardLink" href="recompense.html" aria-label="Ouvrir les récompenses CAP">
+        <span id="capRewardStreak">0</span><span class="cap-flame-icon" aria-hidden="true"></span><span class="cap-reward-dot">•</span><span id="capRewardShards">0</span><span aria-hidden="true">✨</span>
+      </a>
+      <button class="mobile-theme-btn" id="mobileThemeBtn" type="button" aria-label="Changer de thème">🌙</button>
+    </div>
   </div>
 </header>
 <nav id="nav" aria-label="Navigation principale"></nav>
@@ -1199,7 +1204,9 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 </section>
 </main>
 <script src="js/lenaic-bus.js?v=20260918-fruit1"></script>
-<script src="js/cap-main.js?v=20260918-fruit1"></script>
+<script src="js/cap-main.js?v=20260919-rewards1"></script>
+<script src="js/rewards-core.js?v=20260919-rewards1"></script>
+<script>CapRewards.sync({feedback:false});</script>
 <script src="js/nutrition-habits.js?v=20260918-fruit1"></script>
 <script src="js/culina-bridge.js?v=20260918-fruit1"></script>
 <script src="js/3615-bridge.js?v=20260918-fruit1"></script>

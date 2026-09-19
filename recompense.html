@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cap — Récompenses</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=20260919-rewards1">
+<link rel="stylesheet" href="css/recompense.css?v=20260919-rewards1">
+</head>
+<body>
+<header class="reward-page-header">
+  <div class="reward-page-head">
+    <div class="brand">
+      <div class="logo cap-logo"><img src="assets/logo-cap.svg" alt="Logo Cap"></div>
+      <div class="brand-copy"><h1>Récompenses</h1><div class="subtitle">La petite couche de gamification de CAP</div></div>
+    </div>
+    <a class="back-cap" href="index.html">← Revenir à CAP</a>
+  </div>
+</header>
+<main class="reward-main">
+  <section class="reward-hero" aria-label="Résumé des récompenses">
+    <div class="reward-stat main"><small>Série actuelle</small><strong><span id="heroStreak">0</span> 🔥</strong><p>Record : <span id="heroRecord">0</span> jours</p></div>
+    <div class="reward-stat"><small>Éclats</small><strong><span id="heroShards">0</span> ✨</strong><p><span id="earnedTotal">0</span> gagnés au total</p></div>
+    <div class="reward-stat"><small>Protection</small><strong><span id="heroGel">0</span> 🧊</strong><p>Gel de flamme disponible</p></div>
+  </section>
+
+  <section class="reward-card">
+    <div class="reward-card-head"><div><h2>Quêtes en cours</h2><p>Quand un palier tombe, le suivant prend sa place.</p></div></div>
+    <div class="quest-list" id="questList"></div>
+  </section>
+
+  <section class="reward-card">
+    <div class="reward-card-head"><div><h2>Boutique</h2><p>Des petits extras pour personnaliser CAP, rien d’essentiel.</p></div><span class="count">Sans argent réel</span></div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </section>
+
+  <section class="reward-card">
+    <div class="reward-card-head"><div><h2>Mes personnalisations</h2><p>Réactive à tout moment un style déjà obtenu.</p></div></div>
+    <div class="collection-list" id="collectionList"></div>
+  </section>
+
+  <section class="reward-card">
+    <div class="reward-card-head"><div><h2>Vitrine des trophées</h2><p>Les trophées se gagnent : ils ne s’achètent jamais.</p></div><span class="count"><span id="trophyCount">0</span> obtenus</span></div>
+    <div class="trophy-grid" id="trophyGrid"></div>
+  </section>
+
+  <details class="reward-card reward-rules">
+    <summary>Comment gagner des Éclats ?</summary>
+    <div class="rules-grid">
+      <div class="rule"><span>🌙 Bonne nuit · score &gt; 75</span><strong>+3 ✨</strong></div>
+      <div class="rule"><span>🥗 Bonne journée nutrition · score &gt; 75</span><strong>+4 ✨</strong></div>
+      <div class="rule"><span>✅ Séance prévue terminée</span><strong>+5 ✨</strong></div>
+      <div class="rule"><span>🗓️ Semaine sportive complète</span><strong>+15 ✨</strong></div>
+    </div>
+    <p class="rules-note">Une journée rapporte donc au maximum 12 ✨ via les trois piliers. Les trophées n’ajoutent pas d’Éclats : ils servent uniquement à garder la trace des jalons accomplis. La série CAP avance lorsqu’au moins 2 des 3 piliers sont validés ; les jours de repos ou d’activité libre comptent comme pilier activité.</p>
+  </details>
+</main>
+<div id="rewardToast" class="reward-toast" role="status" aria-live="polite"></div>
+<script src="js/rewards-core.js?v=20260919-rewards1"></script>
+<script src="js/recompense.js?v=20260919-rewards1"></script>
+</body>
+</html>
