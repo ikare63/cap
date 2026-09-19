@@ -1720,3 +1720,112 @@ body.reward-cards-sharp .home-details{border-radius:12px!important}
   .app-header .subtitle{max-width:36vw!important}
   .mobile-theme-btn{width:36px!important;height:36px!important;flex-basis:36px!important;font-size:1.25rem!important}
 }
+
+/* =========================================================
+   CAP V42 — COMPTEUR RÉCOMPENSES COMPACT + ÉMOJIS NATIFS
+   ========================================================= */
+.header-actions{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:5px !important;
+  flex:0 0 auto !important;
+  min-width:0 !important;
+}
+.cap-reward-link{
+  position:relative !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:2px !important;
+  width:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  height:27px !important;
+  padding:0 3px !important;
+  margin:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:var(--text) !important;
+  text-decoration:none !important;
+  white-space:nowrap !important;
+  font-size:.67rem !important;
+  font-weight:850 !important;
+  line-height:1 !important;
+  letter-spacing:-.01em !important;
+}
+.cap-reward-link:hover{background:transparent !important;border:0 !important}
+.cap-reward-link:active{transform:scale(.95)}
+.cap-reward-link .cap-flame-icon,
+.cap-reward-link .cap-shard-icon{
+  display:inline-block !important;
+  width:auto !important;
+  height:auto !important;
+  min-width:0 !important;
+  line-height:1 !important;
+  font-size:.87rem !important;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif !important;
+  color:inherit !important;
+  vertical-align:-.08em !important;
+}
+.cap-reward-dot{
+  margin:0 1px !important;
+  color:var(--muted) !important;
+  font-size:.58rem !important;
+  line-height:1 !important;
+}
+/* Les variantes achetables gardent un effet léger, mais la flamme reste le vrai emoji 🔥. */
+.cap-reward-link.flame-azure .cap-flame-icon{
+  filter:hue-rotate(150deg) saturate(1.25) !important;
+  text-shadow:0 0 4px rgba(35,184,230,.22) !important;
+}
+.cap-reward-link.flame-gold .cap-flame-icon{
+  filter:saturate(.85) brightness(1.08) !important;
+  text-shadow:0 0 4px rgba(240,173,29,.24) !important;
+}
+.cap-reward-link.counter-minimal,
+.cap-reward-link.counter-glass{
+  padding:0 3px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.cap-reward-link.counter-glass{
+  background:color-mix(in srgb,var(--panel) 58%,transparent) !important;
+  backdrop-filter:blur(8px);
+}
+
+@media(max-width:620px){
+  .app-header .head{
+    padding-right:10px !important;
+  }
+  .header-actions{
+    gap:2px !important;
+    margin-left:auto !important;
+  }
+  .cap-reward-link{
+    height:23px !important;
+    padding:0 2px !important;
+    gap:1px !important;
+    font-size:.60rem !important;
+  }
+  .cap-reward-link .cap-flame-icon,
+  .cap-reward-link .cap-shard-icon{
+    font-size:.80rem !important;
+  }
+  .cap-reward-dot{font-size:.50rem !important;margin:0 !important}
+  .mobile-theme-btn,
+  body.dark .mobile-theme-btn{
+    position:static !important;
+    right:auto !important;
+    top:auto !important;
+    transform:none !important;
+    width:34px !important;
+    height:34px !important;
+    flex:0 0 34px !important;
+    font-size:1.22rem !important;
+  }
+  .mobile-theme-btn:active{transform:scale(.94) !important}
+}
