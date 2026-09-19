@@ -413,6 +413,7 @@ function save(){
    alert(__capSaveErrorMessage(err,payload,'Le contrôle après enregistrement a échoué.'));
   }
  },300);
+ setTimeout(()=>{try{window.CapRewards?.sync?.({feedback:true});}catch(_){ }},380);
  return true;
 }
 function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='today')renderToday();if(id==='week')renderWeek();if(id==='nutrition')loadNutrition();if(id==='sleep')loadSleep();if(id==='trends')renderTrends();if(id==='measures')renderMeasures();if(id==='summary')renderWeeklySummary();if(id==='settings'){loadSettings();renderHistory(30);}scrollTo(0,0)}
@@ -1928,7 +1929,7 @@ function toggleTheme(){document.body.classList.toggle('dark');localStorage.setIt
 darkBtn.onclick=toggleTheme;
 if(mobileThemeBtn)mobileThemeBtn.onclick=toggleTheme;
 setInterval(()=>{updateSessionTimerUI();updateRestTimerUI()},500);
-if(localStorage.getItem('cap-dark')==='1')document.body.classList.add('dark');updateThemeButton();exportBtn.onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`cap-sauvegarde-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)};importBtn.onclick=()=>importFile.click();importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{state=JSON.parse(r.result);if(!state.settings||!state.daily)throw 0;save();location.reload()}catch{alert('Sauvegarde Cap invalide.')}};r.readAsText(f)};
+if(localStorage.getItem('cap-dark')==='1')document.body.classList.add('dark');updateThemeButton();exportBtn.onclick=()=>{const exportState=JSON.parse(JSON.stringify(state));try{exportState.__capRewards=JSON.parse(localStorage.getItem('cap-rewards-v1')||'{}')}catch(_){ }const b=new Blob([JSON.stringify(exportState,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`cap-sauvegarde-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)};importBtn.onclick=()=>importFile.click();importFile.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const imported=JSON.parse(r.result);if(!imported.settings||!imported.daily)throw 0;if(imported.__capRewards){localStorage.setItem('cap-rewards-v1',JSON.stringify(imported.__capRewards));delete imported.__capRewards;}state=imported;save();location.reload()}catch{alert('Sauvegarde Cap invalide.')}};r.readAsText(f)};
 let versionEggTaps=[];
 function registerVersionEggTap(){
  const now=Date.now();
