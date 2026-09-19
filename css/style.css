@@ -1676,3 +1676,47 @@ body.dark #nav .navbtn.active{
 .fruit-prompt-icon{font-size:2.2rem;margin-bottom:6px}.fruit-prompt-card h3{margin:0 0 8px;font-size:1.22rem}.fruit-prompt-card p{margin:0;color:var(--muted);line-height:1.5}
 .fruit-prompt-actions{display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap}.fruit-prompt-close{position:absolute;right:10px;top:8px;border:0;background:transparent;color:var(--muted);font-size:1.5rem;cursor:pointer}
 @media(max-width:520px){.fruit-prompt-actions{display:grid}.fruit-prompt-actions .btn{width:100%}}
+
+/* =========================================================
+   CAP V41 — RÉCOMPENSES : FLAMME + ÉCLATS
+   ========================================================= */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:0 0 auto}
+.cap-reward-link{position:relative;display:inline-flex;align-items:center;gap:4px;min-height:36px;padding:7px 9px;text-decoration:none;color:var(--text);font-size:.76rem;font-weight:900;line-height:1;border:1px solid var(--line);border-radius:10px;background:transparent;white-space:nowrap;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.cap-reward-link:hover{border-color:color-mix(in srgb,var(--accent) 34%,var(--line));background:color-mix(in srgb,var(--accent) 5%,var(--panel))}
+.cap-reward-link:active{transform:scale(.97)}
+.cap-reward-link .cap-flame-icon{width:15px;height:17px;display:inline-grid;place-items:center;color:var(--accent)}
+.cap-reward-link .cap-flame-icon svg{width:100%;height:100%;display:block}
+.cap-reward-dot{color:var(--muted);margin:0 1px}
+.cap-reward-link.flame-azure .cap-flame-icon{color:#23b8e6;filter:drop-shadow(0 0 4px rgba(35,184,230,.35))}
+.cap-reward-link.flame-gold .cap-flame-icon{color:#f0ad1d;filter:drop-shadow(0 0 4px rgba(240,173,29,.36))}
+.cap-reward-link.counter-minimal{border-color:transparent;background:transparent;padding-left:4px;padding-right:4px}
+.cap-reward-link.counter-glass{background:color-mix(in srgb,var(--panel) 70%,transparent);backdrop-filter:blur(10px);border-color:color-mix(in srgb,var(--line) 70%,transparent);box-shadow:0 5px 16px rgba(15,23,42,.07)}
+.cap-reward-link.reward-pop{animation:capRewardPop .62s ease}
+.reward-spark{position:absolute;right:2px;top:-15px;color:#f2b326;font-size:.68rem;font-weight:950;pointer-events:none;animation:capRewardSpark 1.1s ease forwards}
+@keyframes capRewardPop{0%,100%{transform:scale(1)}40%{transform:scale(1.08)}}
+@keyframes capRewardSpark{0%{opacity:0;transform:translateY(5px) scale(.85)}25%{opacity:1}100%{opacity:0;transform:translateY(-13px) scale(1.05)}}
+
+/* Personnalisations achetables : légères et réversibles. */
+body.reward-accent-ocean{--accent:#169fbd;--accent-2:#38b9d1;--soft:#eaf9fc}
+body.reward-accent-forest{--accent:#3f9850;--accent-2:#65b36e;--soft:#edf8ef}
+body.reward-accent-plum{--accent:#7b55bd;--accent-2:#9873cf;--soft:#f2edfa}
+body.dark.reward-accent-ocean{--soft:#0e2d38}
+body.dark.reward-accent-forest{--soft:#122d1c}
+body.dark.reward-accent-plum{--soft:#261b3b}
+body.reward-gauge-thin .home-kpi-ring::before{inset:5px!important}
+body.reward-gauge-thin .macro-ring::before{inset:5px!important}
+body.reward-gauge-bold .home-kpi-ring::before{inset:11px!important}
+body.reward-gauge-bold .macro-ring::before{inset:10px!important}
+body.reward-cards-sharp .card,
+body.reward-cards-sharp .home-kpi,
+body.reward-cards-sharp .home-advice-card,
+body.reward-cards-sharp .sheet-details,
+body.reward-cards-sharp .home-details{border-radius:12px!important}
+
+@media(max-width:560px){
+  .header-actions{gap:4px}
+  .cap-reward-link{font-size:.68rem;padding:6px 7px;min-height:32px;border-radius:9px}
+  .cap-reward-link .cap-flame-icon{width:13px;height:15px}
+  .app-header .subtitle{max-width:36vw!important}
+  .mobile-theme-btn{width:36px!important;height:36px!important;flex-basis:36px!important;font-size:1.25rem!important}
+}
