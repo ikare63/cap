@@ -1200,7 +1200,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 </section>
 </main>
 <script src="js/lenaic-bus.js?v=20260918-fruit1"></script>
-<script src="js/cap-main.js?v=20260919-rewards1"></script>
+<script src="js/cap-main.js?v=20260919-sessionfix2"></script>
 <script src="js/rewards-core.js?v=20260919-rewards2"></script>
 <script>CapRewards.sync({feedback:false});</script>
 <script src="js/nutrition-habits.js?v=20260918-fruit1"></script>
@@ -1238,6 +1238,70 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
       e.target.setAttribute('size','5');
     }
   });
+})();
+</script>
+
+<script id="cap-session-save-hotfix-v2">
+/*
+  Correctif d'enregistrement des séances libres / repos.
+  Il évite d'appeler la logique de progression lorsqu'un plan n'a pas
+  de tableau d'exercices, et sécurise l'historique.
+*/
+(function(){
+  window.setDone = function(v){
+    var activityKey = getActivityKeyForDay(selectedTraining);
+    var p = plans[activityKey];
+    if(!p) return;
+
+    var t = state.training[selectedTraining];
+    if(!t){
+      t = ensureTrainingSession(selectedTraining, p, activityKey);
+    }
+
+    if(!t.session){
+      t.session = {elapsed:0,running:false,startAt:null};
+    }
+    if(!state.trainingHistory || typeof state.trainingHistory !== 'object'){
+      state.trainingHistory = {};
+    }
+
+    t.completed = !!v;
+    t.date = t.sessionDate || todayKey();
+
+    if(v){
+      if(t.session.running){
+        t.session.elapsed = getSessionElapsed(t);
+        t.session.running = false;
+        t.session.startAt = null;
+      }
+
+      t.durationMs = getSessionElapsed(t);
+
+      /* Seulement les séances avec exercices alimentent la progression. */
+      if(Array.isArray(p.exercises)){
+        assessProgression(selectedTraining, p, t);
+      }
+
+      state.trainingHistory[t.date + '::' + selectedTraining] = {
+        date: t.date,
+        day: selectedTraining,
+        activityKey: activityKey,
+        title: p.title,
+        completed: true,
+        durationMs: t.durationMs || 0,
+        light: isLightMode(t),
+        checks: t.checks || {},
+        loads: t.loads || {},
+        series: t.series || {},
+        generated: t.generated || null
+      };
+    }else{
+      delete state.trainingHistory[t.date + '::' + selectedTraining];
+    }
+
+    save();
+    renderWeek();
+  };
 })();
 </script>
 
