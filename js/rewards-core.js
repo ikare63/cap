@@ -6,7 +6,7 @@
   const VERSION=1;
   const DAY_MS=86400000;
 
-  const FLAME_SVG='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.8 2.2c.8 3-.1 4.7-1.7 6.3-1.1 1.1-1.8 2.3-1.8 3.9 0 .8.2 1.5.7 2.2-2.7-1-4.4-3.3-4.4-6.2 0-2.7 1.8-5.1 7.2-6.2Z" fill="currentColor"/><path d="M12.2 9c3.5 2.2 5.3 4.7 5.3 7.7a5.5 5.5 0 1 1-11 0c0-2.7 1.6-5 4.6-7.2.1 1.1.6 1.9 1.5 2.3.3-.8.2-1.7-.4-2.8Z" fill="currentColor" opacity=".82"/></svg>';
+  const FLAME_SVG='🔥';
 
   const CATALOG=[
     {id:'flame-azure',type:'flame',name:'Flamme azur',icon:'🔥',price:80,desc:'Une flamme bleutée dans le compteur CAP.'},
@@ -232,7 +232,8 @@
   function updateHeader(r,cap){
     r=r||loadRewards();cap=cap||loadCap();const ss=streakStats(cap,r),st=document.getElementById('capRewardStreak'),sh=document.getElementById('capRewardShards'),gel=document.getElementById('capRewardGel');
     if(st)st.textContent=ss.current;if(sh)sh.textContent=r.shards;if(gel)gel.textContent=r.inventory.gel||0;
-    document.querySelectorAll('.cap-flame-icon').forEach(el=>{if(!el.querySelector('svg'))el.innerHTML=FLAME_SVG});
+    document.querySelectorAll('.cap-flame-icon').forEach(el=>{el.textContent='🔥'});
+    document.querySelectorAll('.cap-shard-icon').forEach(el=>{el.textContent='✨️'});
   }
   function playFeedback(r,gained){
     const chip=document.getElementById('capRewardLink');if(!chip)return;const mode=r.equipped.animation;
