@@ -920,7 +920,7 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20260919-rewards2">
+<link rel="stylesheet" href="css/style.css?v=20260920-forest2">
 
 <style id="cap-charge-field-only-fix-v40">
 /* Correctif STRICTEMENT limité au champ Charge des séances */
@@ -1241,66 +1241,119 @@ body.dark .kpi-icon-badge.sleep{background:#291c45 !important;border-color:#5f43
 })();
 </script>
 
-<script id="cap-session-save-hotfix-v2">
-/*
-  Correctif d'enregistrement des séances libres / repos.
-  Il évite d'appeler la logique de progression lorsqu'un plan n'a pas
-  de tableau d'exercices, et sécurise l'historique.
-*/
+
+<script id="cap-session-save-hotfix-v3">
 (function(){
+  /*
+    Sauvegarde de séance rendue autonome :
+    - enregistre d'abord la séance dans cap-data ;
+    - la progression et les récompenses ne peuvent plus bloquer l'enregistrement ;
+    - fonctionne aussi pour une séance libre ou un jour de repos.
+  */
   window.setDone = function(v){
-    var activityKey = getActivityKeyForDay(selectedTraining);
-    var p = plans[activityKey];
-    if(!p) return;
+    try{
+      var day = selectedTraining;
+      var activityKey = (typeof getActivityKeyForDay === 'function')
+        ? getActivityKeyForDay(day)
+        : day;
 
-    var t = state.training[selectedTraining];
-    if(!t){
-      t = ensureTrainingSession(selectedTraining, p, activityKey);
-    }
+      var p = (typeof plans !== 'undefined' && plans)
+        ? (plans[activityKey] || plans[day] || {})
+        : {};
 
-    if(!t.session){
-      t.session = {elapsed:0,running:false,startAt:null};
-    }
-    if(!state.trainingHistory || typeof state.trainingHistory !== 'object'){
-      state.trainingHistory = {};
-    }
+      if(!state.training || typeof state.training !== 'object') state.training = {};
+      if(!state.trainingHistory || typeof state.trainingHistory !== 'object') state.trainingHistory = {};
 
-    t.completed = !!v;
-    t.date = t.sessionDate || todayKey();
-
-    if(v){
-      if(t.session.running){
-        t.session.elapsed = getSessionElapsed(t);
-        t.session.running = false;
-        t.session.startAt = null;
+      var t = state.training[day];
+      if(!t || typeof t !== 'object'){
+        t = state.training[day] = {
+          checks:{},
+          completed:false,
+          loads:{},
+          series:{},
+          session:{elapsed:0,running:false,startAt:null}
+        };
       }
 
-      t.durationMs = getSessionElapsed(t);
+      if(!t.checks) t.checks = {};
+      if(!t.loads) t.loads = {};
+      if(!t.series) t.series = {};
+      if(!t.session) t.session = {elapsed:0,running:false,startAt:null};
 
-      /* Seulement les séances avec exercices alimentent la progression. */
-      if(Array.isArray(p.exercises)){
-        assessProgression(selectedTraining, p, t);
+      var now = Date.now();
+      var date = t.sessionDate ||
+        (typeof todayKey === 'function'
+          ? todayKey()
+          : new Date().toISOString().slice(0,10));
+
+      t.completed = !!v;
+      t.date = date;
+
+      if(v){
+        /* Figer proprement le chrono sans dépendre d'une autre fonction. */
+        if(t.session.running && t.session.startAt){
+          t.session.elapsed =
+            (Number(t.session.elapsed) || 0) +
+            Math.max(0, now - Number(t.session.startAt));
+          t.session.running = false;
+          t.session.startAt = null;
+        }
+
+        t.durationMs = Number(t.session.elapsed) || Number(t.durationMs) || 0;
+
+        state.trainingHistory[date + '::' + day] = {
+          date: date,
+          day: day,
+          activityKey: activityKey,
+          title: p.title || 'Séance',
+          completed: true,
+          durationMs: t.durationMs,
+          light: t.lightOverride === 'light',
+          checks: t.checks,
+          loads: t.loads,
+          series: t.series,
+          generated: t.generated || null
+        };
+
+        /*
+          On persiste AVANT la progression :
+          même si cette logique secondaire plante, la séance est déjà sauvée.
+        */
+        localStorage.setItem('cap-data', JSON.stringify(state));
+
+        try{
+          if(Array.isArray(p.exercises) && typeof assessProgression === 'function'){
+            assessProgression(day, p, t);
+            localStorage.setItem('cap-data', JSON.stringify(state));
+          }
+        }catch(_progressionError){}
+
+      }else{
+        delete state.trainingHistory[date + '::' + day];
+        localStorage.setItem('cap-data', JSON.stringify(state));
       }
 
-      state.trainingHistory[t.date + '::' + selectedTraining] = {
-        date: t.date,
-        day: selectedTraining,
-        activityKey: activityKey,
-        title: p.title,
-        completed: true,
-        durationMs: t.durationMs || 0,
-        light: isLightMode(t),
-        checks: t.checks || {},
-        loads: t.loads || {},
-        series: t.series || {},
-        generated: t.generated || null
-      };
-    }else{
-      delete state.trainingHistory[t.date + '::' + selectedTraining];
-    }
+      /* Récompenses : jamais bloquantes. */
+      setTimeout(function(){
+        try{
+          if(window.CapRewards && typeof window.CapRewards.sync === 'function'){
+            window.CapRewards.sync({feedback:!!v});
+          }
+        }catch(_rewardError){}
+      }, 0);
 
-    save();
-    renderWeek();
+      /* Rafraîchissement visuel : jamais bloquant pour la sauvegarde. */
+      try{
+        if(typeof renderWeek === 'function') renderWeek();
+        else if(typeof renderTraining === 'function') renderTraining();
+      }catch(_renderError){}
+
+      return true;
+    }catch(err){
+      console.error('CAP — erreur enregistrement séance', err);
+      alert("La séance n'a pas pu être enregistrée. Recharge la page puis réessaie.");
+      return false;
+    }
   };
 })();
 </script>
