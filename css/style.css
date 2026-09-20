@@ -1829,3 +1829,134 @@ body.reward-cards-sharp .home-details{border-radius:12px!important}
   }
   .mobile-theme-btn:active{transform:scale(.94) !important}
 }
+
+/* =========================================================
+   CAP V43 — ACCENT FORÊT : PALETTE NATURELLE COMPLÈTE
+   ========================================================= */
+body.reward-accent-forest{
+  --accent:#4f8a5b;
+  --accent-2:#7aa56d;
+  --soft:#eef6ed;
+
+  --forest-deep:#456f4d;
+  --forest-leaf:#62a36c;
+  --forest-moss:#7f9961;
+  --forest-water:#69a99f;
+  --forest-bark:#9a7652;
+  --forest-header:#f1f7ee;
+  --forest-header-2:#e9f2e6;
+  --forest-line:#d7e4d2;
+}
+
+/* Le header prend une légère teinte verte, sans devenir criard. */
+body.reward-accent-forest .app-header{
+  background:linear-gradient(180deg,var(--forest-header) 0%,var(--forest-header-2) 100%) !important;
+  border-bottom-color:var(--forest-line) !important;
+  box-shadow:0 2px 12px rgba(69,111,77,.07) !important;
+}
+body.reward-accent-forest .app-header .head{
+  background:transparent !important;
+}
+body.reward-accent-forest .brand-copy h1,
+body.reward-accent-forest .app-header h1{
+  color:#2f4935 !important;
+  -webkit-text-fill-color:#2f4935 !important;
+}
+body.reward-accent-forest .logo.cap-logo{
+  background:rgba(255,255,255,.58) !important;
+  border-color:#d4e2d0 !important;
+}
+body.reward-accent-forest .mobile-theme-btn{
+  background:rgba(255,255,255,.48) !important;
+  border-color:#d4e2d0 !important;
+}
+
+/* Boutons principaux : vert feuille, mais le reste de l'interface garde sa palette. */
+body.reward-accent-forest .hero-cta,
+body.reward-accent-forest .btn.primary{
+  background:linear-gradient(135deg,#568f60,#79aa70) !important;
+  box-shadow:0 8px 18px rgba(79,138,91,.22) !important;
+}
+
+/* Accueil : quatre couleurs naturelles différentes. */
+body.reward-accent-forest .home-kpi.activity{
+  --ring-color:var(--forest-deep) !important;
+  --ring-soft:#edf5ee !important;
+}
+body.reward-accent-forest .home-kpi.calories{
+  --ring-color:var(--forest-bark) !important;
+  --ring-soft:#f6eee7 !important;
+}
+body.reward-accent-forest .home-kpi.protein{
+  --ring-color:var(--forest-leaf) !important;
+  --ring-soft:#edf6ed !important;
+}
+body.reward-accent-forest .home-kpi.sleep{
+  --ring-color:var(--forest-water) !important;
+  --ring-soft:#eaf5f3 !important;
+}
+
+/* Le JS écrit parfois la couleur directement sur l'anneau :
+   ces règles garantissent donc la palette Forêt. */
+body.reward-accent-forest #kpiActivityRing{
+  --ring-color:var(--forest-deep) !important;
+}
+body.reward-accent-forest #kpiCaloriesRing{
+  --ring-color:var(--forest-bark) !important;
+}
+body.reward-accent-forest #kpiProteinRing{
+  --ring-color:var(--forest-leaf) !important;
+}
+body.reward-accent-forest #kpiSleepRing{
+  --ring-color:var(--forest-water) !important;
+}
+
+/* Nutrition : les anneaux utilisaient tous var(--green).
+   On leur attribue maintenant une vraie gamme naturelle. */
+body.reward-accent-forest #calGauge{
+  background:conic-gradient(var(--forest-bark) calc(var(--macro)*1%),var(--line) 0) !important;
+}
+body.reward-accent-forest #proteinGauge{
+  background:conic-gradient(var(--forest-leaf) calc(var(--macro)*1%),var(--line) 0) !important;
+}
+body.reward-accent-forest #carbGauge{
+  background:conic-gradient(var(--forest-moss) calc(var(--macro)*1%),var(--line) 0) !important;
+}
+body.reward-accent-forest #fatGauge{
+  background:conic-gradient(var(--forest-water) calc(var(--macro)*1%),var(--line) 0) !important;
+}
+
+/* Quelques touches très légères sur les cartes, sans tout repeindre. */
+body.reward-accent-forest .home-kpi,
+body.reward-accent-forest .home-yesterday-score,
+body.reward-accent-forest .card{
+  border-color:color-mix(in srgb,var(--forest-line) 72%,var(--line)) !important;
+}
+
+/* Mode sombre : même logique, en version forêt nocturne. */
+body.dark.reward-accent-forest{
+  --soft:#122d1c;
+  --forest-header:#102019;
+  --forest-header-2:#13271d;
+  --forest-line:#294535;
+}
+body.dark.reward-accent-forest .app-header{
+  background:linear-gradient(180deg,var(--forest-header) 0%,var(--forest-header-2) 100%) !important;
+  border-bottom-color:var(--forest-line) !important;
+  box-shadow:0 2px 14px rgba(0,0,0,.24) !important;
+}
+body.dark.reward-accent-forest .brand-copy h1,
+body.dark.reward-accent-forest .app-header h1{
+  color:#edf6ee !important;
+  -webkit-text-fill-color:#edf6ee !important;
+}
+body.dark.reward-accent-forest .logo.cap-logo,
+body.dark.reward-accent-forest .mobile-theme-btn{
+  background:#173024 !important;
+  border-color:#315440 !important;
+}
+body.dark.reward-accent-forest .home-kpi.activity{--ring-soft:#163023 !important}
+body.dark.reward-accent-forest .home-kpi.calories{--ring-soft:#33271e !important}
+body.dark.reward-accent-forest .home-kpi.protein{--ring-soft:#173224 !important}
+body.dark.reward-accent-forest .home-kpi.sleep{--ring-soft:#16312e !important}
+
