@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CAP — Secours sauvegarde</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color-scheme:light dark}
+body{max-width:760px;margin:0 auto;padding:24px;line-height:1.45}
+h1{font-size:1.6rem;margin-bottom:.2rem}
+.note{padding:12px 14px;border:1px solid #8886;border-radius:12px;margin:14px 0}
+.card{border:1px solid #8886;border-radius:14px;padding:16px;margin:14px 0}
+.ok{font-weight:700}
+.bad{font-weight:700}
+button{padding:10px 14px;margin:5px 6px 5px 0;border-radius:10px;border:1px solid #8888;cursor:pointer}
+pre{white-space:pre-wrap;word-break:break-word;max-height:260px;overflow:auto;background:#8881;padding:10px;border-radius:10px}
+small{opacity:.8}
+</style>
+</head>
+<body>
+<h1>CAP — outil de secours</h1>
+<p>Cet outil <strong>ne modifie rien automatiquement</strong>. Il inspecte uniquement les données enregistrées par le navigateur sur ce même site.</p>
+<div class="note"><strong>Important :</strong> ouvre ce fichier depuis exactement le même domaine que CAP (par exemple en le mettant dans le même dépôt GitHub Pages). Ne vide pas les données du navigateur avant d'avoir exporté ce qui est trouvé.</div>
+
+<div id="summary"></div>
+
+<div class="card">
+<h2>Sauvegarde complète du stockage</h2>
+<p>Télécharge une copie de toutes les clés du localStorage avant toute restauration.</p>
+<button id="backupAll">Télécharger tout le localStorage</button>
+</div>
+
+<div id="keys"></div>
+
+<script>
+const interesting = ['cap-data','motoria-data','cap-rewards-v1'];
+
+function bytes(s){ return new Blob([s||'']).size; }
+function human(n){ return n<1024 ? n+' o' : (n/1024).toFixed(1)+' Ko'; }
+
+function inspect(raw){
+  if(raw == null) return {exists:false};
+  let parsed=null, error=null;
+  try{ parsed=JSON.parse(raw); }catch(e){ error=String(e); }
+  const info={exists:true,size:bytes(raw),parsed,error};
+  if(parsed && typeof parsed==='object'){
+    info.dailyCount = parsed.daily && typeof parsed.daily==='object' ? Object.keys(parsed.daily).length : null;
+    info.trainingHistoryCount = parsed.trainingHistory && typeof parsed.trainingHistory==='object' ? Object.keys(parsed.trainingHistory).length : null;
+    info.measurementsCount = Array.isArray(parsed.measurements) ? parsed.measurements.length : null;
+    info.hasSettings = !!parsed.settings;
+  }
+  return info;
+}
+
+function dl(name, text){
+  const b=new Blob([text],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download=name;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+function allStorage(){
+  const o={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    o[k]=localStorage.getItem(k);
+  }
+  return o;
+}
+
+function render(){
+  const found=[];
+  for(let i=0;i<localStorage.length;i++) found.push(localStorage.key(i));
+  document.getElementById('summary').innerHTML =
+    `<div class="card"><h2>État</h2><p>${found.length} clé(s) trouvée(s) sur ce domaine.</p>
+    <p><small>${found.map(x=>x.replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))).join(', ') || 'Aucune clé'}</small></p></div>`;
+
+  const host=document.getElementById('keys'); host.innerHTML='';
+  const keys=[...new Set([...interesting, ...found.filter(k=>/cap|motoria|backup|reward/i.test(k))])];
+  for(const k of keys){
+    const raw=localStorage.getItem(k);
+    const inf=inspect(raw);
+    const d=document.createElement('div');
+    d.className='card';
+    if(!inf.exists){
+      d.innerHTML=`<h2>${k}</h2><p class="bad">Absente</p>`;
+    }else{
+      const details=[];
+      details.push(`Taille : ${human(inf.size)}`);
+      if(inf.error) details.push(`JSON invalide : ${inf.error}`);
+      if(inf.dailyCount!=null) details.push(`Jours enregistrés : ${inf.dailyCount}`);
+      if(inf.trainingHistoryCount!=null) details.push(`Séances historiques : ${inf.trainingHistoryCount}`);
+      if(inf.measurementsCount!=null) details.push(`Mesures : ${inf.measurementsCount}`);
+      d.innerHTML=`<h2>${k}</h2><p class="ok">Présente</p><p>${details.join('<br>')}</p>`;
+      const b=document.createElement('button');
+      b.textContent='Télécharger cette clé';
+      b.onclick=()=>dl(`${k}-secours-${new Date().toISOString().slice(0,10)}.json`, raw);
+      d.appendChild(b);
+
+      if(k==='motoria-data'){
+        const r=document.createElement('button');
+        r.textContent='Restaurer motoria-data vers cap-data';
+        r.onclick=()=>{
+          const current=localStorage.getItem('cap-data');
+          if(current!=null){
+            dl(`cap-data-AVANT-restauration-${new Date().toISOString().replace(/[:.]/g,'-')}.json`, current);
+          }
+          if(!confirm("Copier motoria-data vers cap-data ? Une copie du cap-data actuel vient d'être téléchargée s'il existait.")) return;
+          localStorage.setItem('cap-data', raw);
+          alert("Restauration effectuée. Retourne dans CAP et recharge la page.");
+          render();
+        };
+        d.appendChild(r);
+      }
+      const p=document.createElement('pre');
+      let preview=raw;
+      if(preview.length>3000) preview=preview.slice(0,3000)+'\n… aperçu tronqué …';
+      p.textContent=preview;
+      d.appendChild(p);
+    }
+    host.appendChild(d);
+  }
+}
+
+document.getElementById('backupAll').onclick=()=>{
+  dl(`cap-localStorage-secours-${new Date().toISOString().replace(/[:.]/g,'-')}.json`,
+     JSON.stringify(allStorage(),null,2));
+};
+render();
+</script>
+</body>
+</html>
