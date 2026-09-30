@@ -327,7 +327,7 @@ function nutritionDayKey(date=new Date()){
  return `${y}-${m}-${day}`;
 }
 let state=JSON.parse(localStorage.getItem('cap-data')||localStorage.getItem('motoria-data')||'{}');if(!state.settings)state.settings={weight:61.8,height:171,calories:2200,proteinRate:1.8,carbRate:5,fatRate:1};
-if(state.settings.calories===2400)state.settings.calories=2200;if(state.settings.carbRate==null)state.settings.carbRate=5;if(state.settings.fatRate==null)state.settings.fatRate=1;if(state.settings.restSeconds==null)state.settings.restSeconds=90;if(!state.daily)state.daily={};if(!state.training)state.training={};if(!state.exerciseLoads)state.exerciseLoads={};if(!state.timerDurations)state.timerDurations={};if(!state.trainingHistory)state.trainingHistory={};
+if(state.settings.carbRate==null)state.settings.carbRate=5;if(state.settings.fatRate==null)state.settings.fatRate=1;if(state.settings.restSeconds==null)state.settings.restSeconds=90;if(!state.daily)state.daily={};if(!state.training)state.training={};if(!state.exerciseLoads)state.exerciseLoads={};if(!state.timerDurations)state.timerDurations={};if(!state.trainingHistory)state.trainingHistory={};
 Object.values(state.trainingHistory).forEach(x=>{
  const oldHouseTitle='Séance '+'C — Pectoraux haltères';
  if(x && x.title===oldHouseTitle)x.title='Séance Maison — Pectoraux haltères';
