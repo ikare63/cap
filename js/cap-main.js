@@ -146,16 +146,17 @@ function getTuesdayPlan(date=new Date()){
  if(even){
   return {
    title:'Jogging',
-   duration:'20–30 min',
+   duration:'18–22 min',
    icon:'🏃',
    intro:`Semaine ${week} paire : cardio doux, régularité avant performance.`,
-   planKey:`week-${week}-jogging`,
+   planKey:`week-${week}-jogging-v2`,
    strength:false,
-   exercises:[
-    ['Marche rapide','5 min'],
-    ['Alternance course / marche','10–20 min'],
-    ['Retour au calme','5 min']
-   ]
+   modeExercises:{
+    light:[['Marche rapide','5 min'],['Jogging','8 min'],['Retour au calme','5 min']],
+    normal:[['Marche rapide','5 min'],['Jogging','10 min'],['Retour au calme','5 min']],
+    legendary:[['Marche rapide','5 min'],['Jogging','12 min'],['Retour au calme','5 min']]
+   },
+   exercises:[['Marche rapide','5 min'],['Jogging','10 min'],['Retour au calme','5 min']]
   };
  }
 
@@ -163,7 +164,7 @@ function getTuesdayPlan(date=new Date()){
   title:'Séance Maison — Pectoraux haltères',
   duration:'25–35 min',
   icon:'🏋️',
-  intro:`Semaine ${week} impaire : séance pectoraux debout avec haltères, inspirée des 5 mouvements de ta vidéo. 3 séries en mode Normal, 2 en mode Allégé.`,
+  intro:`Semaine ${week} impaire : séance pectoraux debout avec haltères. Mode Allégé : -1 série · Normal : volume prévu · Légendaire : +1 série.`,
   planKey:`week-${week}-dumbbell-chest-v3`,
   strength:true,
   exercises:[
@@ -219,7 +220,7 @@ function getWednesdayPlan(date=new Date()){
  };
 }
 
-const plans={lundi:{title:'Séance A — Dos, posture et abdos',duration:'35–45 min',icon:'🅰️',planKey:'lundi-standard-v5',intro:'Priorité au dos, à la posture et aux épaules, avec un peu de pectoraux et un travail abdominal court.',exercises:[['Échauffement','Vélo 5–6 min, mobilité hanches et épaules'],['Reverse fly','3 × 8–10'],['Tirage vertical','4 × 10–12'],['Tirage horizontal','4 × 10–12'],['Pec deck','3 × 12–15'],['Élévations latérales','3 × 12–15'],['Crunch','3 × 12']]},mardi:getTuesdayPlan(),mercredi:getWednesdayPlan(),jeudi:{title:'Natation — 1 600 m',duration:'40–60 min',icon:'🏊‍♂️',intro:'Séance d’endurance en crawl, avec une fin plus douce en brasse.',exercises:[['Échauffement','5 min de nage douce et mise en route progressive'],['Crawl — bloc 1','500 m à rythme confortable'],['Crawl — bloc 2','500 m à rythme confortable'],['Crawl — bloc 3','500 m à rythme confortable'],['Brasse — retour au calme','100 m pour finir tranquillement']]},vendredi:{title:'Repos complet',duration:'Journée',icon:'😴',intro:'Le repos fait partie du programme.',rest:true},samedi:{title:'Entraînement libre',duration:'5–30 min',icon:'✨',intro:'Séance sans matériel selon les muscles et la fatigue.',free:true},dimanche:{title:'Off, marche ou libre',duration:'Au choix',icon:'🌿',intro:'Récupération prioritaire.',free:true}};
+const plans={lundi:{title:'Séance A — Dos, posture et abdos',duration:'60–90 min',icon:'🅰️',planKey:'lundi-standard-v6',intro:'Priorité au dos, à la posture et aux épaules, avec un peu de pectoraux et deux exercices de core.',exercises:[['Échauffement','Vélo 5–6 min, mobilité hanches et épaules'],['Reverse fly','3 × 8–10'],['Tirage vertical','4 × 10–12'],['Tirage horizontal','4 × 10–12'],['Pec deck','3 × 12–15'],['Développé épaules','3 × 12–15'],['Crunch','3 × 12'],['Crunch agenouillé','3 × 10–12']]},mardi:getTuesdayPlan(),mercredi:getWednesdayPlan(),jeudi:{title:'Natation',duration:'35–70 min',icon:'🏊‍♂️',planKey:'natation-v2',intro:'Alternance brasse/crawl avec volume adapté au mode choisi.',strength:false,modeExercises:{light:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','400 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','400 m'],['Brasse — finisher','100 m']],normal:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','500 m'],['Brasse — finisher','100 m']],legendary:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération 1','100 m'],['Crawl — bloc 2','500 m'],['Brasse — récupération 2','100 m'],['Crawl — bloc 3','500 m'],['Brasse — finisher','100 m']]},exercises:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','500 m'],['Brasse — finisher','100 m']]},vendredi:{title:'Repos complet',duration:'Journée',icon:'😴',intro:'Le repos fait partie du programme.',rest:true},samedi:{title:'Entraînement libre',duration:'5–30 min',icon:'✨',intro:'Séance sans matériel selon les muscles et la fatigue.',free:true},dimanche:{title:'Off, marche ou libre',duration:'Au choix',icon:'🌿',intro:'Récupération prioritaire.',free:true}};
 
 const WEEK_DAYS=['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
 function getISOWeekInfo(date=new Date()){
@@ -988,21 +989,25 @@ function parseRepTop(meta){
  const m=String(meta||'').match(/[×x]\s*(\d+)(?:\s*[–-]\s*(\d+))?/);
  return m?Number(m[2]||m[1]):null;
 }
-function lightenMeta(meta){
+function adjustSeriesMeta(meta,delta=0){
  return String(meta).replace(
   /^(\s*)(\d+)(\s*[×x])/,
-  (_,lead,count,mult)=>`${lead}${Math.max(1,Number(count)-1)}${mult}`
+  (_,lead,count,mult)=>`${lead}${Math.max(1,Number(count)+delta)}${mult}`
  );
 }
+function lightenMeta(meta){return adjustSeriesMeta(meta,-1)}
+function legendaryMeta(meta){return adjustSeriesMeta(meta,1)}
 function getLightReason(){
  const d=ensureDate();
  if(d.sleep?.hours && d.sleep.hours<6)return 'Sommeil inférieur à 6 heures.';
  if(d.sleep?.physical && d.sleep.physical<50)return 'Récupération physique inférieure à 50 %.';
  return '';
 }
-function isLightMode(t){
- return t.lightOverride==='light';
+function getTrainingMode(t){
+ return ['light','normal','legendary'].includes(t?.lightOverride)?t.lightOverride:'normal';
 }
+function isLightMode(t){return getTrainingMode(t)==='light'}
+function isLegendaryMode(t){return getTrainingMode(t)==='legendary'}
 function setTrainingMode(mode){
  const t=state.training[selectedTraining];
  t.lightOverride=mode;
@@ -1036,10 +1041,11 @@ function getSeriesState(day,index,count){
  if(t.series[index].length>count)t.series[index]=t.series[index].slice(0,count);
  return t.series[index];
 }
-function exerciseSeriesHtml(day,index,meta,light){
+function exerciseSeriesHtml(day,index,meta,mode='normal'){
  let count=parseSeriesCount(meta);
  if(!count)return '';
- if(light)count=Math.max(1,count-1);
+ if(mode==='light')count=Math.max(1,count-1);
+ if(mode==='legendary')count=count+1;
  const rows=getSeriesState(day,index,count);
  const done=rows.filter(x=>x.done).length;
  return `<div class="series-visual"><div class="series-dots">${rows.map((s,n)=>`<button type="button" class="series-dot ${s.done?'done':''}" onclick="saveSeries('${day}',${index},${n},${!s.done},null)" aria-label="Série ${n+1}"></button>`).join('')}</div><details class="series-details"><summary>${done}/${count} séries · détails</summary><div class="series-grid">${rows.map((s,n)=>`<div class="series-item ${s.done?'done':''}"><label><input type="checkbox" ${s.done?'checked':''} onchange="saveSeries('${day}',${index},${n},this.checked,null)">Série ${n+1}</label><input type="number" min="0" max="100" inputmode="numeric" value="${escapeHtml(String(s.reps??''))}" placeholder="réps" onchange="saveSeries('${day}',${index},${n},null,this.value)"></div>`).join('')}</div></details></div>`;
@@ -1047,9 +1053,10 @@ function exerciseSeriesHtml(day,index,meta,light){
 function saveSeries(day,index,seriesIndex,done,reps){
  const t=state.training[day];
  const p=getPlanForDay(day);
- const light=isLightMode(t);
+ const mode=getTrainingMode(t);
  let count=parseSeriesCount(p.exercises[index][1]);
- if(light)count=Math.max(1,count-1);
+ if(mode==='light')count=Math.max(1,count-1);
+ if(mode==='legendary')count=count+1;
  const rows=getSeriesState(day,index,count);
  if(done!==null)rows[seriesIndex].done=done;
  if(reps!==null)rows[seriesIndex].reps=reps;
@@ -1181,7 +1188,7 @@ function renderWeeklySummary(){
   [sleeps.length?`${avg(sleeps).toFixed(1)} h`:'—','sommeil moyen'],
   [proteins.length?`${Math.round(avg(proteins))} g`:'—','protéines moyennes']
  ].map(x=>`<div class="kpi"><strong>${x[0]}</strong><span>${x[1]}</span></div>`).join('');
- weeklySummarySessions.innerHTML=completed.length?completed.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>`<div class="history-item"><strong>${x.title}</strong><span>${new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'short'})} · ${formatMinutes(x.durationMs)} min${x.light?' · allégée':''}</span></div>`).join(''):'<div class="alert">Aucune séance terminée cette semaine.</div>';
+ weeklySummarySessions.innerHTML=completed.length?completed.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>`<div class="history-item"><strong>${x.title}</strong><span>${new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'short'})} · ${formatMinutes(x.durationMs)} min${x.mode==='legendary'?' · légendaire':(x.light||x.mode==='light')?' · allégée':''}</span></div>`).join(''):'<div class="alert">Aucune séance terminée cette semaine.</div>';
  const advice=[];
  if(sleeps.length>=3&&avg(sleeps)<6.5)advice.push('Priorité : récupérer davantage avant d’augmenter le volume.');
  else if(completed.length<3)advice.push('Priorité : régularité, sans chercher à rattraper les séances manquées.');
@@ -1225,13 +1232,15 @@ function renderTraining(){
  const activityKey=getActivityKeyForDay(selectedTraining);
  const p=plans[activityKey];
  const t=ensureTrainingSession(selectedTraining,p,activityKey);
- const light=isLightMode(t),reason=getLightReason();
+ const mode=getTrainingMode(t),light=mode==='light',legendary=mode==='legendary',reason=getLightReason();
  const strength=['lundi','mercredi'].includes(activityKey) || Boolean(p.strength);
- let out=`<div class="training-head"><div><h2>${p.title}</h2><p class="note">${p.intro}</p></div><div class="training-chips"><span>${p.icon} ${p.duration}</span><span>${p.exercises?.length||0} exercices</span><span>${focusLabelForPlan(p)}</span></div></div>`;
- if(strength){
+ const displayExercises=p.modeExercises?.[mode]||p.exercises||[];
+ let out=`<div class="training-head"><div><h2>${p.title}</h2><p class="note">${p.intro}</p></div><div class="training-chips"><span>${p.icon} ${p.duration}</span><span>${displayExercises.length} exercices</span><span>${focusLabelForPlan(p)}</span></div></div>`;
+ if(!p.rest&&!p.free){
   out+=`<div class="training-mode-strip">
-    <button class="mode-tab ${!light?'active':''}" onclick="setTrainingMode('normal')">Normal</button>
     <button class="mode-tab ${light?'active':''}" onclick="setTrainingMode('light')">Allégé</button>
+    <button class="mode-tab ${mode==='normal'?'active':''}" onclick="setTrainingMode('normal')">Normal</button>
+    <button class="mode-tab ${legendary?'active':''}" onclick="setTrainingMode('legendary')">Légendaire</button>
    </div>`;
   if(light && reason)out+=`<div class="mode-reason">${reason}</div>`;
  }
@@ -1241,26 +1250,27 @@ function renderTraining(){
  }else if(p.free){
   out+=freeGenerator();
  }else{
-  out+=`<div class="exercise-list-v9">`+p.exercises.map((e,i)=>{
+  out+=`<div class="exercise-list-v9">`+displayExercises.map((e,i)=>{
    const showLoad=shouldShowExerciseLoad(selectedTraining,i);
    const count=parseSeriesCount(e[1]);
-   const meta=light&&strength&&count?lightenMeta(e[1]):e[1];
-   const series=light&&strength&&count?Math.max(1,count-1):count;
+   const meta=strength&&count?(light?lightenMeta(e[1]):legendary?legendaryMeta(e[1]):e[1]):e[1];
+   const series=strength&&count?(light?Math.max(1,count-1):legendary?count+1:count):count;
    if(series)getSeriesState(selectedTraining,i,series);
    const checked=series?t.series[i]?.slice(0,series).every(x=>x.done):Boolean(t.checks[i]);
-   return `<div class="exercise"><div class="exercise-row ${showLoad?'':'no-charge'}"><div class="exercise-main"><label><input type="checkbox" ${checked?'checked':''} onchange="toggleExercise(${i},this.checked)"><img class="exercise-thumb" src="${exerciseAssetByName(e[0])}?v=31" alt="Illustration ${escapeHtml(e[0])}"><div class="exercise-copy"><div class="exercise-title">${e[0]}</div><div class="exercise-meta">${meta}</div>${strength&&count?exerciseSeriesHtml(selectedTraining,i,e[1],light):''}${e[0]==='Planche avant-bras'?plankTimerHtml(selectedTraining,i):''}${progressionTip(selectedTraining,i)}</div></label></div>${showLoad?`<div class="charge-field"><label>Charge</label><input class="charge-input" type="text" inputmode="decimal" value="${escapeHtml(String(getExerciseLoad(selectedTraining,i)))}" placeholder="32,5 kg" onchange="saveExerciseLoad('${selectedTraining}',${i},this.value)" onblur="saveExerciseLoad('${selectedTraining}',${i},this.value)"></div>`:''}</div></div>`;
+   return `<div class="exercise"><div class="exercise-row ${showLoad?'':'no-charge'}"><div class="exercise-main"><label><input type="checkbox" ${checked?'checked':''} onchange="toggleExercise(${i},this.checked)"><img class="exercise-thumb" src="${exerciseAssetByName(e[0])}?v=31" alt="Illustration ${escapeHtml(e[0])}"><div class="exercise-copy"><div class="exercise-title">${e[0]}</div><div class="exercise-meta">${meta}</div>${strength&&count?exerciseSeriesHtml(selectedTraining,i,e[1],mode):''}${e[0]==='Planche avant-bras'?plankTimerHtml(selectedTraining,i):''}${progressionTip(selectedTraining,i)}</div></label></div>${showLoad?`<div class="charge-field"><label>Charge</label><input class="charge-input" type="text" inputmode="decimal" value="${escapeHtml(String(getExerciseLoad(selectedTraining,i)))}" placeholder="32,5 kg" onchange="saveExerciseLoad('${selectedTraining}',${i},this.value)" onblur="saveExerciseLoad('${selectedTraining}',${i},this.value)"></div>`:''}</div></div>`;
   }).join('')+`</div>`;
   if(strength)out+=`<div class="rest-timer-wrap">${restTimerHtml()}</div>`;
   out+=`<label class="finish-session"><input type="checkbox" ${t.completed?'checked':''} onchange="setDone(this.checked)"> Séance terminée</label><div class="session-meta">${t.completed&&t.durationMs?`Durée enregistrée : ${formatMinutes(t.durationMs)} min`:''}</div>`;
  }
  weekTrainingContent.innerHTML=out;
- p.exercises?.forEach((e,i)=>{if(e[0]==='Planche avant-bras')updatePlankTimerUI(selectedTraining,i)});
+ displayExercises.forEach((e,i)=>{if(e[0]==='Planche avant-bras')updatePlankTimerUI(selectedTraining,i)});
  updateRestTimerUI();updateSessionTimerUI();
 }
 function toggleExercise(i,v){
  const activityKey=getActivityKeyForDay(selectedTraining),p=plans[activityKey],t=state.training[selectedTraining],count=parseSeriesCount(p.exercises[i][1]);
  if(count&&(['lundi','mercredi'].includes(activityKey) || Boolean(p.strength))){
-  const effective=isLightMode(t)?Math.max(1,count-1):count;
+  const mode=getTrainingMode(t);
+  const effective=mode==='light'?Math.max(1,count-1):mode==='legendary'?count+1:count;
   const rows=getSeriesState(selectedTraining,i,effective);
   rows.forEach(x=>x.done=v);t.checks[i]=v;
  }else t.checks[i]=v;
@@ -1275,7 +1285,7 @@ function setDone(v){
   assessProgression(selectedTraining,p,t);
   state.trainingHistory[`${t.date}::${selectedTraining}`]={
    date:t.date,day:selectedTraining,activityKey,title:p.title,completed:true,
-   durationMs:t.durationMs||0,light:isLightMode(t),checks:t.checks,
+   durationMs:t.durationMs||0,light:isLightMode(t),mode:getTrainingMode(t),checks:t.checks,
    loads:t.loads,series:t.series
   };
  }else{
