@@ -391,6 +391,7 @@ function __capSaveErrorMessage(err,payload,phase){
 function save(){
  const payload=JSON.stringify(state);
  const seq=++__capSaveSeq;
+ window.LenaicSync?.localChange('cap');
  try{
   localStorage.setItem('cap-data',payload);
   const reread=localStorage.getItem('cap-data');
@@ -1953,3 +1954,8 @@ function registerVersionEggTap(){
 if(versionEgg)versionEgg.addEventListener('click',registerVersionEggTap);
 
 renderToday();
+const capSafeAdapter={id:'cap',key:'cap-data',get:()=>({...JSON.parse(JSON.stringify(state)),__capRewards:JSON.parse(localStorage.getItem('cap-rewards-v1')||'{}')}),
+ valid:v=>!!v&&v.settings&&v.daily&&typeof v.daily==='object'&&!Array.isArray(v.daily),has:v=>!!Object.keys(v.daily||{}).length||!!v.measures?.length,
+ apply:async v=>{const rewards=v.__capRewards;delete v.__capRewards;state=v;save();if(rewards)localStorage.setItem('cap-rewards-v1',JSON.stringify(rewards));renderToday()},
+ success:()=>{try{window.CapRewards?.sync?.({feedback:false})}catch{}}};
+window.LenaicSync.register(capSafeAdapter);
