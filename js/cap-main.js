@@ -1,3 +1,4 @@
+window.LenaicSync.assertStorageReady();
 const mealName=document.getElementById('mealName');
 const mealCalories=document.getElementById('mealCalories');
 const mealProtein=document.getElementById('mealProtein');
@@ -327,6 +328,7 @@ function nutritionDayKey(date=new Date()){
  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
  return `${y}-${m}-${day}`;
 }
+let capKnownPrimary=localStorage.getItem('cap-data');
 let state=JSON.parse(localStorage.getItem('cap-data')||localStorage.getItem('motoria-data')||'{}');if(!state.settings)state.settings={weight:61.8,height:171,calories:2200,proteinRate:1.8,carbRate:5,fatRate:1};
 if(state.settings.carbRate==null)state.settings.carbRate=5;if(state.settings.fatRate==null)state.settings.fatRate=1;if(state.settings.restSeconds==null)state.settings.restSeconds=90;if(!state.daily)state.daily={};if(!state.training)state.training={};if(!state.exerciseLoads)state.exerciseLoads={};if(!state.timerDurations)state.timerDurations={};if(!state.trainingHistory)state.trainingHistory={};
 Object.values(state.trainingHistory).forEach(x=>{
@@ -393,7 +395,7 @@ function save(){
  const seq=++__capSaveSeq;
  window.LenaicSync?.localChange('cap');
  try{
-  localStorage.setItem('cap-data',payload);
+  window.LenaicSync.atomicStorage({'cap-data':payload},{'cap-data':capKnownPrimary});capKnownPrimary=payload;
   const reread=localStorage.getItem('cap-data');
   if(reread!==payload){
    throw new Error('La lecture de contrôle ne correspond pas aux données qui viennent d\'être écrites.');
@@ -1954,8 +1956,9 @@ function registerVersionEggTap(){
 if(versionEgg)versionEgg.addEventListener('click',registerVersionEggTap);
 
 renderToday();
-const capSafeAdapter={id:'cap',key:'cap-data',get:()=>({...JSON.parse(JSON.stringify(state)),__capRewards:JSON.parse(localStorage.getItem('cap-rewards-v1')||'{}')}),
- valid:v=>!!v&&v.settings&&v.daily&&typeof v.daily==='object'&&!Array.isArray(v.daily),has:v=>!!Object.keys(v.daily||{}).length||!!v.measures?.length,
- apply:async v=>{const rewards=v.__capRewards;delete v.__capRewards;state=v;save();if(rewards)localStorage.setItem('cap-rewards-v1',JSON.stringify(rewards));renderToday()},
+const capSafeAdapter={id:'cap',key:'cap-data',get:()=>({...JSON.parse(JSON.stringify(state)),__capRewards:JSON.parse(localStorage.getItem('cap-rewards-v1')||'{}'),__capDark:localStorage.getItem('cap-dark')}),
+ valid:v=>!!v&&v.settings&&typeof v.settings==='object'&&!Array.isArray(v.settings)&&v.daily&&typeof v.daily==='object'&&!Array.isArray(v.daily)&&['training','exerciseLoads','timerDurations','trainingHistory','progression','weekSchedules','measureProfile'].every(k=>v[k]==null||(typeof v[k]==='object'&&!Array.isArray(v[k])))&&(v.measurements==null||Array.isArray(v.measurements)),has:v=>!!Object.keys(v.daily||{}).length||!!v.measurements?.length,
+ revision:()=>window.LenaicSync.rawStorage(['cap-data','cap-rewards-v1','cap-dark']),consistent:(v,r)=>r['cap-data']===capKnownPrimary,
+ apply:async(v,expected)=>{const next=JSON.parse(JSON.stringify(v)),rewards=next.__capRewards;delete next.__capRewards;delete next.__capDark;for(const key of ['training','exerciseLoads','timerDurations','trainingHistory','progression','weekSchedules','measureProfile'])next[key]=next[key]||{};next.measurements=next.measurements||[];const changes={'cap-data':JSON.stringify(next)};if(rewards)changes['cap-rewards-v1']=JSON.stringify(rewards);if(v.__capDark!=null)changes['cap-dark']=String(v.__capDark);window.LenaicSync.atomicStorage(changes,expected);capKnownPrimary=changes['cap-data'];state=next;renderToday();return capSafeAdapter.get()},
  success:()=>{try{window.CapRewards?.sync?.({feedback:false})}catch{}}};
 window.LenaicSync.register(capSafeAdapter);
