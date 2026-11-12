@@ -92,7 +92,7 @@
   function weekKeyForDate(d){const x=isoWeekInfo(d);return `${x.year}-W${String(x.week).padStart(2,'0')}`}
   function defaultSchedule(){return {lundi:'lundi',mardi:'mardi',mercredi:'jeudi',jeudi:'mercredi',vendredi:'vendredi',samedi:'samedi',dimanche:'dimanche'}}
   function scheduleForDate(cap,d){return {...defaultSchedule(),...(cap.weekSchedules?.[weekKeyForDate(d)]||{})}}
-  function activityRequirement(cap,key){const d=parseKey(key),day=dayNameForKey(key),activity=(scheduleForDate(cap,d)[day]||day);return ['vendredi','samedi','dimanche'].includes(activity)?'optional':'required'}
+  function activityRequirement(cap,key){const d=parseKey(key),day=dayNameForKey(key),activity=(scheduleForDate(cap,d)[day]||day);return ['mardi','vendredi','samedi','dimanche'].includes(activity)?'optional':'required'}
   function activityGood(cap,key){if(completedDates(cap).has(key))return true;return activityRequirement(cap,key)==='optional'}
   function dayQualifies(cap,key,rewards){let n=0;if(isGoodSleep(cap,key))n++;if(isGoodNutrition(cap,key))n++;if(activityGood(cap,key))n++;return n>=2||Boolean(rewards?.protectedDates?.[key])}
 
@@ -130,7 +130,7 @@
       const required=[];
       for(let i=0;i<7;i++){
         const d=new Date(monday);d.setDate(monday.getDate()+i);const k=dateKey(d);const activity=schedule[dayNames[i]]||dayNames[i];
-        if(!['vendredi','samedi','dimanche'].includes(activity))required.push(k);
+        if(!['mardi','vendredi','samedi','dimanche'].includes(activity))required.push(k);
       }
       if(required.length&&required.every(k=>k<=today&&done.has(k)))complete.push(wk);
     });

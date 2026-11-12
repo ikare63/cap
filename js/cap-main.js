@@ -1953,3 +1953,208 @@ function registerVersionEggTap(){
 if(versionEgg)versionEgg.addEventListener('click',registerVersionEggTap);
 
 renderToday();
+
+/* CAP_OPTIONAL_PATCH_V1 — Séances A, B et natation prioritaires ; mardi, samedi, dimanche facultatifs. */
+(function capOptionalPatch(){
+  'use strict';
+  const REQUIRED=new Set(['lundi','mercredi','jeudi']);
+  const OPTIONAL=new Set(['mardi','samedi','dimanche']);
+  const isOptional=key=>OPTIONAL.has(key);
+  const isRequired=key=>REQUIRED.has(key);
+  const dateForDay=day=>dateKeyFromDate(currentWeekDayDate(day));
+  const historyDone=(date,day,key)=>Object.values(state.trainingHistory||{}).some(s=>
+    s&&s.completed&&s.date===date&&(s.activityKey===key||(!s.activityKey&&s.day===day)));
+  function optedIn(date,key){
+    const value=state.optionalActivityDays?.[date];
+    return Boolean(value&&value.active&&value.activityKey===key);
+  }
+  function countsActivity(date,day,key){
+    if(isRequired(key))return true;
+    if(!isOptional(key))return false; // Repos complet : jamais obligatoire.
+    return optedIn(date,key)||historyDone(date,day,key);
+  }
+  function setOptionalDay(day,enabled){
+    const key=getActivityKeyForDay(day);
+    if(!isOptional(key))return;
+    const date=dateForDay(day);
+    if(historyDone(date,day,key))return; // Une séance achevée reste enregistrée.
+    if(!state.optionalActivityDays)state.optionalActivityDays={};
+    if(enabled)state.optionalActivityDays[date]={active:true,activityKey:key};
+    else delete state.optionalActivityDays[date];
+    save();
+    renderToday();
+    renderWeek();
+  }
+  // Fonction accessible depuis le choix affiché dans l'onglet Semaine.
+  window.capSetOptionalDay=setOptionalDay;
+  const sheet=document.createElement('style');
+  sheet.id='cap-optionnel-style-v1';
+  sheet.textContent=`
+    #capOptionalActivityChoice{display:flex;align-items:center;gap:10px;width:fit-content;max-width:100%;padding:11px 13px;margin:12px 0 10px;border:1px solid rgba(255,255,255,.42);border-radius:14px;background:rgba(16,26,42,.62);backdrop-filter:blur(4px);color:white!important;font-weight:750;cursor:pointer}
+    #capOptionalActivityChoice[hidden]{display:none!important}
+    #capOptionalActivityChoice input{width:22px;height:22px;flex:none;accent-color:#77dfaa;margin:0}
+    #capOptionalActivityChoice .cap-optional-text{color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:.9rem;line-height:1.35}
+    #capOptionalActivityChoice[aria-disabled=true]{opacity:.8;cursor:default}
+    .cap-optional-week{border:1px dashed var(--line);border-radius:15px;padding:16px;margin-top:12px;background:var(--panel)}
+    .cap-optional-week h3{margin:0 0 5px}
+    .cap-optional-week p{color:var(--muted);line-height:1.5}
+    .cap-optional-week label{display:flex;gap:11px;align-items:center;padding:12px;background:var(--soft);border-radius:12px;font-weight:800;cursor:pointer}
+    .cap-optional-week input{width:22px;height:22px;accent-color:var(--accent)}
+  `;
+  document.head.appendChild(sheet);
+
+  const originalTodayProgress=todayActivityProgress;
+  todayActivityProgress=function(day,plan){
+    const key=getActivityKeyForDay(day),date=dateForDay(day);
+    if(!countsActivity(date,day,key)){
+      return {pct:0,done:0,total:0,neutral:true,label:key==='vendredi'?'Repos · sans objectif':'Facultatif · sans obligation'};
+    }
+    return originalTodayProgress(day,plan);
+  };
+
+  const originalAdvice=advice;
+  advice=function(){
+    const base=originalAdvice();
+    const day=dayName(),key=getActivityKeyForDay(day);
+    if(isOptional(key)&&!countsActivity(dateForDay(day),day,key)){
+      return {level:'good',text:'Journée facultative : bouger si tu en as envie, ou te reposer. Aucun entraînement à rattraper.'};
+    }
+    return base;
+  };
+
+  function renderOptionalHome(){
+    const day=dayName(),key=getActivityKeyForDay(day),date=dateForDay(day);
+    let choice=document.getElementById('capOptionalActivityChoice');
+    if(!choice){
+      choice=document.createElement('label');
+      choice.id='capOptionalActivityChoice';
+      todayAction.parentNode.insertBefore(choice,todayAction);
+    }
+    const optional=isOptional(key);
+    choice.hidden=!optional;
+    if(!optional)return;
+    const completed=historyDone(date,day,key);
+    const active=optedIn(date,key)||completed;
+    choice.setAttribute('aria-disabled',completed?'true':'false');
+    choice.replaceChildren();
+    const checkbox=document.createElement('input');
+    checkbox.type='checkbox';
+    checkbox.checked=active;
+    checkbox.disabled=completed;
+    checkbox.setAttribute('aria-label','Je me bouge aujourd’hui');
+    checkbox.addEventListener('change',()=>setOptionalDay(day,checkbox.checked));
+    const description=document.createElement('span');
+    description.className='cap-optional-text';
+    description.textContent=completed?'Je me suis bougé aujourd’hui ✓':'Je me bouge aujourd’hui';
+    choice.append(checkbox,description);
+    todayBadge.textContent+=' · Facultatif';
+    todayAction.textContent=active?'Ouvrir mon entraînement':'Voir l’activité facultative';
+  }
+  const originalRenderToday=renderToday;
+  renderToday=function(){
+    const result=originalRenderToday.apply(this,arguments);
+    renderOptionalHome();
+    const day=dayName(),key=getActivityKeyForDay(day);
+    const neutral=!countsActivity(dateForDay(day),day,key);
+    const percent=kpiActivity?.nextElementSibling;
+    if(percent&&percent.tagName==='SPAN')percent.hidden=neutral;
+    if(neutral){
+      kpiActivity.textContent='—';
+      setHomeStatRing('kpiActivityRing',0,100,'var(--cyan)');
+    }
+    return result;
+  };
+
+  const originalRenderTraining=renderTraining;
+  renderTraining=function(){
+    const day=selectedTraining,key=getActivityKeyForDay(day),date=dateForDay(day);
+    if(isOptional(key)&&!countsActivity(date,day,key)){
+      const p=getPlanForDay(day);
+      const heading=document.createElement('div');
+      heading.className='cap-optional-week';
+      const h=document.createElement('h3');
+      h.textContent=`${p?.icon||'✨'} ${p?.title||'Activité au choix'} · facultatif`;
+      const info=document.createElement('p');
+      info.textContent='Cette activité n’est pas obligatoire. Si tu ne la fais pas, elle ne sera ni manquée ni pénalisée.';
+      const label=document.createElement('label');
+      const checkbox=document.createElement('input');
+      checkbox.type='checkbox';
+      checkbox.addEventListener('change',()=>setOptionalDay(day,checkbox.checked));
+      const span=document.createElement('span');span.textContent='Je me bouge ce jour-là';
+      label.append(checkbox,span);
+      heading.append(h,info,label);
+      weekTrainingContent.replaceChildren(heading);
+      return;
+    }
+    return originalRenderTraining.apply(this,arguments);
+  };
+
+  const originalRenderWeek=renderWeek;
+  renderWeek=function(){
+    const result=originalRenderWeek.apply(this,arguments);
+    const buttons=Array.from(weekGrid.querySelectorAll('button.day'));
+    WEEK_DAYS.forEach((day,index)=>{
+      const button=buttons[index],key=getActivityKeyForDay(day);
+      if(!button)return;
+      const status=button.querySelectorAll('span')[1];
+      if(!status)return;
+      const date=dateForDay(day);
+      if(historyDone(date,day,key)||state.training?.[day]?.completed){status.textContent='✓ Terminé';return;}
+      if(isOptional(key))status.textContent=optedIn(date,key)?'Choisi · à faire':'Facultatif';
+      else if(!isRequired(key))status.textContent='Repos';
+      else if(day!==selectedTraining)status.textContent='À faire · prioritaire';
+    });
+    return result;
+  };
+
+  // Supprime le tiers « activité » du score si l'activité était facultative et non choisie.
+  // Les séances facultatives réalisées restent dans l’historique et les récompenses, sans peser sur le score.
+  const originalYesterday=calculateYesterdayScore;
+  calculateYesterdayScore=function(){
+    const result=originalYesterday.apply(this,arguments);
+    const day=dow[result.date.getDay()];
+    const act=scoreActivityForDate(result.date,result.key,day,100/3);
+    if(isRequired(act.activityKey))return result;
+    const max=100/3;
+    result.earned=Math.max(0,result.earned-(Number(result.parts.activity)||0));
+    result.available=Math.max(0,result.available-max);
+    result.parts.activity=null;
+    result.activityOptional=true;
+    result.reasons=result.reasons.filter(r=>!/^activité /i.test(r));
+    result.coverage=Math.round(result.available);
+    result.score=result.available?Math.round(result.earned/result.available*100):null;
+    return result;
+  };
+  const originalRenderYesterday=renderYesterdayScore;
+  renderYesterdayScore=function(){
+    const result=originalRenderYesterday.apply(this,arguments);
+    const yesterday=calculateYesterdayScore();
+    if(yesterday.activityOptional&&yesterdayScoreCoverage){
+      yesterdayScoreCoverage.textContent='Activité facultative ou repos : aucune pénalité. Score calculé sur nutrition et sommeil renseignés.';
+    }
+    return result;
+  };
+
+  const originalWeeklySummary=renderWeeklySummary;
+  renderWeeklySummary=function(){
+    const result=originalWeeklySummary.apply(this,arguments);
+    const {start,end}=weekBounds();
+    const first=dateKeyFromDate(start),last=dateKeyFromDate(end);
+    const completed=Object.values(state.trainingHistory||{}).filter(s=>s?.completed&&s.date>=first&&s.date<=last);
+    const essentials=new Set(completed.map(s=>s.activityKey||activityKeyForDate(new Date(s.date+'T12:00:00'),s.day)).filter(isRequired));
+    const done=essentials.size;
+    const count=document.createElement('div');
+    count.className='alert';
+    count.textContent=`Séances essentielles : ${done}/3 (A, B et natation). Les autres activités restent facultatives.`;
+    weeklySummaryAdvice.querySelectorAll('.alert').forEach(el=>{
+      if(el.textContent.includes('Priorité : régularité')||el.textContent.includes('Bonne régularité'))el.remove();
+    });
+    weeklySummaryAdvice.prepend(count);
+    return result;
+  };
+
+  // L'initialisation de CAP a eu lieu avant l'ajout de ces adaptations.
+  renderToday();
+  renderWeek();
+})();
+
