@@ -139,88 +139,16 @@ function getISOWeekNumber(date=new Date()){
  return Math.ceil((((d-yearStart)/86400000)+1)/7);
 }
 
-function getTuesdayPlan(date=new Date()){
- const week=getISOWeekNumber(date);
- const even=week%2===0;
-
- if(even){
-  return {
-   title:'Jogging',
-   duration:'18–22 min',
-   icon:'🏃',
-   intro:`Semaine ${week} paire : cardio doux, régularité avant performance.`,
-   planKey:`week-${week}-jogging-v2`,
-   strength:false,
-   modeExercises:{
-    light:[['Marche rapide','5 min'],['Jogging','8 min'],['Retour au calme','5 min']],
-    normal:[['Marche rapide','5 min'],['Jogging','10 min'],['Retour au calme','5 min']],
-    legendary:[['Marche rapide','5 min'],['Jogging','12 min'],['Retour au calme','5 min']]
-   },
-   exercises:[['Marche rapide','5 min'],['Jogging','10 min'],['Retour au calme','5 min']]
-  };
- }
-
- return {
-  title:'Séance Maison — Pectoraux haltères',
-  duration:'25–35 min',
-  icon:'🏋️',
-  intro:`Semaine ${week} impaire : séance pectoraux debout avec haltères. Mode Allégé : -1 série · Normal : volume prévu · Légendaire : +1 série.`,
-  planKey:`week-${week}-dumbbell-chest-v3`,
-  strength:true,
-  exercises:[
-   ['Échauffement','4–5 min · 30 s moulinets de bras vers l’avant, 30 s vers l’arrière, 10 ouvertures/fermetures de bras, 10 rotations d’épaules et 10 répétitions lentes des mouvements sans charge'],
-   ['Montée vers les pecs — bras écartés','3 × 16 · partir bras ouverts et remonter les haltères vers le haut de la poitrine en gardant le geste contrôlé'],
-   ['Croisé bas alterné','3 × 16 · croiser alternativement un haltère devant le bas du buste, puis changer de bras'],
-   ['Montée vers les pecs — bras serrés','3 × 16 · garder les bras plus proches du corps et monter les haltères ensemble vers la poitrine'],
-   ['Écarté debout — coudes fléchis','3 × 16 · coudes légèrement pliés, ouvrir puis ramener les bras devant la poitrine'],
-   ['Écarté debout — ouverture arrière','3 × 16 · ouvrir les bras vers l’arrière de façon contrôlée, sans forcer l’amplitude des épaules'],
-   ['Retour au calme','3–4 min · relâcher les bras, cercles d’épaules lents, ouverture douce de la poitrine et respiration calme']
-  ]
- };
-}
-
+function getTuesdayPlan(){return optionalPlan()}
+function optionalPlan(){return {title:'Je me bouge',duration:'10, 20 ou 30 min',icon:'✨',intro:'Choisis librement ton activité. Le repos reste possible, sans pénalité.',free:true,strength:false,planKey:'cap-optional-v2'}}
 function getWednesdayPlan(date=new Date()){
- const week=getISOWeekNumber(date);
- const even=week%2===0;
-
- if(even){
-  return {
-   title:`Séance B — Pectoraux et core`,
-   duration:'30–40 min',
-   icon:'🅱️',
-   intro:`Semaine ${week} paire. Volume recentré sur les pectoraux : gros mouvements à 4 séries, exercices secondaires à 3.`,
-   planKey:`week-${week}-upper-v5`,
-   exercises:[
-    ['Échauffement','Vélo 5–6 min, mobilité épaules et cage thoracique'],
-    ['Multi-press','4 × 8–10'],
-    ['Développé horizontal','4 × 10–12'],
-    ['Développé épaules','3 × 10–12'],
-    ['Pec deck','3 × 12–15'],
-    ['Pectoraux','3 × 12–15'],
-    ['Crunch','3 × 10–12']
-   ]
-  };
- }
-
- return {
-  title:`Séance B — Jambes et core`,
-  duration:'30–40 min',
-  icon:'🅱️',
-  intro:`Semaine ${week} impaire. Séance d’entretien des jambes : 3 séries par exercice, sans chercher à augmenter le volume.`,
-  planKey:`week-${week}-legs-v5`,
-  exercises:[
-   ['Échauffement','Vélo 5–6 min et mobilité des hanches'],
-   ['Presse à cuisses','3 × 10–12'],
-   ['Squats','3 × 10–12'],
-   ['Flexion des jambes','3 × 10–12'],
-   ['Presse à quadriceps','3 × 10–12'],
-   ['Abducteurs','3 × 15'],
-   ['Crunch','3 × 10–12']
-  ]
- };
+ const even=getISOWeekNumber(date)%2===0;
+ const core=[['Crunch','3 × 10–12'],['Reverse crunch','3 × 10–15'],['Dead bug adapté','3 × 8–10 / côté']];
+ return even?{title:'Séance B — Pectoraux',duration:'65–90 min',icon:'🅱️',planKey:'cap-B-pec-v2',intro:'Pectoraux, rappel des jambes et 9 séries de tronc.',exercises:[['Échauffement','Vélo 5–6 min, mobilité des épaules'],['Développé incliné','3 × 8–10'],['Développé horizontal','3 × 10–12'],['Développé épaules','3 × 10–12'],['Pec deck','3 × 12–15'],['Pectoraux','3 × 12–15'],['Presse à cuisses','3 × 10–12'],...core]}:{title:'Séance B — Jambes',duration:'65–90 min',icon:'🅱️',planKey:'cap-B-jambes-v2',intro:'Jambes, rappel pectoraux et 9 séries de tronc.',exercises:[['Échauffement','Vélo 5–6 min, mobilité des hanches'],['Presse à cuisses','3 × 10–12'],['Squats','3 × 10–12'],['Flexion des jambes','3 × 10–12'],['Presse à quadriceps','3 × 10–12'],['Abducteurs','3 × 15'],['Pec deck','3 × 12–15'],...core]};
 }
-
-const plans={lundi:{title:'Séance A — Dos, posture et abdos',duration:'60–90 min',icon:'🅰️',planKey:'lundi-standard-v6',intro:'Priorité au dos, à la posture et aux épaules, avec un peu de pectoraux et deux exercices de core.',exercises:[['Échauffement','Vélo 5–6 min, mobilité hanches et épaules'],['Reverse fly','3 × 8–10'],['Tirage vertical','4 × 10–12'],['Tirage horizontal','4 × 10–12'],['Pec deck','3 × 12–15'],['Développé épaules','3 × 12–15'],['Crunch','3 × 12'],['Crunch agenouillé','3 × 10–12']]},mardi:getTuesdayPlan(),mercredi:getWednesdayPlan(),jeudi:{title:'Natation',duration:'35–70 min',icon:'🏊‍♂️',planKey:'natation-v2',intro:'Alternance brasse/crawl avec volume adapté au mode choisi.',strength:false,modeExercises:{light:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','400 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','400 m'],['Brasse — finisher','100 m']],normal:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','500 m'],['Brasse — finisher','100 m']],legendary:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération 1','100 m'],['Crawl — bloc 2','500 m'],['Brasse — récupération 2','100 m'],['Crawl — bloc 3','500 m'],['Brasse — finisher','100 m']]},exercises:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','500 m'],['Brasse — finisher','100 m']]},vendredi:{title:'Repos complet',duration:'Journée',icon:'😴',intro:'Le repos fait partie du programme.',rest:true},samedi:{title:'Entraînement libre',duration:'5–30 min',icon:'✨',intro:'Séance sans matériel selon les muscles et la fatigue.',free:true},dimanche:{title:'Off, marche ou libre',duration:'Au choix',icon:'🌿',intro:'Récupération prioritaire.',free:true}};
+const plans={
+ lundi:{title:'Séance A — Dos, épaules et abdos',duration:'65–90 min',icon:'🅰️',planKey:'cap-A-v2',intro:'Dos et épaules prioritaires, 6 séries abdos.',exercises:[['Échauffement','Vélo 5–6 min, mobilité des épaules'],['Reverse fly','3 × 8–10'],['Tirage vertical','3 × 10–12'],['Tirage horizontal','3 × 10–12'],['Crunch agenouillé','3 × 10–12'],['Dos','3 × 10–12'],['Pec deck','3 × 12–15'],['Épaules','3 × 12–15'],['Crunch','3 × 12']]},
+ mardi:optionalPlan(),mercredi:getWednesdayPlan(),jeudi:{title:'Natation',duration:'35–70 min',icon:'🏊‍♂️',planKey:'natation-v2',intro:'Alternance brasse/crawl avec volume adapté au mode choisi.',strength:false,modeExercises:{light:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','400 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','400 m'],['Brasse — finisher','100 m']],normal:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','500 m'],['Brasse — finisher','100 m']],legendary:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération 1','100 m'],['Crawl — bloc 2','500 m'],['Brasse — récupération 2','100 m'],['Crawl — bloc 3','500 m'],['Brasse — finisher','100 m']]},exercises:[['Échauffement piscine à sec','5 min'],['Brasse — mise en route','100 m'],['Crawl — bloc 1','500 m'],['Brasse — récupération','100 m'],['Crawl — bloc 2','500 m'],['Brasse — finisher','100 m']]},vendredi:optionalPlan(),samedi:optionalPlan(),dimanche:optionalPlan()};
 
 const WEEK_DAYS=['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
 function getISOWeekInfo(date=new Date()){
@@ -236,17 +164,7 @@ function currentWeekKey(date=new Date()){
  const {year,week}=getISOWeekInfo(date);
  return `${year}-W${String(week).padStart(2,'0')}`;
 }
-function defaultWeekSchedule(){
- return {
-  lundi:'lundi',
-  mardi:'mardi',
-  mercredi:'jeudi',
-  jeudi:'mercredi',
-  vendredi:'vendredi',
-  samedi:'samedi',
-  dimanche:'dimanche'
- };
-}
+function defaultWeekSchedule(){return {lundi:'lundi',mardi:'mardi',mercredi:'mercredi',jeudi:'jeudi',vendredi:'vendredi',samedi:'samedi',dimanche:'dimanche'}}
 function getWeekSchedule(){
  const custom=state.weekSchedules?.[currentWeekKey()];
  return {...defaultWeekSchedule(),...(custom||{})};
@@ -261,12 +179,12 @@ function getPlanForDay(day){
 }
 function activityLabel(key){
  if(key==='lundi')return 'Séance A';
- if(key==='mardi')return plans.mardi?.title||'Mardi';
+ if(key==='mardi')return 'Je me bouge';
  if(key==='mercredi')return 'Séance B';
  if(key==='jeudi')return 'Natation';
- if(key==='vendredi')return 'Repos';
- if(key==='samedi')return 'Libre';
- if(key==='dimanche')return 'Off / marche';
+ if(key==='vendredi')return 'Je me bouge';
+ if(key==='samedi')return 'Je me bouge';
+ if(key==='dimanche')return 'Je me bouge';
  return plans[key]?.title||key;
 }
 function isWeekCustomized(){
@@ -309,7 +227,7 @@ function renderWeekEditor(){
  if(!weekEditorContent)return;
  const schedule=getWeekSchedule();
  const makeOptions=selected=>WEEK_DAYS.map(key=>`<option value="${key}" ${key===selected?'selected':''}>${plans[key].icon} ${activityLabel(key)}</option>`).join('');
- weekEditorContent.innerHTML=`<p class="week-editor-note">Programme habituel : lundi A · mardi jogging/maison selon la semaine · mercredi natation · jeudi B · vendredi repos. Les changements ci-dessous ne concernent que la semaine ${getISOWeekInfo().week}.</p>
+ weekEditorContent.innerHTML=`<p class="week-editor-note">Programme habituel : lundi A · mercredi B · jeudi natation · autres jours au choix. Les changements ci-dessous ne concernent que la semaine ${getISOWeekInfo().week}.</p>
  <div class="week-editor-grid">${WEEK_DAYS.map(day=>`<label class="week-editor-row"><strong>${day[0].toUpperCase()+day.slice(1)}</strong><select onchange="setWeekActivity('${day}',this.value)">${makeOptions(schedule[day])}</select></label>`).join('')}</div>
  <div class="week-editor-actions">
   <button class="btn" type="button" onclick="shiftCurrentWeekOneDay()">Décaler tout d’un jour</button>
@@ -995,7 +913,7 @@ function adjustSeriesMeta(meta,delta=0){
   (_,lead,count,mult)=>`${lead}${Math.max(1,Number(count)+delta)}${mult}`
  );
 }
-function lightenMeta(meta){return adjustSeriesMeta(meta,-1)}
+function lightenMeta(meta){return String(meta).replace(/^(\s*\d+\s*[×x]\s*)(\d+)(?:\s*[–-]\s*(\d+))?/,(_,lead,min,max)=>lead+Math.max(1,+min-2)+(max===undefined?'':'–'+Math.max(1,+max-2)))}
 function legendaryMeta(meta){return adjustSeriesMeta(meta,1)}
 function getLightReason(){
  const d=ensureDate();
@@ -1044,7 +962,7 @@ function getSeriesState(day,index,count){
 function exerciseSeriesHtml(day,index,meta,mode='normal'){
  let count=parseSeriesCount(meta);
  if(!count)return '';
- if(mode==='light')count=Math.max(1,count-1);
+ if(mode==='light')count=count;
  if(mode==='legendary')count=count+1;
  const rows=getSeriesState(day,index,count);
  const done=rows.filter(x=>x.done).length;
@@ -1055,7 +973,7 @@ function saveSeries(day,index,seriesIndex,done,reps){
  const p=getPlanForDay(day);
  const mode=getTrainingMode(t);
  let count=parseSeriesCount(p.exercises[index][1]);
- if(mode==='light')count=Math.max(1,count-1);
+ if(mode==='light')count=count;
  if(mode==='legendary')count=count+1;
  const rows=getSeriesState(day,index,count);
  if(done!==null)rows[seriesIndex].done=done;
@@ -1076,7 +994,7 @@ function assessProgression(day,p,t){
  p.exercises.forEach((e,i)=>{
   const count=parseSeriesCount(e[1]);
   if(!count || !shouldShowExerciseLoad(day,i))return;
-  const expected=isLightMode(t)?Math.max(1,count-1):count;
+  const expected=count;
   const rows=(t.series?.[i]||[]).slice(0,expected);
   const success=rows.length===expected && rows.every(x=>x.done);
   const key=progressionKey(day,i);
@@ -1200,6 +1118,8 @@ function renderWeeklySummary(){
 
 function exerciseAssetByName(name=''){
  const n=name.toLowerCase();
+ const special={'dos':'assets/exercises/dos-cap.png','reverse crunch':'assets/exercises/reverse-crunch-cap.png','dead bug adapté':'assets/exercises/dead-bug-cap.png','développé incliné':'assets/exercises/developpe-incline-cap.png','épaules':'assets/exercises/developpe-epaules.png','russian twist adapté':'assets/exercises/russian-twist-cap.png','gainage latéral adapté':'assets/exercises/gainage-lateral-cap.png'};
+ if(special[n])return special[n];
  if(n.includes('piscine à sec')||n.includes('échauffement piscine'))return 'assets/exercises/echauffement-piscine.png';
  if(n.includes('échauff'))return 'assets/exercises/echauffement.png';
  if(n.includes('reverse'))return 'assets/exercises/reverse-fly.png';
@@ -1254,10 +1174,10 @@ function renderTraining(){
    const showLoad=shouldShowExerciseLoad(selectedTraining,i);
    const count=parseSeriesCount(e[1]);
    const meta=strength&&count?(light?lightenMeta(e[1]):legendary?legendaryMeta(e[1]):e[1]):e[1];
-   const series=strength&&count?(light?Math.max(1,count-1):legendary?count+1:count):count;
+   const series=strength&&count?(legendary?count+1:count):count;
    if(series)getSeriesState(selectedTraining,i,series);
    const checked=series?t.series[i]?.slice(0,series).every(x=>x.done):Boolean(t.checks[i]);
-   return `<div class="exercise"><div class="exercise-row ${showLoad?'':'no-charge'}"><div class="exercise-main"><label><input type="checkbox" ${checked?'checked':''} onchange="toggleExercise(${i},this.checked)"><img class="exercise-thumb" src="${exerciseAssetByName(e[0])}?v=31" alt="Illustration ${escapeHtml(e[0])}"><div class="exercise-copy"><div class="exercise-title">${e[0]}</div><div class="exercise-meta">${meta}</div>${strength&&count?exerciseSeriesHtml(selectedTraining,i,e[1],mode):''}${e[0]==='Planche avant-bras'?plankTimerHtml(selectedTraining,i):''}${progressionTip(selectedTraining,i)}</div></label></div>${showLoad?`<div class="charge-field"><label>Charge</label><input class="charge-input" type="text" inputmode="decimal" value="${escapeHtml(String(getExerciseLoad(selectedTraining,i)))}" placeholder="32,5 kg" onchange="saveExerciseLoad('${selectedTraining}',${i},this.value)" onblur="saveExerciseLoad('${selectedTraining}',${i},this.value)"></div>`:''}</div></div>`;
+   return `<div class="exercise"><div class="exercise-row ${showLoad?'':'no-charge'}"><div class="exercise-main"><label><input type="checkbox" ${checked?'checked':''} onchange="toggleExercise(${i},this.checked)"><img class="exercise-thumb" src="${exerciseAssetByName(e[0])}?v=20261113" alt="Illustration ${escapeHtml(e[0])}"><div class="exercise-copy"><div class="exercise-title">${e[0]}</div><div class="exercise-meta">${meta}</div>${strength&&count?exerciseSeriesHtml(selectedTraining,i,e[1],mode):''}${e[0]==='Planche avant-bras'?plankTimerHtml(selectedTraining,i):''}${progressionTip(selectedTraining,i)}</div></label></div>${showLoad?`<div class="charge-field"><label>Charge</label><input class="charge-input" type="text" inputmode="decimal" value="${escapeHtml(String(getExerciseLoad(selectedTraining,i)))}" placeholder="32,5 kg" onchange="saveExerciseLoad('${selectedTraining}',${i},this.value)" onblur="saveExerciseLoad('${selectedTraining}',${i},this.value)"></div>`:''}</div></div>`;
   }).join('')+`</div>`;
   if(strength)out+=`<div class="rest-timer-wrap">${restTimerHtml()}</div>`;
   out+=`<label class="finish-session"><input type="checkbox" ${t.completed?'checked':''} onchange="setDone(this.checked)"> Séance terminée</label><div class="session-meta">${t.completed&&t.durationMs?`Durée enregistrée : ${formatMinutes(t.durationMs)} min`:''}</div>`;
@@ -1270,7 +1190,7 @@ function toggleExercise(i,v){
  const activityKey=getActivityKeyForDay(selectedTraining),p=plans[activityKey],t=state.training[selectedTraining],count=parseSeriesCount(p.exercises[i][1]);
  if(count&&(['lundi','mercredi'].includes(activityKey) || Boolean(p.strength))){
   const mode=getTrainingMode(t);
-  const effective=mode==='light'?Math.max(1,count-1):mode==='legendary'?count+1:count;
+  const effective=mode==='light'?count:mode==='legendary'?count+1:count;
   const rows=getSeriesState(selectedTraining,i,effective);
   rows.forEach(x=>x.done=v);t.checks[i]=v;
  }else t.checks[i]=v;
@@ -1958,7 +1878,7 @@ renderToday();
 (function capOptionalPatch(){
   'use strict';
   const REQUIRED=new Set(['lundi','mercredi','jeudi']);
-  const OPTIONAL=new Set(['mardi','samedi','dimanche']);
+  const OPTIONAL=new Set(['mardi','vendredi','samedi','dimanche']);
   const isOptional=key=>OPTIONAL.has(key);
   const isRequired=key=>REQUIRED.has(key);
   const dateForDay=day=>dateKeyFromDate(currentWeekDayDate(day));
@@ -2068,7 +1988,7 @@ renderToday();
   const originalRenderTraining=renderTraining;
   renderTraining=function(){
     const day=selectedTraining,key=getActivityKeyForDay(day),date=dateForDay(day);
-    if(isOptional(key)&&!countsActivity(date,day,key)){
+    if(false&&isOptional(key)&&!countsActivity(date,day,key)){
       const p=getPlanForDay(day);
       const heading=document.createElement('div');
       heading.className='cap-optional-week';
