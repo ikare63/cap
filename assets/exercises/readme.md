@@ -1,4 +1,5 @@
-# Assets d’exercices CAP
+# Illustrations CAP — série couleur harmonisée
 
-25 vignettes PNG harmonisées en 512×512, avec cadre orange CAP et panneau sombre.
-Les anciens fonds blancs et doublons SVG ont été supprimés. Les personnages sont masculins ou neutres ; les noms de fichiers historiques sont conservés pour ne casser aucune référence dans l’application.
+Toutes les images d’exercices utilisées par CAP sont au format PNG carré 512 × 512, style dessin simplifié bleu nuit, orange et fond clair. Les noms historiques sont conservés pour la compatibilité des chemins de l’application.
+
+Les fichiers SVG plus anciens restent dans le dépôt pour compatibilité mais ne sont pas référencés par les scripts d’affichage des exercices.
